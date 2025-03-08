@@ -327,15 +327,21 @@
               </a>
               <ul class="nav nav-treeview">
                 <li class="nav-item">
-                  <a href="/teamleader" class="nav-link">
+                  <a href="/userteamleader" class="nav-link">
                     <i class="fas fa-user-tie"></i>
                     <p>Team Leader</p>
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a href="/karyawan" class="nav-link">
+                  <a href="/userkaryawan" class="nav-link">
                     <i class="fas fa-user-friends"></i>
                     <p>Karyawan</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="/register" class="nav-link">
+                    <i class="fas fa-user-tie"></i>
+                    <p>Tambah User</p>
                   </a>
                 </li>
               </ul>

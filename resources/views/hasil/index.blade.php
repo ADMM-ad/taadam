@@ -76,7 +76,7 @@
         <tbody>
             @foreach($jobdeskHasils as $data)
             <tr>
-            <td>{{ $loop->iteration }}</td>
+                <td>{{ $loop->iteration }}</td>
                 <td>{{ $data->team->nama_team }}</td>
                 <td>{{ $data->bulan }}</td>
                 <td>{{ $data->views }}</td>

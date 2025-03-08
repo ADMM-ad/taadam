@@ -13,4 +13,12 @@ class Team extends Model
     protected $fillable = [
         'nama_team'
     ];
+    public function detailTeams()
+    {
+        return $this->hasMany(DetailTeam::class, 'team_id');
+    }
+    public function users(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'detail_team', 'team_id', 'user_id');
+    }
 }

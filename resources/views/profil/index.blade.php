@@ -23,6 +23,16 @@
                 <strong>Role:</strong>
                 <p>{{ ucfirst($user->role) }}</p>
             </div>
+            <div class="mb-3">
+                <strong>Tim yang diikuti:</strong>
+                <ul>
+                    @forelse($teams as $team)
+                        <li>{{ $team->nama_team }}</li>
+                    @empty
+                        <li>-</li>
+                    @endforelse
+                </ul>
+            </div>
             <a href="{{ route('profil.edit') }}" class="btn btn-primary">Edit Profil</a>
         </div>
     </div>

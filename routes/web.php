@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\AnggotateamController;
@@ -53,6 +54,13 @@ Route::get('/dashboardkaryawan', function () {
     return view('karyawan.dashboardkaryawan');
 })->name('dashboardkaryawan');
 
+
+//User
+Route::get('/userkaryawan', [UserController::class, 'indexKaryawan'])->name('users.indexkaryawan');
+Route::delete('/userkaryawan/{id}', [UserController::class, 'destroy'])->name('users.destroy');
+Route::get('/userteamleader', [UserController::class, 'indexTeamleader'])->name('users.indexteamleader');
+Route::delete('/userteamleader/{id}', [UserController::class, 'destroytl'])->name('users.destroytl');
+
 //Team
 Route::get('/team', [TeamController::class, 'index'])->name('team.index');
 Route::get('/team/create', [TeamController::class, 'create'])->name('team.create');
@@ -68,6 +76,8 @@ Route::post('/anggotateam', [AnggotateamController::class, 'store'])->name('angg
 Route::get('/anggotateam/{anggotateam}/edit', [AnggotateamController::class, 'edit'])->name('anggotateam.edit');
 Route::put('/anggotateam/{anggotateam}', [AnggotateamController::class, 'update'])->name('anggotateam.update');
 Route::delete('/anggotateam/{anggotateam}', [AnggotateamController::class, 'destroy'])->name('anggotateam.destroy');
+Route::get('/anggotateam/{team}/daftar', [AnggotateamController::class, 'daftar'])->name('anggotateam.daftar');
+
 
 
 //Jobdesk

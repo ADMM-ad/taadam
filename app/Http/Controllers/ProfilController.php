@@ -11,7 +11,8 @@ class ProfilController extends Controller
     public function index()
     {
         $user = Auth::user(); // Mendapatkan data user yang sedang login
-        return view('profil.index', compact('user'));
+        $teams = $user->teams; // Mengambil tim yang diikuti oleh user dari relasi
+        return view('profil.index', compact('user', 'teams'));
     }
     public function edit()
     {
@@ -25,7 +26,7 @@ class ProfilController extends Controller
     // Validasi input
     $request->validate([
         'name' => 'nullable|string|max:255',
-        'email' => 'required|email|unique:users,email,' . $user->id,
+        'email' => 'required|string|unique:users,email,' . $user->id,
         'no_hp' => 'nullable|string|max:15',
         'password' => 'nullable|string|min:8|confirmed',
     ]);

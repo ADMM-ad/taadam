@@ -29,7 +29,7 @@ class AuthController extends Controller
 
         // Tambahkan domain ke email jika diperlukan
         $credentials = [
-            'email' => $request->email . '@Ourweb',
+            'email' => $request->email,
             'password' => $request->password,
         ];
 
@@ -62,30 +62,17 @@ class AuthController extends Controller
         ]);
 
         // Tambahkan domain ke email jika diperlukan
-        $email = $request->email . '@Ourweb';
-
+       
         // Buat user baru
         $user = User::create([
             'name' => $request->name,
-            'email' => $email, // Email dengan domain
+            'email' => $request->email, // Email dengan domain
             'password' => Hash::make($request->password),
             'role' => $request->role,
             'no_hp' => $request->no_hp, // No HP opsional
         ]);
 
-        // Login user
-        Auth::login($user);
-
-        // Redirect sesuai role user
-        if ($user->role == 'pimpinan') {
-            return redirect()->route('dashboardpimpinan');
-        } elseif ($user->role == 'teamleader') {
-            return redirect()->route('dashboardteamleader');
-        } elseif ($user->role == 'karyawan') {
-            return redirect()->route('dashboardkaryawan');
-        }
-
-        return redirect()->home();
+        return redirect()->route('register')->with('success', 'Akun berhasil ditambahkan.');
     }
 
     public function logout(Request $request)
