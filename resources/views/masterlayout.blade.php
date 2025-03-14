@@ -25,6 +25,8 @@
   <link rel="stylesheet" href="{{ asset('template/plugins/daterangepicker/daterangepicker.css') }}">
   <!-- Summernote -->
   <link rel="stylesheet" href="{{ asset('template/plugins/summernote/summernote-bs4.min.css') }}">
+  <!-- Kelender-->
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
 </head>
 
 <style>
@@ -382,7 +384,7 @@
               <ul class="nav nav-treeview">
                 @if(auth()->user()->role == 'teamleader' || auth()->user()->role == 'karyawan')
                 <li class="nav-item">
-                  <a href="/permintaanperizinan" class="nav-link">
+                  <a href="/absensi/perizinan?tanggal={{ date('Y-m-d') }}" class="nav-link">
                     <i class="fas fa-file-signature"></i>
                     <p>Permintaan Perizinan</p>
                   </a>
@@ -422,7 +424,7 @@
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a href="/riwayatabsensi" class="nav-link">
+                  <a href="/absensipengguna" class="nav-link">
                     <i class="fas fa-history"></i>
                     <p>Riwayat Absensi</p>
                   </a>
@@ -551,6 +553,8 @@
   <script src="{{ asset('template/plugins/jquery/jquery.min.js') }}"></script>
   <script src="{{ asset('template/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
   <script src="{{ asset('template/dist/js/adminlte.min.js') }}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+  @yield('scripts')
 </body>
 
 </html>

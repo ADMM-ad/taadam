@@ -1,9 +1,7 @@
 @extends('masterlayout')
 
 @section('content')
-<div class="content-wrapper">
-    <div class="content-header">
-        <div class="container-fluid">
+        <div class="container">
             @if(session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 {{ session('success') }}
@@ -31,13 +29,15 @@
                     <h1 class="m-0 text-dark">Form Perizinan</h1>
                 </div>
             </div>
-        </div>
-    </div>
+   
 
-    <section class="content">
-        <div class="container-fluid">
+    
             <form method="POST" action="{{ route('absensi.perizinan') }}" enctype="multipart/form-data">
                 @csrf
+                <div class="form-group">
+                    <label for="tanggal">Tanggal</label>
+                    <input type="date" class="form-control" id="tanggal" name="tanggal" value="{{ $tanggal }}" required readonly>
+                </div>
                 <div class="form-group">
                     <label for="kehadiran">Keterangan</label>
                     <select class="form-control" id="kehadiran" name="kehadiran" required>
@@ -48,11 +48,15 @@
                 </div>
                 <div class="form-group">
                     <label for="bukti">Upload Bukti</label>
-                    <input type="file" class="form-control-file" id="bukti" name="bukti" accept=".pdf,.jpg,.png" required>
+                    <input type="file" class="form-control-file" id="bukti" name="bukti" accept=".pdf,.jpg,.png" >
                 </div>
-                <button type="submit" class="btn btn-primary">Kirim</button>
+                <div class="d-flex justify-content-between">
+                    <a href="{{ route('absensi.indexpengguna') }}" class="btn btn-secondary">Kembali</a>
+                    <button type="submit" class="btn btn-primary">Kirim</button>
+                </div>
+
             </form>
-        </div>
-    </section>
+     
+   
 </div>
 @endsection

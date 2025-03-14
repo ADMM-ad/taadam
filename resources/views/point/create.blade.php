@@ -13,20 +13,54 @@
             <input type="month" id="bulan" name="bulan" class="form-control" required>
         </div>
 
-        <div class="mb-3">
-            <label for="absensi" class="form-label">Jumlah Absensi Hadir</label>
-            <input type="number" id="absensi" name="absensi" class="form-control" readonly>
-        </div>
-
-        <div class="mb-3">
-            <label for="jobdesk_selesai" class="form-label">Jumlah Jobdesk Selesai</label>
-            <input type="number" id="jobdesk_selesai" name="jobdesk_selesai" class="form-control" readonly>
-        </div>
-
-        <div class="mb-3">
-            <label for="views" class="form-label">Jumlah Views</label>
-            <input type="number" id="views" name="views" class="form-control" readonly>
-        </div>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Kriteria</th>
+                    <th>Nilai</th>
+                    <th>Bobot</th>
+                    <th>Skor</th>
+                    <th>Skor Akhir</th> <!-- Kolom baru -->
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Absensi (Jumlah Hadir)</td>
+                    <td><input type="number" name="absensi" id="absensi" class="form-control" required></td>
+                    <td><span id="bobot_absensi">0</span></td>
+                    <td><span id="skor_absensi">0</span></td>
+                    <td><span id="skor_akhir_absensi">0</span></td>
+                </tr>
+                <tr>
+                    <td>Jobdesk (Jumlah)</td>
+                    <td><input type="number" name="jobdesk" id="jobdesk" class="form-control" required></td>
+                    <td><span id="bobot_jobdesk">0</span></td>
+                    <td><span id="skor_jobdesk">0</span></td>
+                    <td><span id="skor_akhir_jobdesk">0</span></td>
+                </tr>
+                <tr>
+                    <td>Views</td>
+                    <td><input type="number" name="views" id="views" class="form-control" required></td>
+                    <td><span id="bobot_views">0</span></td>
+                    <td><span id="skor_views">0</span></td>
+                    <td><span id="skor_akhir_views">0</span></td>
+                </tr>
+                <tr>
+                    <td>Attitude</td>
+                    <td>
+                        <select name="attitude" id="attitude" class="form-control" required>
+                            <option value="kurang">Kurang</option>
+                            <option value="lumayan">Lumayan</option>
+                            <option value="baik">Baik</option>
+                            <option value="sangat baik">Sangat Baik</option>
+                        </select>
+                    </td>
+                    <td><span id="bobot_attitude">0</span></td>
+                    <td><span id="skor_attitude">0</span></td>
+                    <td><span id="skor_akhir_attitude">0</span></td>
+                </tr>
+            </tbody>
+        </table>
 
         <button type="submit" class="btn btn-success">Simpan Point</button>
     </form>
@@ -36,15 +70,90 @@
 document.getElementById('bulan').addEventListener('change', function() {
     let bulan = this.value;
     let userId = "{{ $user->id }}";
-    
+
     fetch(`/point/get-data?user_id=${userId}&bulan=${bulan}`)
         .then(response => response.json())
         .then(data => {
             document.getElementById('absensi').value = data.absensi;
-            document.getElementById('jobdesk_selesai').value = data.jobdesk_selesai;
+            document.getElementById('jobdesk').value = data.jobdesk_selesai;
             document.getElementById('views').value = data.views;
+
+            updateBobotAbsensi();
+            updateBobotJobdesk();
+            updateBobotViews();
+            updateBobotAttitude();
         })
         .catch(error => console.error('Error:', error));
 });
+
+// Fungsi update bobot & skor
+function updateBobotAbsensi() {
+    let value = parseInt(document.getElementById('absensi').value) || 0;
+    let bobot = value < 15 ? 10 : value <= 17 ? 40 : value <= 21 ? 80 : 100;
+    document.getElementById('bobot_absensi').innerText = bobot;
+    updateSkorAbsensi(bobot);
+}
+
+function updateBobotJobdesk() {
+    let value = parseInt(document.getElementById('jobdesk').value) || 0;
+    let bobot = value < 12 ? 10 : value <= 15 ? 40 : value <= 20 ? 80 : 100;
+    document.getElementById('bobot_jobdesk').innerText = bobot;
+    updateSkorJobdesk(bobot);
+}
+
+function updateBobotViews() {
+    let value = parseInt(document.getElementById('views').value) || 0;
+    let bobot = value < 100 ? 10 : value <= 500 ? 40 : value <= 1000 ? 80 : 100;
+    document.getElementById('bobot_views').innerText = bobot;
+    updateSkorViews(bobot);
+}
+
+function updateBobotAttitude() {
+    let bobotMapping = {
+        'kurang': 10,
+        'lumayan': 40,
+        'baik': 80,
+        'sangat baik': 100
+    };
+    let attitude = document.getElementById('attitude').value;
+    let bobot = bobotMapping[attitude] || 0;
+    document.getElementById('bobot_attitude').innerText = bobot;
+    updateSkorAttitude(bobot);
+}
+
+// Fungsi update Skor dan Skor Akhir dengan koma sebagai pemisah desimal
+function updateSkorAbsensi(bobot) {
+    let skor = (25 * bobot) / 100;
+    document.getElementById('skor_absensi').innerText = skor.toLocaleString('id-ID', { minimumFractionDigits: 1 });
+    let skorAkhir = (skor * 25) / 100;
+    document.getElementById('skor_akhir_absensi').innerText = skorAkhir.toLocaleString('id-ID', { minimumFractionDigits: 2 });
+}
+
+function updateSkorJobdesk(bobot) {
+    let skor = (30 * bobot) / 100;
+    document.getElementById('skor_jobdesk').innerText = skor.toLocaleString('id-ID', { minimumFractionDigits: 1 });
+    let skorAkhir = (skor * 30) / 100;
+    document.getElementById('skor_akhir_jobdesk').innerText = skorAkhir.toLocaleString('id-ID', { minimumFractionDigits: 2 });
+}
+
+function updateSkorViews(bobot) {
+    let skor = (25 * bobot) / 100;
+    document.getElementById('skor_views').innerText = skor.toLocaleString('id-ID', { minimumFractionDigits: 1 });
+    let skorAkhir = (skor * 25) / 100;
+    document.getElementById('skor_akhir_views').innerText = skorAkhir.toLocaleString('id-ID', { minimumFractionDigits: 2 });
+}
+
+function updateSkorAttitude(bobot) {
+    let skor = (20 * bobot) / 100;
+    document.getElementById('skor_attitude').innerText = skor.toLocaleString('id-ID', { minimumFractionDigits: 1 });
+    let skorAkhir = (skor * 20) / 100;
+    document.getElementById('skor_akhir_attitude').innerText = skorAkhir.toLocaleString('id-ID', { minimumFractionDigits: 2 });
+}
+
+// Event Listener
+document.getElementById('absensi').addEventListener('input', updateBobotAbsensi);
+document.getElementById('jobdesk').addEventListener('input', updateBobotJobdesk);
+document.getElementById('views').addEventListener('input', updateBobotViews);
+document.getElementById('attitude').addEventListener('change', updateBobotAttitude);
 </script>
 @endsection

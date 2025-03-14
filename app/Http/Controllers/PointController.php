@@ -22,7 +22,8 @@ class PointController extends Controller
          $user = User::findOrFail($request->user_id);
          return view('point.create', compact('user'));
      }
- 
+
+    
 // Mengambil data absensi, jobdesk, dan views berdasarkan user & bulan
 public function getData(Request $request)
 {

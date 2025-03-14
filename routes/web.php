@@ -30,18 +30,18 @@ Route::middleware('auth')->group(function () {
     Route::get('/absensi', function () {
         return view('absensi.absensi');
     })->name('absensi');
-    Route::get('/permintaanperizinan', function () {
-        return view('absensi.perizinan');
-    })->name('permintaan.perizinan');
-
+    
     Route::post('/absensi/datang', [AbsensiController::class, 'datang'])->name('absensi.datang');
     Route::post('/absensi/pulang', [AbsensiController::class, 'pulang'])->name('absensi.pulang');
     Route::post('/absensi/perizinan', [AbsensiController::class, 'storePerizinan'])->name('absensi.perizinan');
+    Route::get('/absensi/perizinan', [AbsensiController::class, 'showPerizinanForm'])->name('absensi.perizinan.form');
 
     Route::get('/profil', [ProfilController::class, 'index'])->name('profil.index');
     Route::get('/profil/edit', [ProfilController::class, 'edit'])->name('profil.edit');
     Route::post('/profil/update', [ProfilController::class, 'update'])->name('profil.update');
 
+    Route::get('/absensipengguna', [AbsensiController::class, 'index'])->name('absensi.indexpengguna');
+    Route::get('/absensi/data', [AbsensiController::class, 'getAbsensi']);
 });
 
 Route::get('/dashboardpimpinan', function () {

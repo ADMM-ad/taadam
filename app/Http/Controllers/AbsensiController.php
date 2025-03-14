@@ -136,17 +136,16 @@ class AbsensiController extends Controller
     {
         $validatedData = $request->validate([
             'kehadiran' => 'required|in:sakit,izin',
-            'bukti' => 'required|file|mimes:pdf,jpg,png|max:5120',
+            'bukti' => 'file|mimes:pdf,jpg,png|max:5120',
         ], [
             'kehadiran.required' => 'Keterangan wajib dipilih.',
-            'bukti.required' => 'Bukti harus diunggah.',
             'bukti.mimes' => 'File bukti harus berupa PDF, JPG, atau PNG.',
             'bukti.max' => 'Ukuran file maksimal 5MB.',
         ]);
 
         $absensi = new Absensi();
         $absensi->user_id = Auth::id(); // ID user yang login
-        $absensi->tanggal = now()->toDateString(); // Tanggal hari ini
+        $absensi->tanggal = $request->tanggal; // Tanggal hari ini
         $absensi->kehadiran = $request->kehadiran; // Keterangan (sakit/izin)
         $absensi->status = 'diproses'; // Status otomatis 'proses'
 
@@ -162,5 +161,74 @@ class AbsensiController extends Controller
 
         return redirect()->back()->with('success', 'Perizinan berhasil diajukan.');
     }
+
+    public function showPerizinanForm(Request $request)
+{
+    $tanggal = $request->query('tanggal', now()->toDateString()); // Default ke hari ini jika tidak ada parameter
+    return view('absensi.perizinan', compact('tanggal'));
+}
+
+
+    public function index()
+    {
+        return view('absensi.indexpengguna');
+    }
+
+    public function getAbsensi()
+    {
+        $userId = Auth::id();
+        $absensi = Absensi::where('user_id', $userId)->get();
+    
+        $events = [];
+        $tanggalAbsensi = $absensi->pluck('tanggal')->toArray();
+    
+        // Cari tanggal pertama kali user absen
+        $firstDate = !empty($tanggalAbsensi) ? min($tanggalAbsensi) : null;
+        $today = now()->toDateString();
+    
+        // Loop data absensi
+        foreach ($absensi as $item) {
+            if ($item->status == 'disetujui') {
+                $color = ($item->kehadiran == 'hadir') ? 'green' :
+                         (($item->kehadiran == 'sakit') ? 'orange' : 'red');
+    
+                $events[] = [
+                    'title' => ucfirst($item->kehadiran),
+                    'start' => $item->tanggal,
+                    'color' => $color
+                ];
+            } elseif ($item->status == 'diproses') {
+                $events[] = [
+                    'title' => 'Sedang menunggu persetujuan',
+                    'start' => $item->tanggal,
+                    'color' => 'blue'
+                ];
+            } elseif ($item->status == 'ditolak') {
+                $events[] = [
+                    'title' => 'Perizinan tidak disetujui',
+                    'start' => $item->tanggal,
+                    'color' => 'gray'
+                ];
+            }
+        }
+    
+        // Tambahkan event "Tidak Absen" untuk hari tanpa data
+        if ($firstDate) {
+            $dateRange = collect();
+            for ($date = strtotime($firstDate); $date <= strtotime($today); $date += 86400) {
+                $formattedDate = date('Y-m-d', $date);
+                if (!in_array($formattedDate, $tanggalAbsensi)) {
+                    $events[] = [
+                        'title' => 'Tidak Absen',
+                        'start' => $formattedDate,
+                        'color' => 'black'
+                    ];
+                }
+            }
+        }
+    
+        return response()->json($events);
+    }
+    
 }
 
