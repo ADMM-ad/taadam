@@ -28,20 +28,20 @@ document.addEventListener('DOMContentLoaded', function () {
         eventContent: function(arg) {
             let eventTitle = document.createElement('div');
             eventTitle.innerText = arg.event.title;
-
+            eventTitle.style.fontWeight = "bold"; // Menonjolkan teks status
+    eventTitle.style.display = "block"; // Memastikan berada dalam satu baris terpisah
+    eventTitle.style.cursor = "pointer"; // Mengubah kursor menjadi pointer untuk interaksi
+    eventTitle.style.padding = "5px"; // Menambahkan padding agar lebih mudah diklik
+    eventTitle.style.borderRadius = "5px"; // Membuat tampilan lebih bagus
             let container = document.createElement('div');
             container.appendChild(eventTitle);
 
             if (arg.event.extendedProps.status !== "disetujui" && arg.event.title !== "Hadir") {
-                let button = document.createElement('button');
-                button.innerText = "Ajukan Perizinan";
-                button.classList.add("btn", "btn-warning", "btn-sm");
-                button.onclick = function() {
-                    let tanggal = arg.event.startStr;
-                    window.location.href = "/absensi/perizinan?tanggal=" + tanggal;
-                };
-                container.appendChild(button);
-            }
+        eventTitle.onclick = function() {
+            let tanggal = arg.event.startStr;
+            window.location.href = "/absensi/perizinan?tanggal=" + tanggal;
+        };
+    }
 
             return { domNodes: [container] };
         }

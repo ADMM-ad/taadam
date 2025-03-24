@@ -3,6 +3,36 @@
 @section('content')
 <div class="container">
     <h2 class="text-center mb-4">Tambah Point KPI untuk {{ $user->name }}</h2>
+    @if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ session('success') }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+@endif
+
+@if(session('error'))  {{-- Tambahkan pengecekan session error --}}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ session('error') }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+@endif
+
+@if($errors->any())
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <ul>
+            @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+@endif
 
     <form action="{{ route('point.store') }}" method="POST">
         @csrf
@@ -25,14 +55,14 @@
             </thead>
             <tbody>
                 <tr>
-                    <td>Absensi (Jumlah Hadir)</td>
+                    <td>Absensi Kehadiran</td>
                     <td><input type="number" name="absensi" id="absensi" class="form-control" required></td>
                     <td><span id="bobot_absensi">0</span></td>
                     <td><span id="skor_absensi">0</span></td>
                     <td><span id="skor_akhir_absensi">0</span></td>
                 </tr>
                 <tr>
-                    <td>Jobdesk (Jumlah)</td>
+                    <td>Jobdesk Selesai</td>
                     <td><input type="number" name="jobdesk" id="jobdesk" class="form-control" required></td>
                     <td><span id="bobot_jobdesk">0</span></td>
                     <td><span id="skor_jobdesk">0</span></td>
@@ -63,6 +93,12 @@
         </table>
 
         <button type="submit" class="btn btn-success">Simpan Point</button>
+        <input type="hidden" name="point_absensi" id="point_absensi">
+<input type="hidden" name="point_jobdesk" id="point_jobdesk">
+<input type="hidden" name="point_hasil" id="point_hasil">
+<input type="hidden" name="point_attitude" id="point_attitude">
+<input type="hidden" name="point_rata_rata" id="point_rata_rata">
+
     </form>
 </div>
 
@@ -124,36 +160,52 @@ function updateBobotAttitude() {
 // Fungsi update Skor dan Skor Akhir dengan koma sebagai pemisah desimal
 function updateSkorAbsensi(bobot) {
     let skor = (25 * bobot) / 100;
-    document.getElementById('skor_absensi').innerText = skor.toLocaleString('id-ID', { minimumFractionDigits: 1 });
+    document.getElementById('skor_absensi').innerText = skor.toLocaleString('id-ID', { minimumFractionDigits: 1 }) + '%';
     let skorAkhir = (skor * 25) / 100;
     document.getElementById('skor_akhir_absensi').innerText = skorAkhir.toLocaleString('id-ID', { minimumFractionDigits: 2 });
+    document.getElementById('point_absensi').value = skorAkhir;
 }
 
 function updateSkorJobdesk(bobot) {
     let skor = (30 * bobot) / 100;
-    document.getElementById('skor_jobdesk').innerText = skor.toLocaleString('id-ID', { minimumFractionDigits: 1 });
+    document.getElementById('skor_jobdesk').innerText = skor.toLocaleString('id-ID', { minimumFractionDigits: 1 }) + '%';
     let skorAkhir = (skor * 30) / 100;
     document.getElementById('skor_akhir_jobdesk').innerText = skorAkhir.toLocaleString('id-ID', { minimumFractionDigits: 2 });
+    document.getElementById('point_jobdesk').value = skorAkhir;
 }
 
 function updateSkorViews(bobot) {
     let skor = (25 * bobot) / 100;
-    document.getElementById('skor_views').innerText = skor.toLocaleString('id-ID', { minimumFractionDigits: 1 });
+    document.getElementById('skor_views').innerText = skor.toLocaleString('id-ID', { minimumFractionDigits: 1 }) + '%';
     let skorAkhir = (skor * 25) / 100;
     document.getElementById('skor_akhir_views').innerText = skorAkhir.toLocaleString('id-ID', { minimumFractionDigits: 2 });
+    document.getElementById('point_hasil').value = skorAkhir;
 }
 
 function updateSkorAttitude(bobot) {
     let skor = (20 * bobot) / 100;
-    document.getElementById('skor_attitude').innerText = skor.toLocaleString('id-ID', { minimumFractionDigits: 1 });
+    document.getElementById('skor_attitude').innerText = skor.toLocaleString('id-ID', { minimumFractionDigits: 1 }) + '%';
     let skorAkhir = (skor * 20) / 100;
     document.getElementById('skor_akhir_attitude').innerText = skorAkhir.toLocaleString('id-ID', { minimumFractionDigits: 2 });
+    document.getElementById('point_attitude').value = skorAkhir;
 }
+// Hitung rata-rata
+function updateRataRata() {
+    let absensi = parseFloat(document.getElementById('point_absensi').value) || 0;
+    let jobdesk = parseFloat(document.getElementById('point_jobdesk').value) || 0;
+    let hasil = parseFloat(document.getElementById('point_hasil').value) || 0;
+    let attitude = parseFloat(document.getElementById('point_attitude').value) || 0;
 
+    let rataRata = (absensi + jobdesk + hasil + attitude) / 4;
+    document.getElementById('point_rata_rata').value = rataRata;
+}
 // Event Listener
 document.getElementById('absensi').addEventListener('input', updateBobotAbsensi);
 document.getElementById('jobdesk').addEventListener('input', updateBobotJobdesk);
 document.getElementById('views').addEventListener('input', updateBobotViews);
 document.getElementById('attitude').addEventListener('change', updateBobotAttitude);
+document.querySelectorAll('input, select').forEach(element => {
+    element.addEventListener('input', updateRataRata);
+});
 </script>
 @endsection

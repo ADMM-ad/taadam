@@ -24,4 +24,14 @@ class Jobdesk extends Model
     {
         return $this->belongsTo(Team::class);
     }
+
+    public function detailJobdesk()
+    {
+        return $this->hasMany(DetailJobdesk::class, 'jobdesk_id');
+    }
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'detail_jobdesk', 'jobdesk_id', 'user_id');
+    }
 }

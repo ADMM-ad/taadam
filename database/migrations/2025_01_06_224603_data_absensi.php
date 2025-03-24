@@ -19,6 +19,7 @@ return new class extends Migration
         $table->time('waktu_terlambat')->nullable();
         $table->time('waktu_pulang')->nullable();
         $table->enum('kehadiran', ['datang', 'hadir', 'sakit', 'izin', 'tanpa_keterangan']);
+        $table->string('pesan')->nullable();
         $table->string('bukti')->nullable();
         $table->enum('status', ['diproses','disetujui', 'ditolak']);
         $table->timestamps();

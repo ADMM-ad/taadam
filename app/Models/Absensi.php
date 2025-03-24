@@ -28,6 +28,7 @@ class Absensi extends Model
         'waktu_terlambat',
         'waktu_pulang',
         'kehadiran',
+        'pesan',
         'bukti',
         'status'
     ];

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use App\Models\Absensi;
+use App\Models\User;
 
 class AbsensiController extends Controller
 {
@@ -135,7 +136,7 @@ class AbsensiController extends Controller
     public function storePerizinan(Request $request)
     {
         $validatedData = $request->validate([
-            'kehadiran' => 'required|in:sakit,izin',
+            'kehadiran' => 'required|in:sakit,izin,datang,hadir',
             'bukti' => 'file|mimes:pdf,jpg,png|max:5120',
         ], [
             'kehadiran.required' => 'Keterangan wajib dipilih.',
@@ -143,11 +144,49 @@ class AbsensiController extends Controller
             'bukti.max' => 'Ukuran file maksimal 5MB.',
         ]);
 
-        $absensi = new Absensi();
-        $absensi->user_id = Auth::id(); // ID user yang login
-        $absensi->tanggal = $request->tanggal; // Tanggal hari ini
-        $absensi->kehadiran = $request->kehadiran; // Keterangan (sakit/izin)
-        $absensi->status = 'diproses'; // Status otomatis 'proses'
+        $userId = Auth::id();
+        $tanggal = $request->tanggal;
+    
+        // Jika memilih "Lupa Absen Pulang"
+    if ($request->kehadiran === 'hadir') {
+        // Cek apakah ada absensi dengan keterangan "datang" pada tanggal tersebut
+        $absensiDatang = Absensi::where('user_id', $userId)
+                                ->where('tanggal', $tanggal)
+                                ->where('kehadiran', 'datang')
+                                ->where('status', 'disetujui')
+                                ->first();
+
+        if ($absensiDatang) {
+            // Jika ada, ubah menjadi "hadir"
+            $absensiDatang->kehadiran = 'hadir';
+            $absensiDatang->status = 'diproses';
+            $absensiDatang->pesan = $request->pesan; // Simpan pesan jika ada
+            $absensiDatang->save();
+
+            return redirect()->back()->with('success', 'Perizinan berhasil diajukan');
+        } else {
+            // Jika tidak ada, kembalikan pesan error
+            return redirect()->back()->with('error', 'Anda belum absen datang.');
+        }
+    }
+
+
+        // Cek apakah data absensi sudah ada untuk tanggal tersebut
+        $absensi = Absensi::where('user_id', $userId)->where('tanggal', $tanggal)->first();
+    
+        if ($absensi) {
+            // Jika sudah ada, update data perizinan
+            $absensi->kehadiran = $request->kehadiran;
+            $absensi->status = 'diproses'; // Reset status ke "diproses"
+        } else {
+            // Jika belum ada, buat entri baru
+            $absensi = new Absensi();
+            $absensi->user_id = $userId;
+            $absensi->tanggal = $tanggal;
+            $absensi->kehadiran = $request->kehadiran;
+            $absensi->pesan = $request->pesan; // Simpan pesan jika ada
+            $absensi->status = 'diproses';
+        }
 
         if ($request->hasFile('bukti')) {
             $file = $request->file('bukti');
@@ -163,10 +202,40 @@ class AbsensiController extends Controller
     }
 
     public function showPerizinanForm(Request $request)
+    {
+        $tanggal = $request->query('tanggal', now()->toDateString()); // Default ke hari ini jika tidak ada parameter
+        return view('absensi.perizinan', compact('tanggal'));
+    }
+
+    public function indexrequest()
+    {
+        $perizinan = Absensi::where('status', 'diproses')->with('user')->get();
+        return view('absensi.requestperizinan', compact('perizinan'));
+    }
+
+// Mengupdate status perizinan (Terima atau Tolak)
+    public function updateStatus($id, $status)
 {
-    $tanggal = $request->query('tanggal', now()->toDateString()); // Default ke hari ini jika tidak ada parameter
-    return view('absensi.perizinan', compact('tanggal'));
+    $izin = Absensi::findOrFail($id);
+    $izin->status = $status;
+    $izin->save();
+
+    return redirect()->back()->with('success', "Permohonan perizinan telah $status.");
 }
+
+
+public function statusPengguna()
+{
+    $user_id = Auth::id();
+    $absensi = Absensi::where('user_id', $user_id)
+                        ->where('status', '!=', 'disetujui')
+                        ->get();
+
+    return view('absensi.statuspengguna', compact('absensi'));
+}
+
+
+
 
 
     public function index()
@@ -189,9 +258,15 @@ class AbsensiController extends Controller
         // Loop data absensi
         foreach ($absensi as $item) {
             if ($item->status == 'disetujui') {
-                $color = ($item->kehadiran == 'hadir') ? 'green' :
-                         (($item->kehadiran == 'sakit') ? 'orange' : 'red');
-    
+                $color = match ($item->kehadiran) {
+                    'hadir' => 'green',
+                    'sakit' => 'yellow',
+                    'izin'  => 'orange',
+                    'datang' => 'blue',
+                    default => 'white', // Warna default jika tidak sesuai dengan yang ditentukan
+                };
+                
+                        
                 $events[] = [
                     'title' => ucfirst($item->kehadiran),
                     'start' => $item->tanggal,
@@ -201,13 +276,13 @@ class AbsensiController extends Controller
                 $events[] = [
                     'title' => 'Sedang menunggu persetujuan',
                     'start' => $item->tanggal,
-                    'color' => 'blue'
+                    'color' => 'gray'
                 ];
             } elseif ($item->status == 'ditolak') {
                 $events[] = [
                     'title' => 'Perizinan tidak disetujui',
                     'start' => $item->tanggal,
-                    'color' => 'gray'
+                    'color' => 'red'
                 ];
             }
         }
@@ -230,5 +305,133 @@ class AbsensiController extends Controller
         return response()->json($events);
     }
     
+
+
+
+    public function indexPimpinan()
+{
+    // Ambil semua user dengan role karyawan dan teamleader
+    $users = User::whereIn('role', ['karyawan', 'teamleader'])->get();
+    return view('absensi.indexpimpinan', compact('users'));
+}
+
+    public function getAbsensiPimpinan(Request $request)
+{
+    $userId = $request->input('user_id'); // Ambil user_id dari request
+    
+    // Jika tidak ada user_id yang dipilih, kembalikan data kosong
+    if (!$userId) {
+        return response()->json([]);
+    }
+
+    $absensi = Absensi::where('user_id', $userId)->get();
+
+    $events = [];
+    $tanggalAbsensi = $absensi->pluck('tanggal')->toArray();
+
+    $firstDate = !empty($tanggalAbsensi) ? min($tanggalAbsensi) : null;
+    $today = now()->toDateString();
+
+    foreach ($absensi as $item) {
+        if ($item->status == 'disetujui') {
+            $color = match ($item->kehadiran) {
+                'hadir' => 'green',
+                'sakit' => 'yellow',
+                'izin'  => 'orange',
+                'datang' => 'blue',
+                default => 'white',
+            };
+
+            $events[] = [
+                'title' => ucfirst($item->kehadiran),
+                'start' => $item->tanggal,
+                'color' => $color
+            ];
+        } elseif ($item->status == 'diproses') {
+            $events[] = [
+                'title' => 'Sedang menunggu persetujuan',
+                'start' => $item->tanggal,
+                'color' => 'gray'
+            ];
+        } elseif ($item->status == 'ditolak') {
+            $events[] = [
+                'title' => 'Perizinan tidak disetujui',
+                'start' => $item->tanggal,
+                'color' => 'red'
+            ];
+        }
+    }
+
+    if ($firstDate) {
+        $dateRange = collect();
+        for ($date = strtotime($firstDate); $date <= strtotime($today); $date += 86400) {
+            $formattedDate = date('Y-m-d', $date);
+            if (!in_array($formattedDate, $tanggalAbsensi)) {
+                $events[] = [
+                    'title' => 'Tidak Absen',
+                    'start' => $formattedDate,
+                    'color' => 'black'
+                ];
+            }
+        }
+    }
+
+    return response()->json($events);
+}
+
+
+
+public function edit(Request $request)
+{
+    $userId = $request->query('user_id');
+    $tanggal = $request->query('tanggal');
+
+    // Cek apakah data absensi sudah ada
+    $absensi = Absensi::where('user_id', $userId)->where('tanggal', $tanggal)->first();
+
+    // Ambil user untuk ditampilkan di form
+    $user = User::find($userId);
+
+    return view('absensi.edit', compact('absensi', 'user', 'tanggal'));
+}
+
+public function update(Request $request)
+{
+    $request->validate([
+        'user_id' => 'required|exists:users,id',
+        'tanggal' => 'required|date',
+        'kehadiran' => 'required|in:hadir,sakit,izin,datang',
+    ]);
+
+    $userId = $request->input('user_id');
+    $tanggal = $request->input('tanggal');
+    $kehadiran = $request->input('kehadiran');
+
+    // Cek apakah data absensi sudah ada
+    $absensi = Absensi::where('user_id', $userId)->where('tanggal', $tanggal)->first();
+
+    if ($absensi) {
+        // Jika sudah ada, update data
+        $absensi->update([
+            'kehadiran' => $kehadiran,
+            'status' => 'disetujui',
+        ]);
+    } else {
+        // Jika belum ada, buat baru
+        Absensi::create([
+            'user_id' => $userId,
+            'tanggal' => $tanggal,
+            'kehadiran' => $kehadiran,
+            'status' => 'disetujui', // Default status
+        ]);
+    }
+
+    return redirect()->route('absensi.indexpimpinan', ['selected_user' => $request->user_id])
+    ->with('success', 'Data absensi berhasil diperbarui.');
+
+
+}
+
+
 }
 

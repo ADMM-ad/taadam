@@ -398,9 +398,9 @@
                 @endif
                 @if(auth()->user()->role == 'pimpinan')
                 <li class="nav-item">
-                  <a href="/laporanperizinan" class="nav-link">
+                  <a href="/request-perizinan" class="nav-link">
                     <i class="fas fa-file-alt"></i>
-                    <p>Laporan Perizinan</p>
+                    <p>Laporan Permintaan Perizinan</p>
                   </a>
                 </li>
                 @endif
@@ -440,7 +440,7 @@
                 @endif
                 @if(auth()->user()->role == 'pimpinan')
                 <li class="nav-item">
-                  <a href="/laporanabsensi" class="nav-link">
+                  <a href="/absensipimpinan" class="nav-link">
                     <i class="fas fa-file-alt"></i>
                     <p>Laporan Absensi</p>
                   </a>
@@ -460,13 +460,13 @@
               <ul class="nav nav-treeview">
                 @if(auth()->user()->role == 'teamleader' || auth()->user()->role == 'karyawan')
                 <li class="nav-item">
-                  <a href="/jobdesk/ditugaskan" class="nav-link">
+                  <a href="/jobdesk/pengguna" class="nav-link">
                     <i class="fas fa-tasks"></i>
                     <p>Ditugaskan</p>
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a href="/jobdesk/selesai" class="nav-link">
+                  <a href="/jobdesk/pengguna/selesai" class="nav-link">
                     <i class="fas fa-check"></i>
                     <p>Selesai</p>
                   </a>
@@ -484,11 +484,17 @@
                 <li class="nav-item">
                   <a href="/jobdesk/create" class="nav-link">
                     <i class="fas fa-file-alt"></i>
-                    <p>Tambah Jobdesk</p>
+                    <p>Tambah Jobdesk Team</p>
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a href="" class="nav-link">
+                  <a href="/jobdesk/createindividu" class="nav-link">
+                    <i class="fas fa-file-alt"></i>
+                    <p>Tambah Jobdesk Individu</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="/jobdesk/pimpinan" class="nav-link">
                     <i class="fas fa-users"></i>
                     <p>Laporan Jobdesk</p>
                   </a>
@@ -517,7 +523,7 @@
               <ul class="nav nav-treeview">
                 @if(auth()->user()->role == 'teamleader' || auth()->user()->role == 'karyawan')
                 <li class="nav-item">
-                  <a href="/point" class="nav-link">
+                  <a href="/cekpoint" class="nav-link">
                     <i class="fas fa-search"></i>
                     <p>Cek Point</p>
                   </a>
@@ -531,7 +537,7 @@
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a href="/kpi/laporan" class="nav-link">
+                  <a href="/laporanpoint" class="nav-link">
                     <i class="fas fa-file-invoice"></i>
                     <p>Laporan Point</p>
                   </a>
@@ -553,6 +559,10 @@
   <script src="{{ asset('template/plugins/jquery/jquery.min.js') }}"></script>
   <script src="{{ asset('template/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
   <script src="{{ asset('template/dist/js/adminlte.min.js') }}"></script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
   @yield('scripts')
 </body>

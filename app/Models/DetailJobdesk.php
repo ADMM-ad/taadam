@@ -15,13 +15,13 @@ class DetailJobdesk extends Model
         'jobdesk_id'
     ];
 
-    public function user()
+   public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function jobdesk()
     {
-        return $this->belongsTo(Jobdesk::class);
+        return $this->belongsTo(Jobdesk::class, 'jobdesk_id');
     }
 }

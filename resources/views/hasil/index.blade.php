@@ -78,7 +78,7 @@
             <tr>
                 <td>{{ $loop->iteration }}</td>
                 <td>{{ $data->team->nama_team }}</td>
-                <td>{{ $data->bulan }}</td>
+                <td>{{ \Carbon\Carbon::parse($data->bulan)->translatedFormat('F Y') }}</td>
                 <td>{{ $data->views }}</td>
                 <td>
                     <a href="{{ route('hasil.edit', $data->id) }}" class="btn btn-warning btn-sm">Edit</a>

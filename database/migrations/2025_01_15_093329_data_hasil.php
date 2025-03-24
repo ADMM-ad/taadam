@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('jobdesk_hasil', function (Blueprint $table) {
             $table->id();
             $table->foreignId('team_id')->constrained('team')->onDelete('cascade');
-            $table->string('bulan', 7);
+            $table->date('bulan');
             $table->string('views');
             $table->timestamps();
         });

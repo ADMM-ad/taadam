@@ -11,17 +11,20 @@ class PointKPI extends Model
 
     protected $table = 'point_kpi';
     protected $fillable = [
-        'detail_team_id',
-        'absensi_id',
-        'jobdesk_id',
-        'jobdesk_hasil_id',
+        'user_id',
+       
         'bulan',
         'point_absensi',
         'point_jobdesk',
         'point_hasil',
         'point_attitude',
-        'point_keseluruhan'
+        'point_rata_rata'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     public function detailTeam()
     {

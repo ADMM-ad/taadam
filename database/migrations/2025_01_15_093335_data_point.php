@@ -18,12 +18,12 @@ return new class extends Migration
             $table->foreignId('absensi_id')->constrained('absensi')->onDelete('cascade');
             $table->foreignId('jobdesk_id')->constrained('detail_jobdesk')->onDelete('cascade');
             $table->foreignId('jobdesk_hasil_id')->constrained('jobdesk_hasil')->onDelete('cascade');
-            $table->string('bulan');
+            $table->date('bulan');
             $table->float('point_absensi');
             $table->float('point_jobdesk');
             $table->float('point_hasil');
             $table->float('point_attitude');
-            $table->float('point_keseluruhan');
+            $table->float('point_rata_rata');
             $table->timestamps();
         });
     }

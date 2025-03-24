@@ -8,36 +8,34 @@ use Illuminate\Http\Request;
 class HasilController extends Controller
 {
     public function index(Request $request)
-{
-    $query = JobdeskHasil::query();
+    {
+        $query = JobdeskHasil::query();
 
-    // Filter Tahun (gunakan LIKE karena bulan disimpan sebagai string)
-    if ($request->filled('tahun')) {
-        $query->where('bulan', 'LIKE', $request->tahun . '%');
+        // Filter Tahun
+        if ($request->filled('tahun')) {
+            $query->whereYear('bulan', $request->tahun);
+        }
+
+        // Filter Nama Team
+        if ($request->filled('nama_team')) {
+            $query->whereHas('team', function ($q) use ($request) {
+                $q->where('nama_team', $request->nama_team);
+            });
+        }
+
+        // Ambil daftar tahun unik dari kolom bulan
+        $tahunOptions = JobdeskHasil::selectRaw('YEAR(bulan) as tahun')
+            ->distinct()
+            ->orderBy('tahun', 'desc')
+            ->pluck('tahun');
+
+        // Ambil daftar nama tim
+        $teamOptions = Team::select('nama_team')->distinct()->get();
+
+        $jobdeskHasils = $query->orderBy('bulan', 'asc')->get();
+
+        return view('hasil.index', compact('jobdeskHasils', 'tahunOptions', 'teamOptions'));
     }
-
-    // Filter Nama Team
-    if ($request->filled('nama_team')) {
-        $query->whereHas('team', function ($q) use ($request) {
-            $q->where('nama_team', $request->nama_team);
-        });
-    }
-
-    // Ambil daftar tahun unik dari kolom bulan
-    $tahunOptions = JobdeskHasil::selectRaw('SUBSTRING(bulan, 1, 4) as tahun')
-        ->distinct()
-        ->orderBy('tahun', 'desc')
-        ->pluck('tahun');
-
-    // Ambil daftar nama tim
-    $teamOptions = Team::select('nama_team')->distinct()->get();
-
-    $jobdeskHasils = $query->orderBy('bulan', 'asc')->get();
-
-    return view('hasil.index', compact('jobdeskHasils', 'tahunOptions', 'teamOptions'));
-}
-
-
 
     public function create()
     {
@@ -49,19 +47,26 @@ class HasilController extends Controller
     {
         $request->validate([
             'team_id' => 'required|exists:team,id',
-            'bulan' => 'required|string|max:7',
+            'bulan' => 'required|date_format:Y-m', // Pastikan format YYYY-MM
             'views' => 'required|string',
         ]);
-    
-    // Cek apakah sudah ada data dengan team_id dan bulan yang sama
-    $existingData = JobdeskHasil::where('team_id', $request->team_id)
-    ->where('bulan', $request->bulan)
-    ->exists();
 
-    if ($existingData) {
-    return redirect()->back()->withErrors(['error' => 'Data sudah ada yang mengisi'])->withInput();
-    }
-        JobdeskHasil::create($request->all());
+        // Cek apakah sudah ada data dengan team_id dan bulan yang sama
+        $existingData = JobdeskHasil::where('team_id', $request->team_id)
+            ->whereYear('bulan', date('Y', strtotime($request->bulan)))
+            ->whereMonth('bulan', date('m', strtotime($request->bulan)))
+            ->exists();
+
+        if ($existingData) {
+            return redirect()->back()->withErrors(['error' => 'Data sudah ada yang mengisi'])->withInput();
+        }
+
+        // Simpan data
+        JobdeskHasil::create([
+            'team_id' => $request->team_id,
+            'bulan' => date('Y-m-01', strtotime($request->bulan)), // Simpan sebagai format tanggal
+            'views' => $request->views,
+        ]);
 
         return redirect()->route('hasil.index')->with('success', 'Data berhasil ditambahkan.');
     }
@@ -76,21 +81,26 @@ class HasilController extends Controller
     {
         $request->validate([
             'team_id' => 'required|exists:team,id',
-            'bulan' => 'required|string|max:7',
+            'bulan' => 'required|date_format:Y-m',
             'views' => 'required|string',
         ]);
 
-// Cek apakah data sudah ada, kecuali data yang sedang diupdate
-$existingData = JobdeskHasil::where('team_id', $request->team_id)
-->where('bulan', $request->bulan)
-->where('id', '!=', $jobdeskHasil->id)
-->exists();
+        // Cek apakah data sudah ada, kecuali data yang sedang diupdate
+        $existingData = JobdeskHasil::where('team_id', $request->team_id)
+            ->whereYear('bulan', date('Y', strtotime($request->bulan)))
+            ->whereMonth('bulan', date('m', strtotime($request->bulan)))
+            ->where('id', '!=', $jobdeskHasil->id)
+            ->exists();
 
-if ($existingData) {
-return redirect()->back()->withErrors(['error' => 'Data sudah ada yang mengisi'])->withInput();
-}
+        if ($existingData) {
+            return redirect()->back()->withErrors(['error' => 'Data sudah ada yang mengisi'])->withInput();
+        }
 
-        $jobdeskHasil->update($request->all());
+        $jobdeskHasil->update([
+            'team_id' => $request->team_id,
+            'bulan' => date('Y-m-01', strtotime($request->bulan)), // Simpan dengan tanggal awal bulan
+            'views' => $request->views,
+        ]);
 
         return redirect()->route('hasil.index')->with('success', 'Data berhasil diperbarui.');
     }
