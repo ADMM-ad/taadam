@@ -12,7 +12,6 @@ class PointKPI extends Model
     protected $table = 'point_kpi';
     protected $fillable = [
         'user_id',
-       
         'bulan',
         'point_absensi',
         'point_jobdesk',

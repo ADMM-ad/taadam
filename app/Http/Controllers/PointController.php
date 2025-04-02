@@ -6,6 +6,7 @@ use App\Models\Absensi;
 use App\Models\DetailJobdesk;
 use App\Models\JobdeskHasil;
 use App\Models\PointKPI;
+use App\Models\DetailTeam;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
@@ -14,9 +15,34 @@ class PointController extends Controller
      // Menampilkan daftar user selain pimpinan
      public function index()
      {
-         $users = User::where('role', '!=', 'pimpinan')->get();
+        $users = User::where('role', '!=', 'pimpinan')
+        ->where('status', 'aktif') // Menampilkan hanya pengguna dengan status "aktif"
+        ->get();
          return view('point.index', compact('users'));
      }
+
+
+     public function indexteam()
+     {
+         // Ambil user yang sedang login
+         $loggedInUser = auth()->user();
+     
+         // Ambil team_id yang dimiliki oleh user yang sedang login
+         $teamIds = DetailTeam::where('user_id', $loggedInUser->id)->pluck('team_id');
+     
+         // Ambil user dengan role 'karyawan' yang memiliki team_id yang sama dengan user yang login
+         $users = User::where('role', 'karyawan')
+                        ->where('status', 'aktif')
+                      ->whereIn('id', function ($query) use ($teamIds) {
+                          $query->select('user_id')
+                                ->from('detail_team')
+                                ->whereIn('team_id', $teamIds);
+                      })
+                      ->get();
+     
+         return view('point.indexteam', compact('users'));
+     }
+     
  
      // Menampilkan form create berdasarkan user_id
      public function create(Request $request)
@@ -117,5 +143,31 @@ public function indexPimpinan()
 
     return view('point.indexpimpinan', compact('points'));
 }
+
+public function indexteamleader()
+{
+    // Ambil user yang sedang login
+    $loggedInUser = auth()->user();
+
+    // Ambil team_id yang dimiliki oleh user yang sedang login
+    $teamIds = DetailTeam::where('user_id', $loggedInUser->id)->pluck('team_id');
+
+    // Ambil user_id dari user yang memiliki role 'karyawan' dan berada di team yang sama
+    $userIds = User::where('role', 'karyawan')
+                   ->whereIn('id', function ($query) use ($teamIds) {
+                       $query->select('user_id')
+                             ->from('detail_team')
+                             ->whereIn('team_id', $teamIds);
+                   })
+                   ->pluck('id');
+
+    // Ambil data PointKpi hanya untuk user yang sesuai
+    $points = PointKpi::with('user')
+                      ->whereIn('user_id', $userIds)
+                      ->get();
+
+    return view('point.indexteamleader', compact('points'));
+}
+
 
 }

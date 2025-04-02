@@ -20,31 +20,33 @@ class ProfilController extends Controller
         return view('profil.edit', compact('user'));
     }
     public function update(Request $request)
-{
-    $user = Auth::user(); // Mendapatkan data user yang sedang login
-
-    // Validasi input
-    $request->validate([
-        'name' => 'nullable|string|max:255',
-        'email' => 'required|string|unique:users,email,' . $user->id,
-        'no_hp' => 'nullable|string|max:15',
-        'password' => 'nullable|string|min:8|confirmed',
-    ]);
-
-    // Update data user
-    $user->update([
-        'name' => $request->name,
-        'email' => $request->email,
-        'no_hp' => $request->no_hp,
-    ]);
-
-    // Jika password tidak kosong, maka diperbarui
-    if ($request->password) {
-        $user->update([
-            'password' => bcrypt($request->password),
+    {
+        $user = Auth::user(); // Mendapatkan data user yang sedang login
+    
+        // Validasi input
+        $request->validate([
+            'name' => 'nullable|string|max:255',
+            'username' => 'required|string|unique:users,username,' . $user->id, // Ganti email menjadi username
+            'no_hp' => 'nullable|string|max:15',
+            'password' => 'nullable|string|min:8|confirmed',
         ]);
+    
+        // Update data user
+        $user->update([
+            'name' => $request->name,
+            'username' => $request->username, // Ganti email menjadi username
+            'no_hp' => $request->no_hp,
+            'status' => 'aktif',
+        ]);
+    
+        // Jika password tidak kosong, maka diperbarui
+        if ($request->password) {
+            $user->update([
+                'password' => bcrypt($request->password),
+            ]);
+        }
+    
+        return redirect()->route('profil.index')->with('success', 'Profil berhasil diperbarui!');
     }
-
-    return redirect()->route('profil.index')->with('success', 'Profil berhasil diperbarui!');
-}
+    
 }

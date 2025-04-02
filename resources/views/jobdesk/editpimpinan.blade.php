@@ -47,6 +47,10 @@
         </div>
 
         <button type="submit" class="btn btn-primary">Update</button>
+        <a href="javascript:history.back()" class="btn btn-outline-secondary">
+    <i class="bi bi-arrow-left"></i> Kembali
+</a>
+
     </form>
     <div class="mt-4">
         <h5>Pengguna dalam Jobdesk Ini:</h5>

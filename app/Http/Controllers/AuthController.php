@@ -23,20 +23,24 @@ class AuthController extends Controller
     {
         // Validasi input
         $this->validate($request, [
-            'email' => 'required|string',
+            'username' => 'required|string', // Ganti email menjadi username
             'password' => 'required|string',
         ]);
-
-        // Tambahkan domain ke email jika diperlukan
+    
+        // Kredensial login
         $credentials = [
-            'email' => $request->email,
+            'username' => $request->username, // Ganti email menjadi username
             'password' => $request->password,
         ];
-
+    
         // Cek kredensial dan autentikasi pengguna
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
-
+    
+            if ($user->status == 'tidakaktif') {
+                return redirect()->route('profil.edit')->with('message', 'Silahkan mengubah Username dan Password untuk mengaktifkan akun');
+            }
+    
             // Redirect berdasarkan role
             if ($user->role == 'pimpinan') {
                 return redirect()->route('dashboardpimpinan');
@@ -46,35 +50,34 @@ class AuthController extends Controller
                 return redirect()->route('dashboardkaryawan');
             }
         }
-
+    
         // Jika gagal login
-        return redirect()->back()->withErrors(['email' => 'Email atau password salah']);
+        return redirect()->back()->withErrors(['username' => 'Username atau password salah']); // Ganti email menjadi username
     }
-
+    
     public function register(Request $request)
     {
         // Validasi input
         $this->validate($request, [
             'name' => 'nullable|string|max:255', // Name opsional
-            'email' => 'required|string|max:255|unique:users',
+            'username' => 'required|string|max:255|unique:users', // Ganti email menjadi username
             'password' => 'required|string|min:8|confirmed',
-            'role' => 'required|in:pimpinan,teamleader,karyawan',
+            'role' => 'required|in:karyawan,teamleader,pimpinan',
         ]);
-
-        // Tambahkan domain ke email jika diperlukan
-       
+    
         // Buat user baru
         $user = User::create([
             'name' => $request->name,
-            'email' => $request->email, // Email dengan domain
+            'username' => $request->username, // Ganti email menjadi username
             'password' => Hash::make($request->password),
             'role' => $request->role,
             'no_hp' => $request->no_hp, // No HP opsional
+            'status' => 'tidakaktif',
         ]);
-
+    
         return redirect()->route('register')->with('success', 'Akun berhasil ditambahkan.');
     }
-
+    
     public function logout(Request $request)
     {
         Auth::logout(); // Logout pengguna saat ini
@@ -84,5 +87,31 @@ class AuthController extends Controller
         $request->session()->regenerateToken(); // Regenerasi token sesi
 
         return redirect('/login'); // Redirect ke halaman login
+    }
+
+    public function checkUsername(Request $request)
+    {
+        $user = User::where('username', $request->username)->first();
+
+        if ($user) {
+            return response()->json(['success' => true]);
+        } else {
+            return response()->json(['success' => false]);
+        }
+    }
+
+    // Simpan password baru
+    public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'username' => 'required|exists:users,username',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $user = User::where('username', $request->username)->first();
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        return redirect()->route('login')->with('success', 'Password berhasil diubah!');
     }
 }

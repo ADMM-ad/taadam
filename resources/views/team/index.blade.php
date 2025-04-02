@@ -25,6 +25,7 @@
         @endif
 
     <h1>Daftar Team</h1>
+    IP Address Anda: {{ $ipAddress }}
     <a href="{{ route('team.create') }}" class="btn btn-primary mb-3">Tambah Team</a>
     <table class="table table-bordered">
         <thead>

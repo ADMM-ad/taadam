@@ -13,7 +13,9 @@ class AnggotateamController extends Controller
     public function index()
     {
         // Ambil semua tim dan hitung jumlah anggota di setiap tim
-        $teams = Team::withCount('detailTeams')->get();
+        $teams = Team::withCount('detailTeams')
+             ->where('nama_team', '!=', 'Individu')
+             ->get();
 
         return view('anggotateam.index', compact('teams'));
     }
@@ -30,7 +32,10 @@ class AnggotateamController extends Controller
     // Menampilkan form tambah anggota
     public function create()
     {
-        $users = User::whereIn('role', ['karyawan', 'teamleader'])->get();
+        $users = User::whereIn('role', ['karyawan', 'teamleader'])
+             ->where('status', 'aktif')
+             ->get();
+
         $teams = Team::all();
 
         return view('anggotateam.create', compact('users', 'teams'));

@@ -8,15 +8,16 @@ class TeamController extends Controller
 {
 
 
-    public function index()
+    public function index(Request $request)
     {
         $teams = Team::all();
-        return view('team.index', compact('teams'));
+        $ipAddress = $request->ip();
+        return view('team.index', compact('teams','ipAddress'));
     }
 
     public function create()
     {
-        $userIp = request()->ip();  
+       
         return view('team.create');
     }
 

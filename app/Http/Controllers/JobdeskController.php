@@ -66,11 +66,31 @@ class JobdeskController extends Controller
         return response()->json($users);
     }
     
+    public function createteamleader()
+    {
+        // Ambil user yang sedang login
+        $loggedInUser = auth()->user();
+    
+        // Ambil team yang terkait dengan user yang sedang login
+        $teams = Team::whereIn('id', function ($query) use ($loggedInUser) {
+            $query->select('team_id')
+                  ->from('detail_team')
+                  ->where('user_id', $loggedInUser->id);
+        })->get();
+    
+        return view('jobdesk.createteamleader', compact('teams'));
+    }    
+
+
+
 
 //individu
 public function createindividu()
 {
-    $users = User::where('role', '!=', 'pimpinan')->get();
+    $users = User::where('role', '!=', 'pimpinan')
+             ->where('status', 'aktif') // Hanya user dengan status aktif
+             ->get();
+
     return view('jobdesk.createindividu', compact('users'));
 }
 
@@ -162,6 +182,25 @@ public function storeindividu(Request $request)
     }
 
 
+
+//ini unutk laporan teamleader
+public function indexteamleader()
+{
+    // Ambil user yang sedang login
+    $loggedInUser = auth()->user();
+
+    // Ambil team_id yang dimiliki oleh user yang sedang login
+    $teamIds = DetailTeam::where('user_id', $loggedInUser->id)->pluck('team_id');
+
+    // Ambil jobdesk yang memiliki team_id yang sama dengan user yang login
+    $jobdesks = Jobdesk::with('team')
+                ->whereIn('team_id', $teamIds)
+                ->get();
+
+    return view('jobdesk.indexteamleader', compact('jobdesks'));
+}
+
+
 //ini untuk laporan pimpinan
 public function indexpimpinan()
 {
@@ -221,7 +260,18 @@ public function updatepimpinan(Request $request, $id)
         'status' => $request->status,
     ]);
 
-    return redirect()->route('jobdesk.indexpimpinan')->with('success', 'Data berhasil diperbarui');
+    $loggedInUser = auth()->user();
+
+    // Lakukan proses update jobdesk di sini (sesuai kebutuhan)
+
+    // Redirect berdasarkan role
+    if ($loggedInUser->role === 'teamleader') {
+        return redirect()->route('jobdesk.indexteamleader')
+            ->with('success', 'Data berhasil diperbarui.');
+    } else if ($loggedInUser->role === 'pimpinan') {
+        return redirect()->route('jobdesk.indexpimpinan')
+            ->with('success', 'Data berhasil diperbarui.');
+    }
 }
 
 

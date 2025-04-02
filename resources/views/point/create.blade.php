@@ -93,6 +93,11 @@
         </table>
 
         <button type="submit" class="btn btn-success">Simpan Point</button>
+        <a href="javascript:history.go(-2);" class="btn btn-outline-secondary">
+    <i class="bi bi-arrow-left"></i> Kembali 
+</a>
+
+
         <input type="hidden" name="point_absensi" id="point_absensi">
 <input type="hidden" name="point_jobdesk" id="point_jobdesk">
 <input type="hidden" name="point_hasil" id="point_hasil">

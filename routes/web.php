@@ -22,6 +22,14 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 
+Route::get('/lupa-password', function () {
+    return view('auth.lupapasword');
+})->name('forgot.password');
+
+Route::post('/check-username', [AuthController::class, 'checkUsername'])->name('check.username');
+Route::post('/update-password', [AuthController::class, 'updatePassword'])->name('update.password');
+
+
 Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
 
@@ -49,6 +57,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/absensipimpinan', [AbsensiController::class, 'indexPimpinan'])->name('absensi.indexpimpinan');
     Route::get('/absensi/datapimpinan', [AbsensiController::class, 'getAbsensiPimpinan']);
 
+    Route::get('/absensiteam', [AbsensiController::class, 'indexTeamleader'])->name('absensi.indexteamleader');
+
     Route::get('/absensi/edit', [AbsensiController::class, 'edit'])->name('absensi.edit');
     Route::post('/absensi/update', [AbsensiController::class, 'update'])->name('absensi.update');
 
@@ -75,8 +85,11 @@ Route::get('/dashboardkaryawan', function () {
 //User
 Route::get('/userkaryawan', [UserController::class, 'indexKaryawan'])->name('users.indexkaryawan');
 Route::delete('/userkaryawan/{id}', [UserController::class, 'destroy'])->name('users.destroy');
+Route::patch('/users/{id}/change-status', [UserController::class, 'changeStatus'])->name('users.changeStatus');
+
 Route::get('/userteamleader', [UserController::class, 'indexTeamleader'])->name('users.indexteamleader');
 Route::delete('/userteamleader/{id}', [UserController::class, 'destroytl'])->name('users.destroytl');
+Route::patch('teamleader/{id}/status', [UserController::class, 'changeStatustl'])->name('users.changeStatustl');
 
 //Team
 Route::get('/team', [TeamController::class, 'index'])->name('team.index');
@@ -114,6 +127,10 @@ Route::get('/jobdesk/editkelolajob/{id}', [JobdeskController::class, 'editkelola
 
 Route::delete('/jobdesk/{jobdesk_id}/removeUser/{user_id}', [JobdeskController::class, 'removeUser'])->name('jobdesk.removeUser');
 Route::post('/jobdesk/{jobdesk}/addUser', [JobdeskController::class, 'addUser'])->name('jobdesk.addUser');
+//jobdesk yg dari teamleadaer
+Route::get('/jobdesk/createteam', [JobdeskController::class, 'createteamleader'])->name('jobdesk.createteamleader');
+Route::get('/jobdesk/team', [JobdeskController::class, 'indexteamleader'])->name('jobdesk.indexteamleader');
+
 
 
 // Hasil
@@ -131,4 +148,8 @@ Route::get('/point/get-data', [PointController::class, 'getData']);
 Route::post('/point/store', [PointController::class, 'store'])->name('point.store');
 Route::get('/cekpoint', [PointController::class, 'indexPengguna'])->name('point.indexpengguna');
 Route::get('/laporanpoint', [PointController::class, 'indexPimpinan'])->name('point.indexpimpinan');
+Route::get('/pointteam', [PointController::class, 'indexteam'])->name('point.indexteam');
+Route::get('/laporanpointteam', [PointController::class, 'indexteamleader'])->name('point.indexteamleader');
+
+
 

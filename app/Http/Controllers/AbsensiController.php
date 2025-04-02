@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use App\Models\Absensi;
 use App\Models\User;
+use App\Models\DetailTeam;
 
 class AbsensiController extends Controller
 {
@@ -308,6 +309,25 @@ public function statusPengguna()
 
 
 
+    public function indexTeamleader()
+    {
+        // Ambil user yang sedang login
+        $loggedInUser = auth()->user();
+    
+        // Pastikan user yang login memiliki tim
+        $teamIds = DetailTeam::where('user_id', $loggedInUser->id)->pluck('team_id');
+    
+        // Ambil user dengan role 'karyawan' yang berada di team yang sama
+        $users = User::where('role', 'karyawan')
+                    ->whereIn('id', function ($query) use ($teamIds) {
+                        $query->select('user_id')
+                              ->from('detail_team')
+                              ->whereIn('team_id', $teamIds);
+                    })->get();
+    
+        return view('absensi.indexteamleader', compact('users'));
+    }
+
     public function indexPimpinan()
 {
     // Ambil semua user dengan role karyawan dan teamleader
@@ -426,8 +446,18 @@ public function update(Request $request)
         ]);
     }
 
-    return redirect()->route('absensi.indexpimpinan', ['selected_user' => $request->user_id])
-    ->with('success', 'Data absensi berhasil diperbarui.');
+    $loggedInUser = auth()->user();
+
+    // Lakukan proses update absensi di sini (sesuai dengan kebutuhan)
+
+    // Redirect berdasarkan role
+    if ($loggedInUser->role === 'teamleader') {
+        return redirect()->route('absensi.indexteamleader', ['selected_user' => $request->user_id])
+            ->with('success', 'Data absensi berhasil diperbarui.');
+    } else if ($loggedInUser->role === 'pimpinan') {
+        return redirect()->route('absensi.indexpimpinan', ['selected_user' => $request->user_id])
+            ->with('success', 'Data absensi berhasil diperbarui.');
+    }
 
 
 }
