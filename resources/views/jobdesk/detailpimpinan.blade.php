@@ -1,40 +1,64 @@
 @extends('masterlayout')
 
 @section('content')
-<div class="container">
-    <h2>Detail Jobdesk</h2>
+<div class="container mt-2">
+<div class="card card-primary card-outline mt-3 mb-3 ms-3 me-3 p-3"  style="border-color: #31beb4;">
+        <div class="card-header">
+            <h3 class="card-title">
+                Detail Jobdesk
+            </h3>
+        </div>
+        <div class="card-body">
+        <div class="row mb-3">
+                <div class="col-md-4 font-weight-bold ">Nama Team : </div>
+                <div class="col-md-8">{{ $jobdesk->team ? $jobdesk->team->nama_team : 'Individu' }}</div>
+            </div>
 
-    <table class="table table-bordered">
-        <tr>
-            <th>Nama Team</th>
-            <td>{{ $jobdesk->team ? $jobdesk->team->nama_team : 'Individu' }}</td>
-        </tr>
-        <tr>
-            <th>Nama Pekerjaan</th>
-            <td>{{ $jobdesk->nama_pekerjaan }}</td>
-        </tr>
-        <tr>
-            <th>Deskripsi</th>
-            <td>{{ $jobdesk->deskripsi }}</td>
-        </tr>
-        <tr>
-            <th>Tenggat Waktu</th>
-            <td>{{ $jobdesk->tenggat_waktu }}</td>
-        </tr>
-        <tr>
-            <th>Nama Pengguna Yang terlibat</th>
-        </tr>
-        @foreach($users as $user)
-            <tr>
-                <td>{{ $user->name }}</td>
-            </tr>
-        @endforeach
-        <tr>
-            <th>Status</th>
-            <td>{{ ucfirst($jobdesk->status) }}</td>
-        </tr>
-    </table>
+            <div class="row mb-3">
+                <div class="col-md-4 font-weight-bold ">Nama Pekerjaan : </div>
+                <div class="col-md-8">{{ $jobdesk->nama_pekerjaan }}</div>
+            </div>
 
-    <a href="{{ route('jobdesk.indexpimpinan') }}" class="btn btn-secondary">Kembali</a>
+            <div class="row mb-3">
+                <div class="col-md-4 font-weight-bold ">Deskripsi : </div>
+                <div class="col-md-8">{{ $jobdesk->deskripsi }}</div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-4 font-weight-bold ">Tenggat Waktu : </div>
+                <div class="col-md-8">{{ $jobdesk->tenggat_waktu }}</div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-4 font-weight-bold ">Nama Pengguna yang Terlibat : </div>
+                <div class="col-md-8">
+                    <ul class="list-unstyled mb-0">
+                        @foreach($users as $user)
+                        <li >
+    <i class="fas fa-user" style="color: #31beb4; margin-right: 8px;"></i> {{ $user->name }}
+</li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-4 font-weight-bold ">Status : </div>
+                <div class="col-md-8">
+                    <span class="badge {{ $jobdesk->status == 'ditugaskan' ? 'badge-danger' : 'badge-success' }}">
+                        {{ ucfirst($jobdesk->status) }}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+</div>
+<a href="{{ Auth::user()->role == 'pimpinan' ? route('jobdesk.indexpimpinan') : route('jobdesk.indexteamleader') }}" class="btn btn-secondary">
+    Kembali
+</a>
+
+</div>
+
+    
 </div>
 @endsection

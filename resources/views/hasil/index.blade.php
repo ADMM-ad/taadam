@@ -1,37 +1,56 @@
 @extends('masterlayout')
 
 @section('content')
-<div class="container mt-5">
-    <h1>Daftar Jobdesk Hasil</h1>
+<div class="container mt-2">
+    
+@if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show d-flex align-items-center" role="alert">
+        <i class="fas fa-check-circle mr-2"></i>  <!-- Ikon untuk sukses -->
+        {{ session('success') }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+@endif
 
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ session('success') }}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-    @endif
-
-    @if($errors->any())
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <ul>
-                @foreach($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-    @endif
+@if($errors->any())
+    <div class="alert alert-danger alert-dismissible fade show d-flex align-items-center" role="alert">
+        <i class="fas fa-exclamation-triangle mr-2"></i>  <!-- Ikon untuk error -->
+        <ul class="mb-0">
+            @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+@endif
+    <div class="card card-warning collapsed-card mt-2">
+    <div class="card-header">
+    <h3 class="card-title">
+    <i class="bi bi-megaphone-fill"></i>
+    Instructions
+</h3>
+        <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i>
+                  </button>
+                  <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+    </div>
+    <div class="card-body">
+        The body of the card
+    </div>
+</div>
 
     <!-- Form Filter -->
-    <form method="GET" action="{{ route('hasil.index') }}" class="mb-3">
+    <form method="GET" action="{{ route('hasil.index') }}" class="mb-2">
         <div class="row">
             <!-- Filter Tahun -->
-            <div class="col-md-4">
-                <label for="tahun">Filter Tahun:</label>
+            <div class="col-md-5">
+                <label for="tahun">Filter Tahun</label>
                 <select name="tahun" class="form-control">
                     <option value="">Semua Tahun</option>
                     @foreach($tahunOptions as $tahun)
@@ -41,8 +60,8 @@
             </div>
 
             <!-- Filter Nama Team -->
-            <div class="col-md-4">
-                <label for="nama_team">Filter Nama Team:</label>
+            <div class="col-md-5">
+                <label for="nama_team">Filter Nama Team</label>
                 <select name="nama_team" class="form-control">
                     <option value="">Semua Team</option>
                     @foreach($teamOptions as $team)
@@ -54,16 +73,25 @@
             </div>
 
             <!-- Tombol Submit -->
-            <div class="col-md-4 d-flex align-items-end">
+            <div class="col-md-2 d-flex justify-content-end align-items-end mt-2 gap-2">
                 <button type="submit" class="btn btn-primary">Filter</button>
                 <a href="{{ route('hasil.index') }}" class="btn btn-secondary ml-2">Reset</a>
             </div>
         </div>
     </form>
 
-    <a href="{{ route('hasil.create') }}" class="btn btn-primary mb-3">Tambah Data</a>
+    <a href="{{ route('hasil.create') }}" class="btn btn-success mb-2 ">Tambah Data</a>
 
-    <table class="table table-bordered">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Daftar Hasil</h3>
+                </div>
+
+                <div class="card-body table-responsive p-0">
+  
+                <table class="table table-hover table-bordered text-nowrap">
         <thead>
             <tr>
                 <th>No</th>
@@ -88,6 +116,15 @@
             @endforeach
         </tbody>
     </table>
+
+    <div class="d-flex justify-content-end mt-3">
+                        {{ $jobdeskHasils->withQueryString()->links('pagination::bootstrap-4') }}
+                    </div>
+   
+    </div>
+    </div>
+    </div>
+    </div>
 </div>
 
 <!-- Modal Konfirmasi Hapus -->

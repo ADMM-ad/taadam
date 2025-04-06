@@ -36,57 +36,47 @@
     body {
     background-color: #f4f6f9;
 }
-  .navbar {
-    padding: 0.25rem 1rem;
+.custom-navbar {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
-    height: 56px;
-    z-index: 1040;
+    height: 60px;
+    padding: 0 1rem;
     background-color: #26948E !important;
-  }
+    z-index: 1040;
+    display: flex;
+    align-items: center;
+}
 
-
-  .navbar-brand img {
-    height: 80px;
+/* Logo */
+.custom-navbar .navbar-brand img {
+    height: 50px;
     width: auto;
-    display: block;
-  }
+}
 
-  .navbar .nav-item img {
+/* User Photo */
+.custom-navbar .user-photo {
     height: 40px;
     width: 40px;
     border-radius: 50%;
-    margin-right: 10px;
-  }
+}
 
-  .navbar .nav-item p {
-    margin: 0;
+/* Nav link styles */
+.custom-navbar .nav-link {
     color: black;
-  }
+    display: flex;
+    align-items: center;
+}
 
-  .navbar .nav-link {
-    color: black;
-  }
-
-  .navbar .nav-link:hover,
-  .navbar .nav-link.active {
+.custom-navbar .nav-link:hover {
     color: #007bff;
-  }
+}
 
-  .navbar .dropdown-menu {
+/* Dropdown Menu */
+.custom-navbar .dropdown-menu {
     background-color: white;
-    z-index: 1050;
-    position: absolute;
-    left: 0;
-    right: 0;
-  }
-
-  .navbar .dropdown-toggle::after {
-    margin-left: 0.5rem;
-  }
-
+}
   .main-sidebar {
     background-color: #30BEB5 !important;
     margin-top: 56px;
@@ -143,105 +133,70 @@
     border-color: #e0e0e0;  /* Warna border saat disabled */
 }
 
+/* kalender */
 
-  @media (max-width: 820px) and (min-height: 1180px) {
-  .navbar {
-    height: 60px; /* Tentukan tinggi navbar yang sesuai */
+.fc-header-toolbar {
     display: flex;
-    align-items: center; /* Menjaga elemen tetap sejajar secara vertikal */
-    justify-content: space-between; /* Mengatur jarak antar elemen secara horizontal */
-    padding: 0 1rem;
-  }
-
-  .navbar-collapse {
-    background-color: #26948E; /* Warna latar belakang dropdown */
-    position: absolute;
-    top: 56px; /* Sesuaikan dengan tinggi navbar */
-    left: 0;
-    width: 100%;
-    z-index: 1030;
-    padding: 10px 0;
+    
+    
+    gap: 10px; /* Jarak antara tombol Today dan prev/next */
 }
-  .navbar-brand {
-    display: flex;
-    align-items: center; /* Agar logo dan teks sejajar secara vertikal */
-  }
 
-  .navbar-brand img {
-    height: 50px; /* Sesuaikan ukuran logo */
-    width: auto;
-  }
+.fc .fc-button {
+    background-color: #31beb4;
+    border: none;
+    color: white;
+    font-weight: bold;
+}
+.fc .fc-today-button {
+    background-color: #31beb4 !important;
+    
+}
 
-  .navbar .nav-item {
-    display: flex;
-    align-items: center; /* Menjaga elemen di dalam nav-item tetap sejajar secara vertikal */
-  }
+/* Hover tombol "Today" */
+.fc .fc-today-button:hover {
+    background-color: #279c93 !important;
+}
+/* Hover button */
+.fc .fc-button:hover {
+    background-color: #279c93;
+    color: #fff;
+}
 
-  .navbar .nav-item img {
-    height: 40px; /* Sesuaikan ukuran gambar profil */
-    width: 40px;
-    margin-right: 10px;
+/* Sembunyikan nama user di tampilan kecil (<820px) */
+@media (max-width: 819px) {
+  .user-name {
+    display: none !important;
   }
+}
 
-  .navbar .nav-item p {
-    line-height: normal; /* Menjaga teks sejajar secara vertikal */
-    margin: 0;
+/* Tampilkan nama user di tampilan besar (>=820px) */
+@media (min-width: 820px) {
+  .user-name {
+    display: inline-block !important;
   }
-
-  .navbar .nav-link {
-    display: flex;
-    align-items: center; /* Menjaga teks link tetap sejajar secara vertikal */
-    color: black;
-  }
-
-  .navbar .dropdown-menu {
-    position: absolute;
-    right: 0;
-    left: auto;
-    width: 100%; /* Dropdown memenuhi lebar layar */
-  }
-
-  .navbar .nav-item.dropdown .nav-link {
-    display: flex;
-    justify-content: center; /* Konten dropdown tetap di tengah */
-    align-items: center;
+  .dropdown-menu {
+    position: absolute !important; /* Pastikan dropdown tetap di posisinya */
+    right: 0 !important; /* Letakkan ke kanan */
+    left: auto !important; /* Hindari bug tampilan */
+    top: 100% !important; /* Agar dropdown muncul di bawah icon */
+    width: max-content; /* Sesuaikan lebar */
   }
 }
 
   @media (max-width: 768px) {
-  .navbar {
-    padding: 0rem 0.25rem;
-    height: 60px;
-    position: fixed;
-  }
+    .custom-navbar .nav-link span {
+        display: none !important;
+    }
 
-  .navbar-collapse {
-    background-color: #26948E; /* Warna latar belakang dropdown */
-    position: absolute;
-    top: 56px; /* Sesuaikan dengan tinggi navbar */
-    left: 0;
-    width: 100%;
-    z-index: 1030;
-    padding: 10px 0;
-}
-  .navbar-brand img {
-    height: 60px;
-  }
+    .custom-navbar .navbar-brand img {
+        height: 40px;
+    }
 
-  .navbar .nav-item img {
-    height: 30px;
-    width: 30px;
-  }
-
-  .navbar .nav-item p {
-    line-height: 60px; /* Menyesuaikan posisi teks vertikal */
-    margin: 0;
-  }
-
-  .navbar .nav-link {
-    margin-right: 15px;
-  }
-
+    .custom-navbar .user-photo {
+        height: 35px;
+        width: 35px;
+    }
   .content-wrapper {
     margin-left: 0;
   }
@@ -265,108 +220,48 @@
   }
 }
 
-@media (max-width: 576px) {
-  .navbar {
-    padding: 0rem 0.25rem;
-    height: 60px;
-    position: fixed;
-  }
-
-  .navbar-collapse {
-    background-color: #26948E; /* Warna latar belakang dropdown */
-    position: absolute;
-    top: 56px; /* Sesuaikan dengan tinggi navbar */
-    left: 0;
-    width: 100%;
-    z-index: 1030;
-    padding: 10px 0;
-}
-  .navbar-brand img {
-    height: 50px;
-  }
-
-  .navbar .nav-item img {
-    height: 30px;
-    width: 30px;
-  }
-
-  .navbar .nav-item p {
-    line-height: 50px; /* Menyesuaikan posisi teks vertikal */
-    margin: 0;
-  }
-
-  .navbar .nav-link {
-    margin-right: 15px;
-  }
-
-  
-
-  .navbar .dropdown-menu {
-    position: absolute;
-    right: 0;
-    left: auto;
-    width: 100%;
-  }
-  
-  .navbar .nav-item.dropdown .nav-link {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    align-items: center;
-  }
-}
 
 </style>
 
 <body class="hold-transition sidebar-mini layout-fixed">
-<nav class="navbar navbar-expand-lg navbar-light bg-white">
-    <div class="container-fluid">
-        <!-- Logo -->
-        <a class="navbar-brand" href="#">
-            <img src="{{ asset('gambar/logo.png') }}" alt="Logo" height="40">
+<nav class="navbar navbar-light bg-white custom-navbar">
+    <div class="container-fluid d-flex justify-content-between align-items-center">
+        <!-- Kiri: Logo -->
+        <a class="navbar-brand mb-0" href="#">
+            <img src="{{ asset('gambar/logo.png') }}" alt="Logo">
         </a>
 
-        <!-- Tombol Toggle untuk HP -->
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+        <!-- Kanan: Pushmenu, Profil -->
+        <ul class="navbar-nav flex-row align-items-center">
+            <!-- Pushmenu Icon -->
+            <li class="nav-item mr-3">
+                <a class="nav-link" data-widget="pushmenu" href="#" role="button">
+                    <i class="fas fa-bars"></i>
+                </a>
+            </li>
 
-        <!-- Menu Navbar -->
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ml-auto align-items-center">
-                <!-- Tombol Menu -->
-                <li class="nav-item">
-                    <a class="nav-link" data-widget="pushmenu" href="#" role="button">
-                        <i class="fas fa-bars"></i>
+            <!-- Profil Dropdown -->
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <img src="{{ asset('gambar/admin.png') }}" alt="User Photo" class="user-photo">
+                    <span class="user-name ml-2">{{ auth()->user()->name ?? 'User' }}</span>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                        @csrf
+                    </form>
+                    <a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                        <i class="fas fa-sign-out-alt" style="color: #31beb4 ;"></i> Logout
                     </a>
-                </li>
-
-                <!-- User Profile -->
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button"
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <img src="{{ asset('gambar/admin.png') }}" alt="User Photo" class="rounded-circle" width="30">
-                        <span class="d-none d-lg-inline text-nowrap ml-2">{{ auth()->user()->name ?? 'User' }}</span>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                            @csrf
-                        </form>
-                        <a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                            <i class="fas fa-sign-out-alt" style="color: #FB8149;"></i> Logout
-                        </a>
-                    </div>
-                </li>
-            </ul>
-        </div>
+                </div>
+            </li>
+        </ul>
     </div>
 </nav>
 
 
   <div class="wrapper">
-  
-
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
       <div class="sidebar">
         <nav class="mt-2">
@@ -483,6 +378,14 @@
                   </a>
                 </li>
                 @endif
+                @if(auth()->user()->role == 'teamleader')
+                <li class="nav-item">
+                  <a href="/request-team-leader" class="nav-link">
+                    <i class="fas fa-file-alt"></i>
+                    <p>Laporan Permintaan Perizinan</p>
+                  </a>
+                </li>
+                @endif
                 @if(auth()->user()->role == 'pimpinan')
                 <li class="nav-item">
                   <a href="/request-perizinan" class="nav-link">
@@ -591,7 +494,7 @@
               </ul>
             </li>
             
-            @if(auth()->user()->role == 'pimpinan' || auth()->user()->role == 'teamleader')
+            @if(auth()->user()->role == 'pimpinan')
             <li class="nav-item">
               <a href="/hasil" class="nav-link">
                 <i class="fas fa-chart-line"></i>
@@ -599,6 +502,16 @@
               </a>
             </li>
             @endif
+
+
+            @if(auth()->user()->role == 'teamleader')
+                <li class="nav-item">
+                  <a href="/hasil-teamleader" class="nav-link">
+                  <i class="fas fa-chart-line"></i>
+                    <p>Hasil</p>
+                  </a>
+                </li>
+                @endif
 
             <li class="nav-item has-treeview">
               <a href="#" class="nav-link">
@@ -661,7 +574,7 @@
   <script src="{{ asset('template/plugins/jquery/jquery.min.js') }}"></script>
   <script src="{{ asset('template/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
   <script src="{{ asset('template/dist/js/adminlte.min.js') }}"></script>
-
+ 
 
 
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>

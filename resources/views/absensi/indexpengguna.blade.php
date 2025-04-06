@@ -3,7 +3,19 @@
 @section('title', 'Absensi Kalender')
 
 @section('content')
-    <div id="calendar"></div>
+<div class="container mt-3">
+
+<div class="card card-primary card-outline mt-3 mb-3 ms-3 me-3 p-3"  style="border-color: #31beb4;">
+    <div class="card-header ">
+        <h4>Laporan Absensi Saya</h4>
+    </div>
+    <div class="card-body">
+        
+
+<div id="calendar"></div>
+</div>
+</div>
+</div>
 @endsection
 
 @section('scripts')
@@ -13,6 +25,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     var calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
+        buttonText: {
+        today: 'Today' // Mengubah "today" menjadi "Today"
+    },
         events: function(fetchInfo, successCallback, failureCallback) {
             fetch('/absensi/data')
                 .then(response => response.json())

@@ -1,19 +1,36 @@
 @extends('masterlayout')
 
 @section('content')
-<div class="container">
-    <h2>Edit Jobdesk</h2>
+<div class="container mt-2">
 
-    @if($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
 
+    @if(session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ session('success') }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        @endif
+
+        @if($errors->any())
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <ul>
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        @endif
+
+        <div class="card card-primary  mt-2" >
+                <div class="card-header" style="background-color: #31beb4; border-color: #31beb4;">
+                    <h3 class="card-title">Edit Jobdesk</h3>
+                </div>
+                <div class="card-body">       
     <form action="{{ route('jobdesk.updatepimpinan', $jobdesk->id) }}" method="POST">
         @csrf
         @method('PUT')
@@ -46,22 +63,42 @@
             </select>
         </div>
 
-        <button type="submit" class="btn btn-primary">Update</button>
-        <a href="javascript:history.back()" class="btn btn-outline-secondary">
-    <i class="bi bi-arrow-left"></i> Kembali
-</a>
+        <button type="submit" class="btn btn-success">Update</button>
+        <a href="
+    @if(auth()->user()->role == 'pimpinan')
+        {{ route('jobdesk.indexpimpinan') }}
+    @elseif(auth()->user()->role == 'teamleader')
+        {{ route('jobdesk.indexteamleader') }}
+    @endif
+" class="btn btn-secondary">Kembali</a>
+
 
     </form>
-    <div class="mt-4">
-        <h5>Pengguna dalam Jobdesk Ini:</h5>
+</div>
+</div>
+<div class="card card-primary mt-2">
+    <div class="card-header" style="background-color: #31beb4; border-color: #31beb4;">
+        <h3 class="card-title">Pengguna dalam Jobdesk ini</h3>
+    </div>
+    <div class="card-body">
         <ul class="list-group">
             @forelse($jobdesk->users as $user)
-                <li class="list-group-item">{{ $user->name }}</li>
+            <li class=" d-flex align-items-center rounded mb-2">
+                    <div style="color: #31beb4; margin-right: 8px;">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    {{ $user->name }}
+                </li>
             @empty
                 <li class="list-group-item text-muted">Belum ada pengguna yang ditugaskan.</li>
             @endforelse
         </ul>
+
+        <!-- Tombol tidak memanjang, diberikan class 'd-inline-block' -->
+        <a href="{{ route('jobdesk.editkelolajob', $jobdesk->id) }}" class="btn btn-primary mt-3 d-inline-block">
+            Kelola Pengguna
+        </a>
     </div>
-    <a href="{{ route('jobdesk.editkelolajob', $jobdesk->id) }}" class="btn btn-secondary mt-3">Kelola Pengguna</a>
 </div>
+
 @endsection

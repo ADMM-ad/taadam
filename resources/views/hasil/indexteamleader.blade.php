@@ -2,6 +2,7 @@
 
 @section('content')
 <div class="container mt-2">
+    
 @if(session('success'))
     <div class="alert alert-success alert-dismissible fade show d-flex align-items-center" role="alert">
         <i class="fas fa-check-circle mr-2"></i>  <!-- Ikon untuk sukses -->
@@ -25,7 +26,7 @@
         </button>
     </div>
 @endif
-<div class="card card-warning collapsed-card mt-2">
+    <div class="card card-warning collapsed-card mt-2">
     <div class="card-header">
     <h3 class="card-title">
     <i class="bi bi-megaphone-fill"></i>
@@ -44,77 +45,85 @@
     </div>
 </div>
 
-    <form method="GET" action="{{ route('point.indexteamleader') }}" class="mb-3">
+    <!-- Form Filter -->
+    <form method="GET" action="{{ route('hasil.teamleader') }}" class="mb-2">
         <div class="row">
-            <div class="col-md-5 mt-2">
-                <select name="user_id" class="form-control">
-                    <option value="">Semua Karyawan</option>
-                    @foreach($users as $user)
-                        <option value="{{ $user->id }}" {{ request('user_id') == $user->id ? 'selected' : '' }}>
-                            {{ $user->name }}
+            <!-- Filter Tahun -->
+            <div class="col-md-5">
+                <label for="tahun">Filter Tahun</label>
+                <select name="tahun" class="form-control">
+                    <option value="">Semua Tahun</option>
+                    @foreach($tahunOptions as $tahun)
+                        <option value="{{ $tahun }}" {{ request('tahun') == $tahun ? 'selected' : '' }}>{{ $tahun }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <!-- Filter Nama Team -->
+            <div class="col-md-5">
+                <label for="nama_team">Filter Nama Team</label>
+                <select name="nama_team" class="form-control">
+                    <option value="">Semua Team</option>
+                    @foreach($teamOptions as $team)
+                        <option value="{{ $team->nama_team }}" {{ request('nama_team') == $team->nama_team ? 'selected' : '' }}>
+                            {{ $team->nama_team }}
                         </option>
                     @endforeach
                 </select>
             </div>
-            <div class="col-md-5 mt-2">
-                <input type="month" name="date" class="form-control" value="{{ request('date') }}">
+
+            <!-- Tombol Submit -->
+            <div class="col-md-2 d-flex justify-content-end align-items-end mt-2 gap-2">
+                <button type="submit" class="btn btn-primary">Filter</button>
+                <a href="{{ route('hasil.teamleader') }}" class="btn btn-secondary ml-2">Reset</a>
             </div>
-             <!-- Tombol Submit dan Reset -->
-        <div class="col-md-2 d-flex justify-content-end align-items-end mt-2 gap-2">
-            <button type="submit" class="btn btn-primary">Filter</button>
-            <a href="{{ route('point.indexteamleader') }}" class="btn btn-secondary ml-2">Reset</a>
-        </div>
         </div>
     </form>
+
+    <a href="{{ route('hasil.create') }}" class="btn btn-success mb-2 ">Tambah Data</a>
+
     <div class="row">
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Laporan Point Kinerja</h3>
+                    <h3 class="card-title">Daftar Hasil</h3>
                 </div>
 
                 <div class="card-body table-responsive p-0">
-                    
-                   
-
-                    <table class="table table-hover table-bordered text-nowrap">
+  
+                <table class="table table-hover table-bordered text-nowrap">
         <thead>
             <tr>
-                <th>Nama Pengguna</th>
+                <th>No</th>
+                <th>Nama Team</th>
                 <th>Bulan</th>
-                <th>Absensi</th>
-                <th>Jobdesk</th>
-                <th>Hasil</th>
-                <th>Attitude</th>
-                <th>Rata-rata</th>
+                <th>Views</th>
                 <th>Aksi</th>
             </tr>
         </thead>
         <tbody>
-            @foreach($points as $point)
+            @foreach($jobdeskHasils as $data)
             <tr>
-                <td>{{ $point->user->name ?? 'Tidak Diketahui' }}</td>
-                <td>{{ \Carbon\Carbon::parse($point->bulan)->format('F Y') }}</td>
-                <td>{{ $point->point_absensi }} / 6.25</td>
-                <td>{{ $point->point_jobdesk }} / 9</td>
-                <td>{{ $point->point_hasil }} / 6.25</td>
-                <td>{{ $point->point_attitude }} / 4</td>
-                <td>{{ $point->point_rata_rata }}</td>
+                <td>{{ $loop->iteration }}</td>
+                <td>{{ $data->team->nama_team }}</td>
+                <td>{{ \Carbon\Carbon::parse($data->bulan)->translatedFormat('F Y') }}</td>
+                <td>{{ $data->views }}</td>
                 <td>
-                <button class="btn btn-danger btn-sm" onclick="confirmDelete('{{ route('point.destroy', $point->id) }}')">
-                                        Hapus
-                                    </button>
+                    <a href="{{ route('hasil.edit', $data->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                    <button type="button" class="btn btn-danger btn-sm" onclick="confirmDelete('{{ route('hasil.destroy', $data->id) }}')">Hapus</button>
                 </td>
             </tr>
             @endforeach
         </tbody>
     </table>
-
-    <!-- Pagination -->
     <div class="d-flex justify-content-end mt-3">
-        {{ $points->links('pagination::bootstrap-4') }}
+                        {{ $jobdeskHasils->withQueryString()->links('pagination::bootstrap-4') }}
+                    </div>
+   
     </div>
-
+    </div>
+    </div>
+    </div>
 </div>
 
 <!-- Modal Konfirmasi Hapus -->
@@ -122,8 +131,8 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Konfirmasi Hapus</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Tutup">
+                <h5 class="modal-title" id="confirmDeleteModalLabel">Konfirmasi Hapus</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -142,12 +151,11 @@
     </div>
 </div>
 
-<!-- Script Modal -->
 <script>
     function confirmDelete(action) {
         var form = document.getElementById('deleteForm');
-        form.action = action;
-        $('#confirmDeleteModal').modal('show');
+        form.action = action; // Set action form untuk delete data yang sesuai
+        $('#confirmDeleteModal').modal('show'); // Menampilkan modal konfirmasi
     }
 </script>
 

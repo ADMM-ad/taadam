@@ -2,9 +2,56 @@
 
 
 @section('content')
-    <h2>Absensi Karyawan</h2>
+<div class="container mt-3">
+@if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show d-flex align-items-center" role="alert">
+        <i class="fas fa-check-circle mr-2"></i>  <!-- Ikon untuk sukses -->
+        {{ session('success') }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+@endif
 
-    <!-- Dropdown untuk memilih user -->
+@if($errors->any())
+    <div class="alert alert-danger alert-dismissible fade show d-flex align-items-center" role="alert">
+        <i class="fas fa-exclamation-triangle mr-2"></i>  <!-- Ikon untuk error -->
+        <ul class="mb-0">
+            @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+@endif
+
+<div class="card card-warning collapsed-card mt-2">
+    <div class="card-header">
+    <h3 class="card-title">
+    <i class="bi bi-megaphone-fill"></i>
+    Instructions
+</h3>
+        <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i>
+                  </button>
+                  <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+    </div>
+    <div class="card-body">
+        The body of the card
+    </div>
+</div>
+    <div class="card card-primary card-outline mt-3 mb-3 ms-3 me-3 p-3"  style="border-color: #31beb4;">
+        <div class="card-header ">
+            <h4>Laporan Absensi Team</h4>
+        </div>
+        <div class="card-body">
+            <!-- Dropdown untuk memilih karyawan -->
+            <div class="form-group">
     <label for="userSelect">Pilih Karyawan:</label>
     <select id="userSelect" class="form-control">
         <option value="">-- Pilih Karyawan --</option>
@@ -13,7 +60,10 @@
         @endforeach
     </select>
 
-    <div id="calendar" style="margin-top: 20px;"></div>
+    <div id="calendar"></div>
+    </div>
+    </div>
+</div>
 @endsection
 
 @section('scripts')
@@ -30,6 +80,9 @@ document.addEventListener('DOMContentLoaded', function () {
         calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
             events: events,
+            buttonText: {
+        today: 'Today' // Mengubah "today" menjadi "Today"
+    },
             eventClick: function(info) {
                 var userId = userSelect.value;
                 var clickedDate = info.event.startStr;

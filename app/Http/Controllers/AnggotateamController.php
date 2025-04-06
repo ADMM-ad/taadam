@@ -10,17 +10,23 @@ use Illuminate\Http\Request;
 class AnggotateamController extends Controller
 {
     // Menampilkan daftar tim dalam box dengan jumlah anggota
-    public function index()
+    public function index(Request $request)
     {
-        // Ambil semua tim dan hitung jumlah anggota di setiap tim
-        $teams = Team::withCount('detailTeams')
-             ->where('nama_team', '!=', 'Individu')
-             ->get();
+        // Query untuk mengambil tim dan menghitung jumlah anggotanya
+    $query = Team::withCount('detailTeams')
+    ->where('nama_team', '!=', 'Individu');
 
-        return view('anggotateam.index', compact('teams'));
+// Filter pencarian berdasarkan nama tim
+if ($request->has('search') && $request->search != '') {
+    $query->where('nama_team', 'like', '%' . $request->search . '%');
+}
+
+// Paginasi dengan 10 data per halaman
+$teams = $query->paginate(10);
+
+return view('anggotateam.index', compact('teams'));
     }
 
-    // Menampilkan daftar anggota dalam satu tim yang diklik
     public function daftar($team_id)
     {
         $team = Team::findOrFail($team_id);
@@ -28,7 +34,7 @@ class AnggotateamController extends Controller
 
         return view('anggotateam.daftar', compact('team', 'anggota'));
     }
-
+    
     // Menampilkan form tambah anggota
     public function create()
     {
@@ -36,7 +42,7 @@ class AnggotateamController extends Controller
              ->where('status', 'aktif')
              ->get();
 
-        $teams = Team::all();
+             $teams = Team::where('nama_team', '!=', 'Individu')->get();
 
         return view('anggotateam.create', compact('users', 'teams'));
     }
@@ -67,49 +73,15 @@ class AnggotateamController extends Controller
         return redirect()->route('anggotateam.index')->with('success', 'Anggota berhasil ditambahkan.');
     }
 
-    // Menampilkan halaman edit anggota tim
-    public function edit(DetailTeam $anggotateam)
-    {
-        $users = User::whereIn('role', ['karyawan', 'teamleader'])->get();
-        $teams = Team::all();
-
-        return view('anggotateam.edit', compact('anggotateam', 'users', 'teams'));
-    }
-
-    // Memperbarui anggota tim
-    public function update(Request $request, DetailTeam $anggotateam)
-    {
-        $request->validate([
-            'user_id' => [
-                'required',
-                'exists:users,id',
-                function ($attribute, $value, $fail) use ($request, $anggotateam) {
-                    $user = User::find($value);
-                    if (!$user || !in_array($user->role, ['karyawan', 'teamleader'])) {
-                        $fail('User harus memiliki role karyawan atau team leader.');
-                    }
-
-                    if (DetailTeam::where('user_id', $value)
-                        ->where('team_id', $request->team_id)
-                        ->where('id', '!=', $anggotateam->id)
-                        ->exists()) {
-                        $fail('User ini sudah tergabung di tim ini.');
-                    }
-                },
-            ],
-            'team_id' => 'required|exists:team,id',
-        ]);
-
-        $anggotateam->update($request->all());
-
-        return redirect()->route('anggotateam.index')->with('success', 'Detail anggota berhasil diperbarui.');
-    }
+    
 
     // Menghapus anggota dari tim
     public function destroy(DetailTeam $anggotateam)
     {
-        $anggotateam->delete();
+        $team_id = $anggotateam->team_id;  // Ambil team_id dari detail_team yang akan dihapus
+    $anggotateam->delete();
 
-        return redirect()->route('anggotateam.index')->with('success', 'Anggota berhasil dihapus.');
+    return redirect()->route('anggotateam.daftar', ['team' => $team_id])
+                     ->with('success', 'Anggota berhasil dikeluarkan dari team.');
     }
 }

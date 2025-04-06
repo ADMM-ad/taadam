@@ -22,7 +22,7 @@
 </div>
 
 
-    <div class="card card-primary card-outline mt-3 mb-3 ms-3 me-3 p-3">
+    <div class="card card-primary card-outline mt-3 mb-3 ms-3 me-3 p-3" style="border-color: #31beb4;">
         <div class="card-header">
             <h3 class="card-title">
                 <i class="fas fa-edit"></i>

@@ -44,8 +44,12 @@ Route::middleware('auth')->group(function () {
     Route::post('/absensi/perizinan', [AbsensiController::class, 'storePerizinan'])->name('absensi.perizinan');
     Route::get('/absensi/perizinan', [AbsensiController::class, 'showPerizinanForm'])->name('absensi.perizinan.form');
     Route::get('/request-perizinan', [AbsensiController::class, 'indexrequest'])->name('absensi.indexrequest');
+    Route::get('/request-team-leader', [AbsensiController::class, 'indexrequestteamleader'])->name('absensi.requestteam');
+    Route::get('/absensi/detailperizinan/{id}', [AbsensiController::class, 'detailPerizinan'])->name('absensi.detailperizinan');
     Route::put('/perizinan/{id}/{status}', [AbsensiController::class, 'updateStatus'])->name('perizinan.update');
     Route::get('/statusperizinan', [AbsensiController::class, 'statusPengguna'])->name('absensi.statuspengguna');
+    Route::delete('/hapusperizinan/{id}', [AbsensiController::class, 'destroyperizinan'])->name('absensi.destroyperizinan');
+
 
     Route::get('/profil', [ProfilController::class, 'index'])->name('profil.index');
     Route::get('/profil/edit', [ProfilController::class, 'edit'])->name('profil.edit');
@@ -68,6 +72,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/jobdesk/pengguna/selesai', [JobdeskController::class, 'indexpenggunaselesai'])->name('jobdesk.indexpenggunaselesai');
     Route::get('/jobdesk/edit/{id}', [JobdeskController::class, 'editpengguna'])->name('jobdesk.editpengguna');
     Route::put('/jobdesk/update/{id}', [JobdeskController::class, 'updatepengguna'])->name('jobdesk.updatepengguna');
+
+    Route::get('/jobdesk/{id}/editbukti', [JobdeskController::class, 'editbukti'])->name('jobdesk.editbukti');
+    Route::put('/jobdesk/{id}/updatebukti', [JobdeskController::class, 'updatebukti'])->name('jobdesk.updatebukti');
+
 
 });
 
@@ -135,6 +143,8 @@ Route::get('/jobdesk/team', [JobdeskController::class, 'indexteamleader'])->name
 
 // Hasil
 Route::get('/hasil', [HasilController::class, 'index'])->name('hasil.index');
+Route::get('/hasil-teamleader', [HasilController::class, 'indexteamleader'])->name('hasil.teamleader');
+
 Route::get('/hasil/create', [HasilController::class, 'create'])->name('hasil.create');
 Route::post('/hasil', [HasilController::class, 'store'])->name('hasil.store');
 Route::get('/hasil/{jobdeskHasil}/edit', [HasilController::class, 'edit'])->name('hasil.edit');
@@ -150,6 +160,7 @@ Route::get('/cekpoint', [PointController::class, 'indexPengguna'])->name('point.
 Route::get('/laporanpoint', [PointController::class, 'indexPimpinan'])->name('point.indexpimpinan');
 Route::get('/pointteam', [PointController::class, 'indexteam'])->name('point.indexteam');
 Route::get('/laporanpointteam', [PointController::class, 'indexteamleader'])->name('point.indexteamleader');
+Route::delete('/pimpinan/point/{id}', [PointController::class, 'destroy'])->name('point.destroy');
 
 
 

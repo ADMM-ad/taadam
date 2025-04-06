@@ -79,9 +79,15 @@
                                         </span>
                                     </td>
                                     <td>
-                                        <button type="button" class="btn btn-warning btn-sm" onclick="confirmStatusChange('{{ route('users.changeStatustl', $user->id) }}')">
-                                            {{ $user->status == 'aktif' ? 'Nonaktifkan' : 'Aktifkan' }}
-                                        </button>
+                                    @if($user->status == 'aktif')
+                                            <button type="button" class="btn btn-warning btn-sm" onclick="confirmStatusChange('{{ route('users.changeStatustl', $user->id) }}')">
+                                                Nonaktifkan
+                                            </button>
+                                        @else
+                                            <button type="button" class="btn btn-success btn-sm" onclick="confirmStatusChange('{{ route('users.changeStatustl', $user->id) }}')">
+                                                Aktifkan
+                                            </button>
+                                        @endif
                                         <button type="button" class="btn btn-danger btn-sm" onclick="confirmDelete('{{ route('users.destroytl', $user->id) }}')">
                                             Hapus
                                         </button>

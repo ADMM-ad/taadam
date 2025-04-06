@@ -10,9 +10,17 @@ class TeamController extends Controller
 
     public function index(Request $request)
     {
-        $teams = Team::all();
-        $ipAddress = $request->ip();
-        return view('team.index', compact('teams','ipAddress'));
+        $query = Team::where('nama_team', '!=', 'Individu');
+
+    // Filter pencarian berdasarkan nama_team
+    if ($request->has('search') && $request->search != '') {
+        $query->where('nama_team', 'like', '%' . $request->search . '%');
+    }
+
+    // Ambil data tim dan paginate
+    $teams = $query->paginate(10);
+
+    return view('team.index', compact('teams'));
     }
 
     public function create()

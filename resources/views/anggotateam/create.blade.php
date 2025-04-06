@@ -1,8 +1,8 @@
 @extends('masterlayout')
 
 @section('content')
-<div class="container mt-5">
-    <h1>Tambah Anggota Tim</h1>
+<div class="container mt-2">
+
     @if(session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 {{ session('success') }}
@@ -25,6 +25,13 @@
             </div>
         @endif
 
+
+
+        <div class="card card-primary  mt-2" >
+                <div class="card-header" style="background-color: #31beb4; border-color: #31beb4;">
+                    <h3 class="card-title">Tambah Anggota Team</h3>
+                </div>
+                <div class="card-body">
     <form action="{{ route('anggotateam.store') }}" method="POST">
         @csrf
         <div class="form-group">
@@ -44,7 +51,10 @@
                 @endforeach
             </select>
         </div>
-        <button type="submit" class="btn btn-primary">Simpan</button>
+        <button type="submit" class="btn btn-success mt-3">Simpan</button>
+        <a href="{{ route('anggotateam.index') }}" class="btn btn-secondary mt-3">Kembali</a>
     </form>
+</div>
+</div>
 </div>
 @endsection

@@ -13,7 +13,7 @@ class JobdeskController extends Controller
 {
     public function create()
     {
-        $teams = Team::all(); // Ambil semua tim untuk dropdown
+        $teams = Team::where('nama_team', '!=', 'Individu')->get();
         return view('jobdesk.create', compact('teams'));
     }
 
@@ -50,7 +50,12 @@ class JobdeskController extends Controller
             ]);
         }
 
-        return redirect()->route('jobdesk.create')->with('success', 'Jobdesk berhasil dibuat!');
+        if (auth()->user()->role === 'pimpinan') {
+            return redirect()->route('jobdesk.indexpimpinan')->with('success', 'Jobdesk berhasil dibuat!');
+        } else {
+            return redirect()->route('jobdesk.indexteamleader')->with('success', 'Jobdesk berhasil dibuat!');
+        }
+        
     }
 
     /**
@@ -125,7 +130,7 @@ public function storeindividu(Request $request)
         'jobdesk_id' => $jobdesk->id,
     ]);
 
-    return redirect()->route('jobdesk.createindividu')->with('success', 'Jobdesk berhasil ditambahkan!');
+    return redirect()->route('jobdesk.indexpimpinan')->with('success', 'Jobdesk berhasil ditambahkan!');
 }
 
 
@@ -136,20 +141,43 @@ public function storeindividu(Request $request)
      {
          $jobdesks = Jobdesk::whereHas('detailJobdesk', function ($query) {
              $query->where('user_id', Auth::id());
-         })->where('status', 'ditugaskan')->get();
+         })->where('status', 'ditugaskan')->paginate(2);
  
          return view('jobdesk.indexpengguna', compact('jobdesks'));
      }
 
      // Menampilkan jobdesk yang sudah "selesai" milik pengguna yang sedang login
-    public function indexpenggunaselesai()
-    {
-        $jobdesks = Jobdesk::whereHas('detailJobdesk', function ($query) {
-            $query->where('user_id', Auth::id());
-        })->where('status', 'selesai')->get();
-
-        return view('jobdesk.indexpenggunaselesai', compact('jobdesks'));
-    }
+     public function indexpenggunaselesai(Request $request)
+     {
+         $query = Jobdesk::whereHas('detailJobdesk', function ($q) {
+             $q->where('user_id', Auth::id());
+         })->where('status', 'selesai');
+     
+         // Filter nama pekerjaan
+         if ($request->filled('nama_pekerjaan')) {
+             $query->where('nama_pekerjaan', 'like', '%' . $request->nama_pekerjaan . '%');
+         }
+     
+         // Filter berdasarkan format bulan-tahun
+         if ($request->filled('tanggal_filter')) {
+             $tanggal = explode('-', $request->tanggal_filter);
+             if (count($tanggal) == 2) {
+                 $query->whereYear('tenggat_waktu', $tanggal[0])
+                       ->whereMonth('tenggat_waktu', $tanggal[1]);
+             }
+         }
+     
+         // Ambil semua kombinasi unik tahun-bulan dari tenggat_waktu
+         $tanggalOptions = Jobdesk::selectRaw('DATE_FORMAT(tenggat_waktu, "%Y-%m") as tanggal')
+             ->distinct()
+             ->orderBy('tanggal', 'desc')
+             ->pluck('tanggal');
+     
+         $jobdesks = $query->orderBy('tenggat_waktu', 'desc')->paginate(10);
+     
+         return view('jobdesk.indexpenggunaselesai', compact('jobdesks', 'tanggalOptions'));
+     }
+     
     // Menampilkan form edit hasil pekerjaan
     public function editpengguna($id)
     {
@@ -182,31 +210,87 @@ public function storeindividu(Request $request)
     }
 
 
+//    untuk pengguna 
+    public function editbukti($id)
+{
+    $jobdesk = Jobdesk::whereHas('detailJobdesk', function ($query) {
+        $query->where('user_id', Auth::id());
+    })->findOrFail($id);
+
+    return view('jobdesk.editbukti', compact('jobdesk'));
+}
+public function updatebukti(Request $request, $id)
+{
+    $request->validate([
+        'hasil' => 'required|string',
+        'status' => 'required|in:ditugaskan,selesai',
+    ]);
+
+    $jobdesk = Jobdesk::whereHas('detailJobdesk', function ($query) {
+        $query->where('user_id', Auth::id());
+    })->findOrFail($id);
+
+    $jobdesk->update([
+        'hasil' => $request->hasil,
+        'status' => $request->status,
+        'waktu_selesai' => now(), // Set waktu selesai sekarang, sesuai permintaan
+    ]);
+
+    return redirect()->route('jobdesk.indexpenggunaselesai')->with('success', 'Data berhasil diperbarui!');
+}
+
+
 
 //ini unutk laporan teamleader
-public function indexteamleader()
+public function indexteamleader(Request $request)
 {
-    // Ambil user yang sedang login
     $loggedInUser = auth()->user();
-
-    // Ambil team_id yang dimiliki oleh user yang sedang login
     $teamIds = DetailTeam::where('user_id', $loggedInUser->id)->pluck('team_id');
 
-    // Ambil jobdesk yang memiliki team_id yang sama dengan user yang login
     $jobdesks = Jobdesk::with('team')
-                ->whereIn('team_id', $teamIds)
-                ->get();
+        ->whereIn('team_id', $teamIds)
+        ->when($request->search, fn($query) => $query->where('nama_pekerjaan', 'like', '%' . $request->search . '%'))
+        ->when($request->team_id, fn($query) => $query->where('team_id', $request->team_id))
+        ->when($request->status, fn($query) => $query->where('status', $request->status))
+        ->when($request->bulan, function ($query) use ($request) {
+            [$tahun, $bulan] = explode('-', $request->bulan); 
+            return $query->whereMonth('tenggat_waktu', $bulan)->whereYear('tenggat_waktu', $tahun);
+        })
+        ->orderBy('tenggat_waktu', 'asc')
+        ->paginate(2);
 
-    return view('jobdesk.indexteamleader', compact('jobdesks'));
+    $teams = Team::whereIn('id', $teamIds)->get();
+
+    return view('jobdesk.indexteamleader', compact('jobdesks', 'teams'));
 }
 
 
 //ini untuk laporan pimpinan
-public function indexpimpinan()
+public function indexpimpinan(Request $request)
 {
-    $jobdesks = Jobdesk::with('team')->get();
-    return view('jobdesk.indexpimpinan', compact('jobdesks'));
+    $query = Jobdesk::with('team');
+
+    // Filter berdasarkan nama pekerjaan
+    if ($request->filled('search')) {
+        $query->where('nama_pekerjaan', 'like', '%' . $request->search . '%');
+    }
+
+    // Filter berdasarkan nama tim
+    if ($request->filled('team_id')) {
+        $query->where('team_id', $request->team_id);
+    }
+
+    // Filter berdasarkan status
+    if ($request->filled('status')) {
+        $query->where('status', $request->status);
+    }
+
+    $jobdesks = $query->paginate(2);
+    $teams = Team::all(); // Ambil semua tim untuk dropdown filter
+
+    return view('jobdesk.indexpimpinan', compact('jobdesks', 'teams'));
 }
+
 
 public function detailpimpinan($id)
 {
@@ -282,7 +366,12 @@ public function destroy($id)
     $jobdesk = Jobdesk::findOrFail($id);
     $jobdesk->delete();
 
-    return redirect()->route('jobdesk.indexpimpinan')->with('success', 'Jobdesk berhasil dihapus.');
+    if (auth()->user()->role === 'pimpinan') {
+        return redirect()->route('jobdesk.indexpimpinan')->with('success', 'Jobdesk berhasil dihapus.');
+    } else {
+        return redirect()->route('jobdesk.indexteamleader')->with('success', 'Jobdesk berhasil dihapus.');
+    }
+    
 }
 
 public function editkelolajob($id)
@@ -291,12 +380,15 @@ public function editkelolajob($id)
     
     if ($jobdesk->team->nama_team == 'Individu') {
         // Jika timnya "Individu", ambil semua user kecuali yang memiliki role "Pimpinan"
-        $teamUsers = User::where('role', '!=', 'Pimpinan')->get();
+        $teamUsers = User::where('role', '!=', 'Pimpinan')
+                         ->where('status', 'aktif')
+                         ->get();
     } else {
         // Jika bukan "Individu", ambil user berdasarkan team_id, kecuali role "Pimpinan"
         $teamUsers = DetailTeam::where('team_id', $jobdesk->team_id)
             ->with(['user' => function ($query) {
-                $query->where('role', '!=', 'Pimpinan');
+                $query->where('role', '!=', 'Pimpinan')
+                      ->where('status', 'aktif');
             }])
             ->get()
             ->pluck('user');
@@ -320,7 +412,8 @@ public function addUser(Request $request, $jobdesk_id)
     // Cek apakah user sudah ada di jobdesk
     $exists = DetailJobdesk::where('jobdesk_id', $jobdesk_id)->where('user_id', $request->user_id)->exists();
     if ($exists) {
-        return back()->with('error', 'Pengguna sudah ada di dalam jobdesk.');
+        return back()->withErrors(['Pengguna sudah ada di dalam jobdesk.']);
+
     }
 
     DetailJobdesk::create([

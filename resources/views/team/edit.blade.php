@@ -1,8 +1,7 @@
 @extends('masterlayout')
 
 @section('content')
-<div class="container mt-5">
-    <h1>Edit Team</h1>
+<div class="container mt-3">
     @if(session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 {{ session('success') }}
@@ -24,6 +23,12 @@
                 </button>
             </div>
         @endif
+
+        <div class="card card-primary  mt-2" >
+                <div class="card-header" style="background-color: #31beb4; border-color: #31beb4;">
+                    <h3 class="card-title">Edit Team</h3>
+                </div>
+                <div class="card-body">        
     <form action="{{ route('team.update', $team->id) }}" method="POST">
         @csrf
         @method('PUT')
@@ -34,5 +39,7 @@
         <button type="submit" class="btn btn-success mt-3">Perbarui</button>
         <a href="{{ route('team.index') }}" class="btn btn-secondary mt-3">Kembali</a>
     </form>
+    </div>
+    </div>
 </div>
 @endsection

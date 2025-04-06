@@ -1,8 +1,62 @@
 @extends('masterlayout')
 
 @section('content')
-<div class="container">
-    <h2 class="text-center mb-4">Tambah Point KPI untuk {{ $user->name }}</h2>
+<style>
+    
+
+    /* Atur lebar tiap kolom */
+    th:nth-child(2), td:nth-child(2) { /* Nilai */
+        width: 150px;
+        min-width: 150px;
+    }
+
+    th:nth-child(3), td:nth-child(3) { /* Bobot */
+        width: 150px;
+        min-width: 150px;
+    }
+
+    th:nth-child(4), td:nth-child(4) { /* Skor */
+        width: 150px;
+        min-width: 150px;
+    }
+
+    th:nth-child(5), td:nth-child(5) { /* Skor Akhir */
+        width: 150px;
+        min-width: 150px;
+    }
+
+    input.form-control {
+        width: 100%;
+        min-width: 100%;
+    }
+
+    select.form-control {
+        width: 100%;
+        min-width: 100%;
+    }
+
+    
+</style>
+
+<div class="container mt-2">
+<div class="card card-warning collapsed-card mt-2">
+    <div class="card-header">
+    <h3 class="card-title">
+    <i class="bi bi-megaphone-fill"></i>
+    Instructions
+</h3>
+        <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i>
+                  </button>
+                  <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+    </div>
+    <div class="card-body">
+        The body of the card
+    </div>
+</div>
     @if(session('success'))
     <div class="alert alert-success alert-dismissible fade show" role="alert">
         {{ session('success') }}
@@ -43,11 +97,21 @@
             <input type="month" id="bulan" name="bulan" class="form-control" required>
         </div>
 
-        <table class="table table-bordered">
+        
+        <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Hitung Point KPI {{ $user->name }}</h3>
+                </div>
+
+                <div class="card-body table-responsive">
+  
+                <table class="table table-hover table-bordered text-nowrap">
             <thead>
                 <tr>
                     <th>Kriteria</th>
-                    <th>Nilai</th>
+                    <th >Nilai</th>
                     <th>Bobot</th>
                     <th>Skor</th>
                     <th>Skor Akhir</th> <!-- Kolom baru -->
@@ -56,22 +120,22 @@
             <tbody>
                 <tr>
                     <td>Absensi Kehadiran</td>
-                    <td><input type="number" name="absensi" id="absensi" class="form-control" required></td>
-                    <td><span id="bobot_absensi">0</span></td>
+                    <td><input type="number" name="absensi" id="absensi" class="form-control" required readonly></td>
+                    <td><input type="number" name="bobot_absensi" id="bobot_absensi" class="form-control" required></td>
                     <td><span id="skor_absensi">0</span></td>
                     <td><span id="skor_akhir_absensi">0</span></td>
                 </tr>
                 <tr>
                     <td>Jobdesk Selesai</td>
-                    <td><input type="number" name="jobdesk" id="jobdesk" class="form-control" required></td>
-                    <td><span id="bobot_jobdesk">0</span></td>
+                    <td><input type="number" name="jobdesk" id="jobdesk" class="form-control" required readonly></td>
+                    <td><input type="number" name="bobot_jobdesk" id="bobot_jobdesk" class="form-control" required></td>
                     <td><span id="skor_jobdesk">0</span></td>
                     <td><span id="skor_akhir_jobdesk">0</span></td>
                 </tr>
                 <tr>
                     <td>Views</td>
-                    <td><input type="number" name="views" id="views" class="form-control" required></td>
-                    <td><span id="bobot_views">0</span></td>
+                    <td><input type="number" name="views" id="views" class="form-control" required readonly></td>
+                    <td><input type="number" name="bobot_views" id="bobot_views" class="form-control" required></td>
                     <td><span id="skor_views">0</span></td>
                     <td><span id="skor_akhir_views">0</span></td>
                 </tr>
@@ -91,11 +155,15 @@
                 </tr>
             </tbody>
         </table>
-
+</div>
+</div>
+</div>
+</div>
         <button type="submit" class="btn btn-success">Simpan Point</button>
-        <a href="javascript:history.go(-2);" class="btn btn-outline-secondary">
-    <i class="bi bi-arrow-left"></i> Kembali 
+        <a href="{{ auth()->user()->role == 'pimpinan' ? route('point.index') : route('point.indexteam') }}" class="btn btn-secondary">
+    Kembali
 </a>
+
 
 
         <input type="hidden" name="point_absensi" id="point_absensi">
@@ -129,25 +197,61 @@ document.getElementById('bulan').addEventListener('change', function() {
 
 // Fungsi update bobot & skor
 function updateBobotAbsensi() {
-    let value = parseInt(document.getElementById('absensi').value) || 0;
-    let bobot = value < 15 ? 10 : value <= 17 ? 40 : value <= 21 ? 80 : 100;
-    document.getElementById('bobot_absensi').innerText = bobot;
-    updateSkorAbsensi(bobot);
+    let absensi = parseInt(document.getElementById('absensi').value) || 0;
+    let bobotInput = document.getElementById('bobot_absensi');
+    
+    // Hanya hitung otomatis jika input masih kosong
+    if (bobotInput.value === '') {
+        let bobot = absensi < 15 ? 10 : absensi <= 17 ? 40 : absensi <= 21 ? 80 : 100;
+        bobotInput.value = bobot;
+        updateSkorAbsensi(bobot);
+    } else {
+        // Jika user sudah isi manual, ambil nilainya
+        let bobotManual = parseInt(bobotInput.value) || 0;
+        updateSkorAbsensi(bobotManual);
+    }
 }
+
 
 function updateBobotJobdesk() {
-    let value = parseInt(document.getElementById('jobdesk').value) || 0;
-    let bobot = value < 12 ? 10 : value <= 15 ? 40 : value <= 20 ? 80 : 100;
-    document.getElementById('bobot_jobdesk').innerText = bobot;
-    updateSkorJobdesk(bobot);
+    let jobdesk = parseInt(document.getElementById('jobdesk').value) || 0;
+    let bobotInput = document.getElementById('bobot_jobdesk');
+
+    if (bobotInput.value === '') {
+        let bobot = jobdesk < 10 ? 10 : jobdesk <= 15 ? 40 : jobdesk <= 20 ? 80 : 100;
+        bobotInput.value = bobot;
+        updateSkorJobdesk(bobot);
+    } else {
+        let bobotManual = parseInt(bobotInput.value) || 0;
+        updateSkorJobdesk(bobotManual);
+    }
 }
 
+document.getElementById('bobot_jobdesk').addEventListener('input', function () {
+    let bobotManual = parseInt(this.value) || 0;
+    updateSkorJobdesk(bobotManual);
+});
+
+
 function updateBobotViews() {
-    let value = parseInt(document.getElementById('views').value) || 0;
-    let bobot = value < 100 ? 10 : value <= 500 ? 40 : value <= 1000 ? 80 : 100;
-    document.getElementById('bobot_views').innerText = bobot;
-    updateSkorViews(bobot);
+    let views = parseInt(document.getElementById('views').value) || 0;
+    let bobotInput = document.getElementById('bobot_views');
+
+    if (bobotInput.value === '') {
+        let bobot = views < 100 ? 10 : views <= 500 ? 40 : views <= 1000 ? 80 : 100;
+        bobotInput.value = bobot;
+        updateSkorViews(bobot);
+    } else {
+        let bobotManual = parseInt(bobotInput.value) || 0;
+        updateSkorViews(bobotManual);
+    }
 }
+
+
+document.getElementById('bobot_views').addEventListener('input', function () {
+    let bobotManual = parseInt(this.value) || 0;
+    updateSkorViews(bobotManual);
+});
 
 function updateBobotAttitude() {
     let bobotMapping = {
@@ -172,9 +276,9 @@ function updateSkorAbsensi(bobot) {
 }
 
 function updateSkorJobdesk(bobot) {
-    let skor = (30 * bobot) / 100;
+    let skor = (25 * bobot) / 100;
     document.getElementById('skor_jobdesk').innerText = skor.toLocaleString('id-ID', { minimumFractionDigits: 1 }) + '%';
-    let skorAkhir = (skor * 30) / 100;
+    let skorAkhir = (skor * 25) / 100;
     document.getElementById('skor_akhir_jobdesk').innerText = skorAkhir.toLocaleString('id-ID', { minimumFractionDigits: 2 });
     document.getElementById('point_jobdesk').value = skorAkhir;
 }
@@ -188,9 +292,9 @@ function updateSkorViews(bobot) {
 }
 
 function updateSkorAttitude(bobot) {
-    let skor = (20 * bobot) / 100;
+    let skor = (25 * bobot) / 100;
     document.getElementById('skor_attitude').innerText = skor.toLocaleString('id-ID', { minimumFractionDigits: 1 }) + '%';
-    let skorAkhir = (skor * 20) / 100;
+    let skorAkhir = (skor * 25) / 100;
     document.getElementById('skor_akhir_attitude').innerText = skorAkhir.toLocaleString('id-ID', { minimumFractionDigits: 2 });
     document.getElementById('point_attitude').value = skorAkhir;
 }
@@ -210,7 +314,13 @@ document.getElementById('jobdesk').addEventListener('input', updateBobotJobdesk)
 document.getElementById('views').addEventListener('input', updateBobotViews);
 document.getElementById('attitude').addEventListener('change', updateBobotAttitude);
 document.querySelectorAll('input, select').forEach(element => {
-    element.addEventListener('input', updateRataRata);
+    element.addEventListener('input', updateRataRata);   
+});
+
+
+document.getElementById('bobot_absensi').addEventListener('input', function () {
+    let bobotManual = parseInt(this.value) || 0;
+    updateSkorAbsensi(bobotManual);
 });
 </script>
 @endsection

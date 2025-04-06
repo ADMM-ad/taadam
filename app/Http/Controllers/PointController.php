@@ -9,6 +9,7 @@ use App\Models\PointKPI;
 use App\Models\DetailTeam;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class PointController extends Controller
 {
@@ -128,23 +129,66 @@ public function store(Request $request)
 
 
 //pengguna ngecek
-public function indexPengguna()
+public function indexPengguna(Request $request)
 {
     $user_id = Auth::id();
-    $points = PointKpi::where('user_id', $user_id)->get();
 
-    return view('point.indexpengguna', compact('points'));
+    // Ambil tahun dari request
+    $tahun = $request->input('tahun');
+
+    // Query awal
+    $query = PointKpi::where('user_id', $user_id);
+
+    // Filter jika tahun tersedia
+    if ($tahun) {
+        $query->whereYear('bulan', $tahun);
+    }
+
+    // Ambil data dengan paginasi
+    $points = $query->orderBy('bulan', 'desc')->paginate(10);
+
+    // Ambil semua tahun yang tersedia untuk dropdown filter
+    $availableYears = PointKpi::where('user_id', $user_id)
+        ->selectRaw('YEAR(bulan) as tahun')
+        ->distinct()
+        ->pluck('tahun');
+
+    return view('point.indexpengguna', compact('points', 'tahun', 'availableYears'));
 }
+
 
 //pimpinan ngecek
-public function indexPimpinan()
+public function indexPimpinan(Request $request)
 {
-    $points = PointKpi::with('user')->get(); // Ambil data beserta user
+    $query = PointKpi::with('user')->whereHas('user', function ($q) {
+        $q->where('role', '!=', 'pimpinan')
+          ->where('status', 'aktif');
+    });
 
-    return view('point.indexpimpinan', compact('points'));
+    if ($request->user_id) {
+        $query->where('user_id', $request->user_id);
+    }
+
+    if ($request->date) {
+        try {
+            $date = Carbon::createFromFormat('Y-m', $request->date);
+            $query->whereYear('bulan', $date->year)->whereMonth('bulan', $date->month);
+        } catch (\Exception $e) {
+            // Format tidak sesuai, bisa diabaikan atau diarahkan ke pesan error
+        }
+    }
+
+    $points = $query->paginate(10); // Paginasi 10 data per halaman
+
+    $users = User::where('role', '!=', 'pimpinan')
+                 ->where('status', 'aktif')
+                 ->get();
+
+    return view('point.indexpimpinan', compact('points', 'users'));
 }
 
-public function indexteamleader()
+
+public function indexteamleader(Request $request)
 {
     // Ambil user yang sedang login
     $loggedInUser = auth()->user();
@@ -161,13 +205,49 @@ public function indexteamleader()
                    })
                    ->pluck('id');
 
-    // Ambil data PointKpi hanya untuk user yang sesuai
-    $points = PointKpi::with('user')
-                      ->whereIn('user_id', $userIds)
-                      ->get();
+    // Buat query awal
+    $query = PointKpi::with('user')
+                ->whereIn('user_id', $userIds);
 
-    return view('point.indexteamleader', compact('points'));
+    // Filter berdasarkan user_id
+    if ($request->user_id) {
+        $query->where('user_id', $request->user_id);
+    }
+
+    // Filter berdasarkan bulan dan tahun
+    if ($request->date) {
+        try {
+            $date = \Carbon\Carbon::createFromFormat('Y-m', $request->date);
+            $query->whereYear('bulan', $date->year)
+                  ->whereMonth('bulan', $date->month);
+        } catch (\Exception $e) {
+            // invalid date
+        }
+    }
+
+    // Paginasi
+    $points = $query->paginate(10)->withQueryString();
+
+    // Ambil user dari tim untuk opsi filter nama
+    $users = User::whereIn('id', $userIds)->get();
+
+    return view('point.indexteamleader', compact('points', 'users'));
 }
 
+
+public function destroy($id)
+{
+    $point = PointKpi::findOrFail($id);
+    $point->delete();
+    $user = auth()->user();
+
+    if ($user->role === 'pimpinan') {
+        return redirect()->route('point.indexpimpinan')->with('success', 'Data berhasil dihapus.');
+    }
+
+    if ($user->role === 'teamleader') {
+        return redirect()->route('point.indexteamleader')->with('success', 'Data berhasil dihapus.');
+    }
+}
 
 }

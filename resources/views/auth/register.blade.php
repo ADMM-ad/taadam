@@ -44,8 +44,8 @@
 </div>
       
             <div class="card card-primary  mt-2" >
-                <div class="card-header" style="background-color: #26948E; border-color: #26948E;">
-                    <h3 class="card-title">Register</h3>
+                <div class="card-header" style="background-color: #31beb4; border-color: #31beb4;">
+                    <h3 class="card-title">Tambah Akun</h3>
                 </div>
                 <div class="card-body">
                     <form method="POST" action="{{ route('register') }}">

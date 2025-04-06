@@ -3,28 +3,35 @@
 @section('title', 'Edit Absensi')
 
 @section('content')
-    <h2>Edit Absensi</h2>
+<div class="container mt-2">
     @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                {{ session('success') }}
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        @endif
+    <div class="alert alert-success alert-dismissible fade show d-flex align-items-center" role="alert">
+        <i class="fas fa-check-circle mr-2"></i>  <!-- Ikon untuk sukses -->
+        {{ session('success') }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+@endif
 
-        @if($errors->any())
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <ul>
-                    @foreach($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        @endif
+@if($errors->any())
+    <div class="alert alert-danger alert-dismissible fade show d-flex align-items-center" role="alert">
+        <i class="fas fa-exclamation-triangle mr-2"></i>  <!-- Ikon untuk error -->
+        <ul class="mb-0">
+            @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+@endif
+<div class="card card-primary  mt-2" >
+                <div class="card-header" style="background-color: #31beb4; border-color: #31beb4;">
+                    <h3 class="card-title">Edit Data Absensi</h3>
+                </div>
+                <div class="card-body">
     <form action="{{ route('absensi.update') }}" method="POST">
         @csrf
         <input type="hidden" name="user_id" value="{{ $user->id }}">
@@ -51,6 +58,9 @@
         </div>
 
         <button type="submit" class="btn btn-primary">Simpan</button>
-        <a href="{{ url()->previous() }}" class="btn btn-secondary">Kembali</a>
+        <a href="{{ Auth::user()->role === 'pimpinan' ? route('absensi.indexpimpinan') : (Auth::user()->role === 'teamleader' ? route('absensi.indexteamleader') : '#') }}" class="btn btn-secondary">Kembali</a>
     </form>
+    </div>
+    </div>
+    </div>
 @endsection

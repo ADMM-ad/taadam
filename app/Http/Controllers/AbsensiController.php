@@ -138,11 +138,11 @@ class AbsensiController extends Controller
     {
         $validatedData = $request->validate([
             'kehadiran' => 'required|in:sakit,izin,datang,hadir',
-            'bukti' => 'file|mimes:pdf,jpg,png|max:5120',
+            'bukti' => 'file|mimes:pdf,jpg,png|max:1024',
         ], [
             'kehadiran.required' => 'Keterangan wajib dipilih.',
             'bukti.mimes' => 'File bukti harus berupa PDF, JPG, atau PNG.',
-            'bukti.max' => 'Ukuran file maksimal 5MB.',
+            'bukti.max' => 'Ukuran file maksimal 1MB.',
         ]);
 
         $userId = Auth::id();
@@ -178,6 +178,7 @@ class AbsensiController extends Controller
         if ($absensi) {
             // Jika sudah ada, update data perizinan
             $absensi->kehadiran = $request->kehadiran;
+            $absensi->pesan = $request->pesan;
             $absensi->status = 'diproses'; // Reset status ke "diproses"
         } else {
             // Jika belum ada, buat entri baru
@@ -205,14 +206,73 @@ class AbsensiController extends Controller
     public function showPerizinanForm(Request $request)
     {
         $tanggal = $request->query('tanggal', now()->toDateString()); // Default ke hari ini jika tidak ada parameter
-        return view('absensi.perizinan', compact('tanggal'));
+
+        // Ambil data absensi user yang login untuk tanggal yang dipilih
+        $user = Auth::user();
+        $absensi = Absensi::where('user_id', $user->id)->whereDate('tanggal', $tanggal)->first();
+    
+        return view('absensi.perizinan', compact('tanggal', 'absensi'));
     }
 
     public function indexrequest()
     {
-        $perizinan = Absensi::where('status', 'diproses')->with('user')->get();
+        $perizinan = Absensi::where('status', 'diproses')
+            ->whereHas('user', function ($query) {
+                $query->where('status', 'aktif'); // Hanya user aktif
+            })
+            ->orderBy('tanggal', 'asc')
+            ->with('user')
+            ->paginate(2);
+    
         return view('absensi.requestperizinan', compact('perizinan'));
     }
+    
+
+    public function indexrequestteamleader()
+    {
+        $user = Auth::user();
+    
+        // Ambil team_id dari detail_team berdasarkan user login
+        $detailTeam = \App\Models\DetailTeam::where('user_id', $user->id)->first();
+    
+        if (!$detailTeam) {
+            return back()->with('error', 'Anda belum tergabung dalam tim.');
+        }
+    
+        $teamId = $detailTeam->team_id;
+    
+        $userIds = \App\Models\DetailTeam::where('team_id', $teamId)
+        ->whereHas('user', function ($query) {
+            $query->where('status', 'aktif')
+                  ->where('role', 'karyawan'); // Tambahan filter role
+        })
+        ->pluck('user_id');
+
+    
+        // Ambil absensi user yang sesuai
+        $perizinan = \App\Models\Absensi::where('status', 'diproses')
+            ->whereIn('user_id', $userIds)
+            ->with('user')
+            ->orderBy('tanggal', 'asc')
+            ->paginate(2);
+    
+        return view('absensi.requestteam', compact('perizinan'));
+    }
+    
+    
+    
+
+
+    public function detailPerizinan($id)
+    {
+        // Menemukan data absensi berdasarkan ID
+        $absensi = Absensi::findOrFail($id);
+        
+        // Mengembalikan view dengan data absensi
+        return view('absensi.detailperizinan', compact('absensi'));
+    }
+
+
 
 // Mengupdate status perizinan (Terima atau Tolak)
     public function updateStatus($id, $status)
@@ -229,12 +289,25 @@ public function statusPengguna()
 {
     $user_id = Auth::id();
     $absensi = Absensi::where('user_id', $user_id)
-                        ->where('status', '!=', 'disetujui')
-                        ->get();
+                      ->where('status', '!=', 'disetujui')
+                      ->paginate(10); // paginate 10 per halaman
 
     return view('absensi.statuspengguna', compact('absensi'));
 }
 
+public function destroyperizinan($id)
+{
+    $absensi = Absensi::findOrFail($id);
+
+    // Optional: pastikan hanya user yang punya data bisa hapus
+    if ($absensi->user_id !== Auth::id()) {
+        return redirect()->back()->with('error', 'Tidak diizinkan.');
+    }
+
+    $absensi->delete();
+
+    return redirect()->back()->with('success', 'Pengajuan perizinan berhasil dibatalkan.');
+}
 
 
 
@@ -275,13 +348,13 @@ public function statusPengguna()
                 ];
             } elseif ($item->status == 'diproses') {
                 $events[] = [
-                    'title' => 'Sedang menunggu persetujuan',
+                    'title' => 'Menunggu Persetujuan',
                     'start' => $item->tanggal,
                     'color' => 'gray'
                 ];
             } elseif ($item->status == 'ditolak') {
                 $events[] = [
-                    'title' => 'Perizinan tidak disetujui',
+                    'title' => 'Perizinan Ditolak',
                     'start' => $item->tanggal,
                     'color' => 'red'
                 ];
@@ -330,9 +403,13 @@ public function statusPengguna()
 
     public function indexPimpinan()
 {
-    // Ambil semua user dengan role karyawan dan teamleader
-    $users = User::whereIn('role', ['karyawan', 'teamleader'])->get();
-    return view('absensi.indexpimpinan', compact('users'));
+     // Ambil semua user dengan role 'karyawan' atau 'teamleader' yang statusnya 'aktif'
+     $users = User::whereIn('role', ['karyawan', 'teamleader'])
+     ->where('status', 'aktif') // Tambahkan kondisi untuk status 'aktif'
+     ->get();
+
+// Mengembalikan view dengan data users
+return view('absensi.indexpimpinan', compact('users'));
 }
 
     public function getAbsensiPimpinan(Request $request)
@@ -369,13 +446,13 @@ public function statusPengguna()
             ];
         } elseif ($item->status == 'diproses') {
             $events[] = [
-                'title' => 'Sedang menunggu persetujuan',
+                'title' => 'Menunggu Persetujuan',
                 'start' => $item->tanggal,
                 'color' => 'gray'
             ];
         } elseif ($item->status == 'ditolak') {
             $events[] = [
-                'title' => 'Perizinan tidak disetujui',
+                'title' => 'Perizinan Ditolak',
                 'start' => $item->tanggal,
                 'color' => 'red'
             ];
