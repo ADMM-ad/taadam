@@ -1,7 +1,7 @@
 @extends('masterlayout')
 
 @section('content')
-<div class="container mt-2">
+<div class="container mt-3">
 @if(session('success'))
     <div class="alert alert-success alert-dismissible fade show d-flex align-items-center" role="alert">
         <i class="fas fa-check-circle mr-2"></i>  <!-- Ikon untuk sukses -->
@@ -30,7 +30,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Status Absensi Saya</h3>
+                    <h3 class="card-title"><i class="fas fa-info-circle mr-1" style="color: #31beb4;"></i>Status Perizinan Saya</h3>
                 </div>
 
                 <div class="card-body table-responsive p-0">
@@ -63,7 +63,7 @@
                 <td>{{ $item->pesan }}</td>
                 <td>
     @if($item->bukti)
-        <a href="{{ asset('files/' . basename($item->bukti)) }}" target="_blank" class="btn btn-sm btn-primary">
+        <a href="{{ asset('files/' . basename($item->bukti)) }}" target="_blank" class="btn btn-sm btn-info">
             <i class="fas fa-eye"></i>
         </a>
     @endif

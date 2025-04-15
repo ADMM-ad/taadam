@@ -42,12 +42,25 @@
                 </div>
     </div>
     <div class="card-body">
-        The body of the card
+    Halaman ini digunakan untuk mengelola dan menampilkan laporan absensi karyawan di team anda.<br>
+Silakan pilih nama karyawan terlebih dahulu untuk menampilkan data absensi yang bersangkutan sesuai dengan periode yang Anda inginkan.<br><br>
+
+Warna pada kalender memiliki arti sebagai berikut:<br><br>
+
+<span style="color: green; font-weight: bold;">Hijau</span>: Karyawan dinyatakan hadir, yaitu telah melakukan absen datang dan absen pulang.<br>
+<span style="color: blue; font-weight: bold;">Biru</span>: Karyawan hanya melakukan absen datang, namun belum melakukan absen pulang.<br>
+<span style="color: orange; font-weight: bold;">Oranye</span>: Karyawan mengajukan izin dan telah disetujui.<br>
+<span style="color: yellow; font-weight: bold;">Kuning</span>: Karyawan mengajukan sakit dan telah disetujui.<br>
+<span style="color: gray; font-weight: bold;">Abu-abu</span>: Permintaan izin masih dalam proses, belum disetujui ataupun ditolak.<br>
+<span style="color: red; font-weight: bold;">Merah</span>: Permintaan izin telah ditolak.<br>
+<span style="color: black; font-weight: bold;">Hitam</span>: Tidak terdapat aktivitas absensi pada hari tersebut, bisa disebabkan oleh hari libur atau karyawan tidak masuk tanpa keterangan.<br><br>
+
+Pastikan untuk menyetujui atau menolak permintaan izin agar status absensi karyawan dapat tercatat.<br>
     </div>
 </div>
     <div class="card card-primary card-outline mt-3 mb-3 ms-3 me-3 p-3"  style="border-color: #31beb4;">
         <div class="card-header ">
-            <h4>Laporan Absensi Team</h4>
+            <h4 class="card-title"><i class="fas fa-calendar-check mr-1" style="color: #31beb4;"></i>Laporan Absensi Team</h4>
         </div>
         <div class="card-body">
             <!-- Dropdown untuk memilih karyawan -->

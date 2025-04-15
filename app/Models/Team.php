@@ -21,4 +21,8 @@ class Team extends Model
     {
         return $this->belongsToMany(User::class, 'detail_team', 'team_id', 'user_id');
     }
+    public function jobdesk()
+{
+    return $this->hasMany(Jobdesk::class);
+}
 }

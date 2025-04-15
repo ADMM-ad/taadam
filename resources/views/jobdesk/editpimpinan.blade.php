@@ -1,7 +1,7 @@
 @extends('masterlayout')
 
 @section('content')
-<div class="container mt-2">
+<div class="container mt-3">
 
 
     @if(session('success'))
@@ -28,7 +28,7 @@
 
         <div class="card card-primary  mt-2" >
                 <div class="card-header" style="background-color: #31beb4; border-color: #31beb4;">
-                    <h3 class="card-title">Edit Jobdesk</h3>
+                    <h3 class="card-title"><i class="fas fa-edit mr-1"></i>Edit Jobdesk</h3>
                 </div>
                 <div class="card-body">       
     <form action="{{ route('jobdesk.updatepimpinan', $jobdesk->id) }}" method="POST">
@@ -36,27 +36,27 @@
         @method('PUT')
 
         <div class="mb-3">
-            <label class="form-label">Nama Tim</label>
+            <label class="form-label"><i class="fas fa-users mr-1" style="color: #31beb4;"></i>Nama Tim</label>
             <input type="text" class="form-control" value="{{ $jobdesk->team->nama_team }}" disabled>
         </div>
 
         <div class="mb-3">
-            <label for="nama_pekerjaan" class="form-label">Nama Pekerjaan</label>
+            <label for="nama_pekerjaan" class="form-label"><i class="fas fa-clipboard-list mr-1" style="color: #31beb4;"></i>Nama Pekerjaan</label>
             <input type="text" name="nama_pekerjaan" class="form-control" value="{{ $jobdesk->nama_pekerjaan }}">
         </div>
 
         <div class="mb-3">
-            <label for="deskripsi" class="form-label">Deskripsi</label>
+            <label for="deskripsi" class="form-label"><i class="fas fa-comment-dot mr-1" style="color: #31beb4;"></i>Deskripsi</label>
             <textarea name="deskripsi" class="form-control">{{ $jobdesk->deskripsi }}</textarea>
         </div>
 
         <div class="mb-3">
-            <label for="tenggat_waktu" class="form-label">Tenggat Waktu</label>
+            <label for="tenggat_waktu" class="form-label"><i class="fas fa-calendar-alt mr-1" style="color: #31beb4;"></i>Tenggat Waktu</label>
             <input type="date" name="tenggat_waktu" class="form-control" value="{{ $jobdesk->tenggat_waktu }}">
         </div>
 
         <div class="mb-3">
-            <label for="status" class="form-label">Status</label>
+            <label for="status" class="form-label"><i class="fas fa-hourglass-half mr-1" style="color: #31beb4;"></i>Status</label>
             <select name="status" class="form-control">
                 <option value="ditugaskan" {{ $jobdesk->status == 'ditugaskan' ? 'selected' : '' }}>Ditugaskan</option>
                 <option value="selesai" {{ $jobdesk->status == 'selesai' ? 'selected' : '' }}>Selesai</option>
@@ -78,7 +78,7 @@
 </div>
 <div class="card card-primary mt-2">
     <div class="card-header" style="background-color: #31beb4; border-color: #31beb4;">
-        <h3 class="card-title">Pengguna dalam Jobdesk ini</h3>
+        <h3 class="card-title"><i class="fas fa-user mr-1"></i>Pengguna dalam Jobdesk ini</h3>
     </div>
     <div class="card-body">
         <ul class="list-group">

@@ -1,7 +1,7 @@
 @extends('masterlayout')
 
 @section('content')
-<div class="container mt-2">
+<div class="container mt-3">
 @if(session('success'))
     <div class="alert alert-success alert-dismissible fade show d-flex align-items-center" role="alert">
         <i class="fas fa-check-circle mr-2"></i>  <!-- Ikon untuk sukses -->
@@ -25,24 +25,7 @@
         </button>
     </div>
 @endif
-    <div class="card card-warning collapsed-card mt-2">
-    <div class="card-header">
-    <h3 class="card-title">
-    <i class="bi bi-megaphone-fill"></i>
-    Instructions
-</h3>
-        <div class="card-tools">
-                  <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i>
-                  </button>
-                  <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
-                    <i class="fas fa-times"></i>
-                  </button>
-                </div>
-    </div>
-    <div class="card-body">
-        The body of the card
-    </div>
-</div>
+
 <div class="row">
 <div class="col-md-12">
 <form method="GET" action="{{ route('jobdesk.indexpenggunaselesai') }}">
@@ -73,7 +56,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Daftar Jobdesk yang Selesai</h3>
+                    <h3 class="card-title"><i class="fas fa-tasks mr-1" style="color: #31beb4;"></i>Daftar Jobdesk yang Selesai</h3>
                 </div>
 
                 <div class="card-body table-responsive p-0">
@@ -100,15 +83,16 @@
                     <td><span class="badge bg-success">Selesai</span></td>
                     <td>
     @if(Str::startsWith($jobdesk->hasil, ['http://', 'https://']))
-        <a href="{{ $jobdesk->hasil }}" target="_blank" class="btn btn-sm btn-info">Lihat</a>
+        <a href="{{ $jobdesk->hasil }}" target="_blank" class="btn btn-sm btn-success">Lihat</a>
     @else
         {{ $jobdesk->hasil }}
     @endif
 </td>
 <td>
                 <a href="{{ route('jobdesk.editbukti', $jobdesk->id) }}" class="btn btn-sm btn-warning">
-                    <i class="fas fa-edit"></i> Edit
+                    Edit
                 </a>
+                <a href="{{ route('jobdesk.detailpimpinan', $jobdesk->id) }}" class="btn btn-info btn-sm">Detail</a>
             </td>
 
                 </tr>

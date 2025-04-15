@@ -1,24 +1,15 @@
 @extends('masterlayout')
 
 @section('content')
-<div class="container mt-2">
+<div class="container mt-3">
     
-@if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show d-flex align-items-center" role="alert">
-        <i class="fas fa-check-circle mr-2"></i>  <!-- Ikon untuk sukses -->
-        {{ session('success') }}
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-@endif
 
 @if($errors->any())
     <div class="alert alert-danger alert-dismissible fade show d-flex align-items-center" role="alert">
-        <i class="fas fa-exclamation-triangle mr-2"></i>  <!-- Ikon untuk error -->
+        <i class="fas fa-exclamation-triangle"></i>  <!-- Ikon untuk error -->
         <ul class="mb-0">
             @foreach($errors->all() as $error)
-                <li>{{ $error }}</li>
+                {{ $error }}
             @endforeach
         </ul>
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -27,7 +18,7 @@
     </div>
 @endif
 
-        <div class="card card-warning collapsed-card mt-2">
+        <div class="card card-warning collapsed-card mt-3">
     <div class="card-header">
     <h3 class="card-title">
     <i class="bi bi-megaphone-fill"></i>
@@ -42,13 +33,15 @@
                 </div>
     </div>
     <div class="card-body">
-        The body of the card
+    Halaman ini digunakan untuk menambahkan jobdesk ke dalam team. Anda dapat menentukan jobdesk yang akan dikerjakan oleh anggota team, baik secara individu maupun kelompok.
+
+Untuk memulai, pastikan Anda memilih team terlebih dahulu agar dapat menampilkan daftar anggota yang akan melaksanakan tugas tersebut. Jika anggota yang Anda inginkan tidak muncul dalam daftar, itu berarti pengguna tersebut belum tergabung dalam team yang dipilih.
     </div>
 </div>
 
         <div class="card card-primary  mt-2" >
                 <div class="card-header" style="background-color: #31beb4; border-color: #31beb4;">
-                    <h3 class="card-title">Tambah Jobdesk Team </h3>
+                    <h3 class="card-title">  <i class="fas fa fa-plus-circle mr-1"></i>Tambah Jobdesk Team </h3>
                 </div>
                 <div class="card-body">
     <form action="{{ route('jobdesk.store') }}" method="POST">
@@ -56,7 +49,7 @@
 
         <!-- Pilih Team -->
         <div class="mb-3">
-            <label for="team_id" class="form-label">Pilih Team</label>
+            <label for="team_id" class="form-label"><i class="fas fa-users mr-1" style="color: #31beb4;"></i>Pilih Team</label>
             <select name="team_id" id="team_id" class="form-control" required>
                 <option value="">-- Pilih Team --</option>
                 @foreach($teams as $team)
@@ -67,27 +60,27 @@
 
         <!-- Pilih Nama Pekerjaan -->
         <div class="mb-3">
-            <label for="nama_pekerjaan" class="form-label">Nama Pekerjaan</label>
-            <input type="text" name="nama_pekerjaan" class="form-control" required>
+            <label for="nama_pekerjaan" class="form-label"><i class="fas fa-clipboard-list mr-1" style="color: #31beb4;"></i>Nama Pekerjaan</label>
+            <input type="text" name="nama_pekerjaan" class="form-control" placeholder="Masukan nama perkerjaan." required>
         </div>
 
         <!-- Pilih Deskripsi -->
         <div class="mb-3">
-            <label for="deskripsi" class="form-label">Deskripsi</label>
-            <textarea name="deskripsi" class="form-control" required></textarea>
+            <label for="deskripsi" class="form-label"><i class="fas fa-comment-dots mr-1" style="color: #31beb4;"></i>Deskripsi</label>
+            <textarea name="deskripsi" class="form-control" placeholder="Masukan deskripsi atau penjelasan perkerjaan." required></textarea>
         </div>
 
         <!-- Pilih Tenggat Waktu -->
         <div class="mb-3">
-            <label for="tenggat_waktu" class="form-label">Tenggat Waktu</label>
+            <label for="tenggat_waktu" class="form-label"><i class="fas fa-calendar-alt mr-1" style="color: #31beb4;"></i>Tenggat Waktu</label>
             <input type="date" name="tenggat_waktu" class="form-control" required>
         </div>
 
         <!-- Pilih User yang Mengerjakan -->
         <div class="mb-3">
-            <label class="form-label">Pilih Pengguna yang Mengerjakan</label>
+            <label class="form-label"><i class="fas fa-user mr-1" style="color: #31beb4;"></i>Pilih Pengguna yang Mengerjakan</label>
             <div id="user-checkboxes">
-                <p class="text-muted">Pilih team terlebih dahulu.</p>
+                <p class="text-muted">Silahkan memilih team terlebih dahulu.</p>
             </div>
         </div>
 

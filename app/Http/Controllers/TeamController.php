@@ -32,8 +32,13 @@ class TeamController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama_team' => 'required|string|max:255',
+            'nama_team' => 'required|string|max:100|unique:team,nama_team',
+        ], [
+            'nama_team.required' => 'Nama team tidak boleh kosong',
+            'nama_team.max' => 'Nama team tidak boleh lebih dari 100 karakter.',
+            'nama_team.unique' => 'Nama team sudah digunakan',
         ]);
+        
 
         Team::create($request->all());
         return redirect()->route('team.index')
@@ -48,8 +53,12 @@ class TeamController extends Controller
     public function update(Request $request, Team $team)
     {
         $request->validate([
-            'nama_team' => 'required|string|max:255',
+            'nama_team' => 'required|string|max:100|unique:team,nama_team,' . $team->id,
+        ], [
+            'nama_team.max' => 'Nama team tidak boleh lebih dari 100 karakter.',
+            'nama_team.unique' => 'Nama team sudah digunakan',
         ]);
+        
 
         $team->update($request->all());
         return redirect()->route('team.index')

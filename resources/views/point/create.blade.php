@@ -38,7 +38,45 @@
     
 </style>
 
-<div class="container mt-2">
+<div class="container mt-3">
+{{-- Success Message --}}
+@if(session('success'))
+<div class="alert alert-success alert-dismissible fade show d-flex align-items-center" role="alert">
+    <i class="fas fa-check-circle mr-1"></i> {{-- Icon success --}}
+    {{ session('success') }}
+    <button type="button" class="close ml-auto" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+@endif
+
+{{-- Error Message --}}
+@if(session('error'))
+<div class="alert alert-danger alert-dismissible fade show d-flex align-items-center" role="alert">
+    <i class="fas fa-exclamation-circle mr-1"></i> {{-- Icon error --}}
+    {{ session('error') }}
+    <button type="button" class="close ml-auto" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+@endif
+
+{{-- Validation Errors --}}
+@if($errors->any())
+<div class="alert alert-danger alert-dismissible fade show d-flex align-items-start" role="alert">
+    <i class="fas fa-exclamation-triangle mr-1"></i> {{-- Icon warning --}}
+    <div>
+        <ul class="mb-0">
+            @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+    <button type="button" class="close ml-auto" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+@endif
 <div class="card card-warning collapsed-card mt-2">
     <div class="card-header">
     <h3 class="card-title">
@@ -54,39 +92,21 @@
                 </div>
     </div>
     <div class="card-body">
-        The body of the card
+    Halaman ini digunakan untuk mengelola dan menilai kinerja karyawan berdasarkan indikator serta bobot penilaian yang telah ditetapkan.<br>
+Penilaian dilakukan setiap bulan dan mencakup empat aspek utama, yaitu:<br>
+- Kehadiran sebesar 25%<br>
+- Penyelesaian jobdesk sebesar 30%<br>
+- Hasil kerja atau jumlah views sebesar 25%<br>
+- Attitude sebesar 20%<br><br>
+
+Setiap indikator akan dikonversi ke dalam poin Key Performance Indicator (KPI) sesuai bobot masing-masing.<br>
+Hasil perhitungan ini akan ditampilkan secara terperinci di halaman Laporan Poin,
+sehingga Anda dapat memantau pencapaian kinerja karyawan secara lebih objektif dan terukur.
+
     </div>
 </div>
-    @if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        {{ session('success') }}
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-@endif
 
-@if(session('error'))  {{-- Tambahkan pengecekan session error --}}
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        {{ session('error') }}
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-@endif
 
-@if($errors->any())
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <ul>
-            @foreach($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-@endif
 
     <form action="{{ route('point.store') }}" method="POST">
         @csrf
@@ -102,7 +122,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Hitung Point KPI {{ $user->name }}</h3>
+                    <h3 class="card-title"> <i class="fas fa-star mr-1" style="color: #31beb4;"></i>Hitung Point KPI {{ $user->name }}</h3>
                 </div>
 
                 <div class="card-body table-responsive">
@@ -276,9 +296,9 @@ function updateSkorAbsensi(bobot) {
 }
 
 function updateSkorJobdesk(bobot) {
-    let skor = (25 * bobot) / 100;
+    let skor = (30 * bobot) / 100;
     document.getElementById('skor_jobdesk').innerText = skor.toLocaleString('id-ID', { minimumFractionDigits: 1 }) + '%';
-    let skorAkhir = (skor * 25) / 100;
+    let skorAkhir = (skor * 30) / 100;
     document.getElementById('skor_akhir_jobdesk').innerText = skorAkhir.toLocaleString('id-ID', { minimumFractionDigits: 2 });
     document.getElementById('point_jobdesk').value = skorAkhir;
 }
@@ -292,9 +312,9 @@ function updateSkorViews(bobot) {
 }
 
 function updateSkorAttitude(bobot) {
-    let skor = (25 * bobot) / 100;
+    let skor = (20 * bobot) / 100;
     document.getElementById('skor_attitude').innerText = skor.toLocaleString('id-ID', { minimumFractionDigits: 1 }) + '%';
-    let skorAkhir = (skor * 25) / 100;
+    let skorAkhir = (skor * 20) / 100;
     document.getElementById('skor_akhir_attitude').innerText = skorAkhir.toLocaleString('id-ID', { minimumFractionDigits: 2 });
     document.getElementById('point_attitude').value = skorAkhir;
 }

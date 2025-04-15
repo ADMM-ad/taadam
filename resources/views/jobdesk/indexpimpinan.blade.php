@@ -17,7 +17,7 @@
         <i class="fas fa-exclamation-triangle mr-2"></i>  <!-- Ikon untuk error -->
         <ul class="mb-0">
             @foreach($errors->all() as $error)
-                <li>{{ $error }}</li>
+                {{ $error }}
             @endforeach
         </ul>
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -41,7 +41,9 @@
                 </div>
     </div>
     <div class="card-body">
-        The body of the card
+    Halaman ini digunakan untuk mengelola dan memantau seluruh jobdesk yang telah dibuat, baik individu maupun team.
+Anda dapat melihat status pekerjaan, tenggat waktu, serta hasil jobdesk jika tersedia atau berupa link
+dan gunakan tombol detail untuk melihat informasi lengkap, termasuk deskripsi pekerjaan dan pengguna yang terlibat dalam jobdesk tersebut.
     </div>
 </div>
 
@@ -89,7 +91,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Daftar Jobdesk</h3>
+                    <h3 class="card-title"><i class="fas fa-file-alt mr-1" style="color: #31beb4;"></i>Laporan Jobdesk</h3>
                 </div>
 
                 <div class="card-body table-responsive p-0">
@@ -117,6 +119,11 @@
                         </span>
                     </td>
                     <td>
+                    @if(Str::startsWith($jobdesk->hasil, ['http://', 'https://']))
+        <a href="{{ $jobdesk->hasil }}" target="_blank" class="btn btn-sm btn-success">Lihat</a>
+    @else
+        {{ $jobdesk->hasil }}
+    @endif
     <a href="{{ route('jobdesk.detailpimpinan', $jobdesk->id) }}" class="btn btn-info btn-sm">Detail</a>
     <a href="{{ route('jobdesk.editpimpinan', $jobdesk->id) }}" class="btn btn-warning btn-sm">Edit</a>
     <button type="button" class="btn btn-danger btn-sm" onclick="confirmDelete('{{ route('jobdesk.delete', $jobdesk->id) }}')">Hapus</button>
@@ -126,13 +133,14 @@
             @endforeach
         </tbody>
     </table>
+    
+    </div>
+    </div>
+    </div>
+    </div>
     <div class="d-flex justify-content-end mt-3">
     {{ $jobdesks->appends(request()->query())->links('pagination::bootstrap-4') }} <!-- Ini untuk menampilkan navigasi paginasi -->
                     </div>
-    </div>
-    </div>
-    </div>
-    </div>
 </div>
 <!-- Modal Konfirmasi Hapus -->
 <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">

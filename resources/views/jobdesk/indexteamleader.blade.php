@@ -27,7 +27,26 @@
         </button>
     </div>
 @endif
-<!-- Form Search dan Filter -->
+<div class="card card-warning collapsed-card mt-2">
+    <div class="card-header">
+    <h3 class="card-title">
+    <i class="bi bi-megaphone-fill"></i>
+    Instructions
+</h3>
+        <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i>
+                  </button>
+                  <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+    </div>
+    <div class="card-body">
+    Halaman ini digunakan untuk mengelola dan memantau seluruh jobdesk yang telah dibuat pada team Anda, baik individu maupun team.
+Anda dapat melihat status pekerjaan, tenggat waktu, serta hasil jobdesk jika tersedia atau berupa link
+dan gunakan tombol detail untuk melihat informasi lengkap, termasuk deskripsi pekerjaan dan pengguna yang terlibat dalam jobdesk tersebut.
+    </div>
+</div>
 <!-- Form Search dan Filter -->
 <div class="row mb-3">
     <div class="col-md-12">
@@ -83,7 +102,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Daftar Jobdesk Team</h3>
+                    <h3 class="card-title"><i class="fas fa-users mr-1" style="color: #31beb4;"></i>Daftar Jobdesk Team</h3>
                 </div>
 
                 <div class="card-body table-responsive p-0">
@@ -112,6 +131,11 @@
                         </span>
                     </td>
                     <td>
+                    @if(Str::startsWith($jobdesk->hasil, ['http://', 'https://']))
+        <a href="{{ $jobdesk->hasil }}" target="_blank" class="btn btn-sm btn-success">Lihat</a>
+    @else
+        {{ $jobdesk->hasil }}
+    @endif
     <a href="{{ route('jobdesk.detailpimpinan', $jobdesk->id) }}" class="btn btn-info btn-sm">Detail</a>
     <a href="{{ route('jobdesk.editpimpinan', $jobdesk->id) }}" class="btn btn-warning btn-sm">Edit</a>
     <button type="button" class="btn btn-danger btn-sm" onclick="confirmDelete('{{ route('jobdesk.delete', $jobdesk->id) }}')">Delete</button>
@@ -121,13 +145,14 @@
             @endforeach
         </tbody>
     </table>
+   
+    </div>
+    </div>
+    </div>
+    </div>
     <div class="d-flex justify-content-end mt-3">
     {{ $jobdesks->withQueryString()->links('pagination::bootstrap-4') }}
                     </div>
-    </div>
-    </div>
-    </div>
-    </div>
 </div>
 <!-- Modal Konfirmasi Hapus -->
 <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">

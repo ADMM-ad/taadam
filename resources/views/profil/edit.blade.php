@@ -17,7 +17,10 @@
                 </div>
     </div>
     <div class="card-body">
-        The body of the card
+    Nama tidak boleh lebih dari 50 karakter<br>
+    Username harus berbeda dengan pengguna yang lain dan tidak boleh lebih dari 50 karakter<br>
+    Nomor HP tidak boleh lebih dari 15 karakter<br>
+    Password minimal terdiri dari 8 karakter
     </div>
 </div>
 
@@ -25,7 +28,7 @@
     <div class="card card-primary card-outline mt-3 mb-3 ms-3 me-3 p-3" style="border-color: #31beb4;">
         <div class="card-header">
             <h3 class="card-title">
-                <i class="fas fa-edit"></i>
+                <i class="fas fa-edit" style="color: #31beb4;"></i>
                 Edit Profil
             </h3>
         </div>
@@ -42,40 +45,47 @@
             <form action="{{ route('profil.update') }}" method="POST">
                 @csrf
                 <div class="mb-3">
-                    <label for="name" class="form-label">Nama</label>
+                    <label for="name" class="form-label"><i class="fas fa-user mr-1" style="color: #31beb4;"></i>Nama</label>
                     <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name', $user->name) }}">
                     @error('name')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
                 <div class="mb-3">
-                    <label for="username" class="form-label">Username</label>
+                    <label for="username" class="form-label"><i class="fas fa-user-tag mr-1" style="color: #31beb4;"></i>Username</label>
                     <input type="text" name="username" class="form-control @error('username') is-invalid @enderror" value="{{ old('username', $user->username) }}">
                     @error('username')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
                 <div class="mb-3">
-                    <label for="no_hp" class="form-label">No HP</label>
+                    <label for="no_hp" class="form-label"><i class="fas fa-phone-alt mr-1" style="color: #31beb4;"></i>No HP</label>
                     <input type="text" name="no_hp" class="form-control @error('no_hp') is-invalid @enderror" value="{{ old('no_hp', $user->no_hp) }}">
                     @error('no_hp')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
                 <div class="mb-3">
-                    <label for="password" class="form-label">Password Baru (Opsional)</label>
+                    <label for="email" class="form-label"><i class="fas fa-envelope mr-1" style="color: #31beb4;"></i>Email Pemulihan</label>
+                    <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" value="{{ old('email', $user->email) }}">
+                    @error('email')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label"><i class="fas fa-lock mr-1" style="color: #31beb4;"></i>Password Baru (Opsional)</label>
                     <input type="password" name="password" class="form-control @error('password') is-invalid @enderror">
                     @error('password')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
                 <div class="mb-3">
-                    <label for="password_confirmation" class="form-label">Konfirmasi Password Baru</label>
+                    <label for="password_confirmation" class="form-label"><i class="bi bi-shield-lock-fill mr-1" style="color: #31beb4;"></i>Konfirmasi Password Baru (Opsional)</label>
                     <input type="password" name="password_confirmation" class="form-control">
                 </div>
             </div> <!-- Tutup card-body -->
 
-            <div class="card-footer">
+            <div class="card-footer" style="background-color: #ffffff">
                 <button type="submit" class="btn btn-success">
                     <i class="fas fa-save"></i> Simpan
                 </button>

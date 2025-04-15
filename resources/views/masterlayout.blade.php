@@ -163,6 +163,25 @@
     color: #fff;
 }
 
+
+    /* Ubah warna nama hari seperti Sun, Mon, dst */
+    .fc .fc-col-header-cell-cushion {
+        color: #31beb4; /* biru */
+        font-weight: bold;
+    }
+
+    /* Ubah warna angka tanggal di kalender */
+    .fc .fc-daygrid-day-number {
+        color: #31beb4; /* hijau */
+        
+    }
+/* Warna header hari Minggu */
+.fc .fc-col-header-cell.fc-day-sun .fc-col-header-cell-cushion {
+        color: #ff0000 !important;
+        font-weight: bold;
+    }
+
+
 /* Sembunyikan nama user di tampilan kecil (<820px) */
 @media (max-width: 819px) {
   .user-name {
@@ -295,7 +314,7 @@
 
             <li class="nav-item">
               <a href="/profil" class="nav-link">
-                <i class="fas fa-user"></i>
+                <i class="fas fa-user-circle"></i>
                 <p>Profil</p>
               </a>
             </li>
@@ -324,7 +343,7 @@
                 </li>
                 <li class="nav-item">
                   <a href="/register" class="nav-link">
-                    <i class="fas fa-user-tie"></i>
+                    <i class="fas fa-user-plus"></i>
                     <p>Tambah User</p>
                   </a>
                 </li>
@@ -342,12 +361,12 @@
                 <li class="nav-item">
                   <a href="/team" class="nav-link">
                     <i class="fas fa-folder"></i>
-                    <p>Data Team</p>
+                    <p>Daftar Team</p>
                   </a>
                 </li>
                 <li class="nav-item">
                   <a href="/anggotateam" class="nav-link">
-                    <i class="fas fa-user-check"></i>
+                    <i class="fas fa-sitemap"></i>
                     <p>Anggota Team</p>
                   </a>
                 </li>
@@ -368,7 +387,7 @@
                 <li class="nav-item">
                   <a href="/absensi/perizinan?tanggal={{ date('Y-m-d') }}" class="nav-link">
                     <i class="fas fa-file-signature"></i>
-                    <p>Permintaan Perizinan</p>
+                    <p>Ajukan Perizinan</p>
                   </a>
                 </li>
                 <li class="nav-item">
@@ -382,7 +401,7 @@
                 <li class="nav-item">
                   <a href="/request-team-leader" class="nav-link">
                     <i class="fas fa-file-alt"></i>
-                    <p>Laporan Permintaan Perizinan</p>
+                    <p>Permintaan Perizinan</p>
                   </a>
                 </li>
                 @endif
@@ -390,7 +409,7 @@
                 <li class="nav-item">
                   <a href="/request-perizinan" class="nav-link">
                     <i class="fas fa-file-alt"></i>
-                    <p>Laporan Permintaan Perizinan</p>
+                    <p>Permintaan Perizinan</p>
                   </a>
                 </li>
                 @endif
@@ -436,6 +455,14 @@
                   </a>
                 </li>
                 @endif
+                @if(auth()->user()->role == 'pimpinan' || auth()->user()->role == 'teamleader')
+                <li class="nav-item">
+                  <a href="/laporan-keterlambatan" class="nav-link">
+                    <i class="fas fa-clock"></i>
+                    <p>Laporan Terlambat</p>
+                  </a>
+                </li>
+                @endif
               </ul>
             </li>
 
@@ -474,19 +501,19 @@
                 @if(auth()->user()->role == 'pimpinan')
                 <li class="nav-item">
                   <a href="/jobdesk/create" class="nav-link">
-                    <i class="fas fa-file-alt"></i>
-                    <p>Tambah Jobdesk Team</p>
+                    <i class="fas fa fa-clipboard-list"></i>
+                    <p>Jobdesk Team</p>
                   </a>
                 </li>
                 <li class="nav-item">
                   <a href="/jobdesk/createindividu" class="nav-link">
-                    <i class="fas fa-file-alt"></i>
-                    <p>Tambah Jobdesk Individu</p>
+                    <i class="fas fa fa-briefcase"></i>
+                    <p>Jobdesk Individu</p>
                   </a>
                 </li>
                 <li class="nav-item">
                   <a href="/jobdesk/pimpinan" class="nav-link">
-                    <i class="fas fa-users"></i>
+                    <i class="fas fa-file-alt"></i>
                     <p>Laporan Jobdesk</p>
                   </a>
                 </li>
@@ -574,13 +601,15 @@
   <script src="{{ asset('template/plugins/jquery/jquery.min.js') }}"></script>
   <script src="{{ asset('template/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
   <script src="{{ asset('template/dist/js/adminlte.min.js') }}"></script>
- 
-
+  <script src="{{ asset('template/plugins/chart.js/Chart.min.js') }}"></script>
+  <script src="{{ asset('template/plugins/jquery-knob/jquery.knob.min.js') }}"></script>
+  
 
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
   
- 
-  
+
+  @stack('scriptsdua')
+
   @yield('scripts')
 </body>
 

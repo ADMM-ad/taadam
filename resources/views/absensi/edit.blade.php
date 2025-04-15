@@ -29,7 +29,7 @@
 @endif
 <div class="card card-primary  mt-2" >
                 <div class="card-header" style="background-color: #31beb4; border-color: #31beb4;">
-                    <h3 class="card-title">Edit Data Absensi</h3>
+                    <h3 class="card-title"><i class="fas fa-edit mr-1"></i>Edit Data Absensi</h3>
                 </div>
                 <div class="card-body">
     <form action="{{ route('absensi.update') }}" method="POST">
@@ -38,22 +38,23 @@
         <input type="hidden" name="tanggal" value="{{ $tanggal }}">
 
         <div class="form-group">
-            <label>Nama Karyawan:</label>
+            <label><i class="fas fa-user mr-1" style="color: #31beb4;"></i>Nama</label>
             <input type="text" class="form-control" value="{{ $user->name }}" disabled>
         </div>
 
         <div class="form-group">
-            <label>Tanggal:</label>
+            <label><i class="fas fa-calendar-alt mr-1" style="color: #31beb4;"></i>Tanggal</label>
             <input type="text" class="form-control" value="{{ $tanggal }}" disabled>
         </div>
 
         <div class="form-group">
-            <label>Kehadiran:</label>
+            <label><i class="fas fa-calendar-check mr-1" style="color: #31beb4;"></i>Kehadiran</label>
             <select name="kehadiran" class="form-control" required>
                 <option value="hadir" {{ isset($absensi) && $absensi->kehadiran == 'hadir' ? 'selected' : '' }}>Hadir</option>
                 <option value="sakit" {{ isset($absensi) && $absensi->kehadiran == 'sakit' ? 'selected' : '' }}>Sakit</option>
                 <option value="izin" {{ isset($absensi) && $absensi->kehadiran == 'izin' ? 'selected' : '' }}>Izin</option>
                 <option value="datang" {{ isset($absensi) && $absensi->kehadiran == 'datang' ? 'selected' : '' }}>Datang</option>
+                <option value="tanpa_keterangan" {{ isset($absensi) && $absensi->kehadiran == 'tanpa_keterangan' ? 'selected' : '' }}>Tidak Absen</option>
             </select>
         </div>
 

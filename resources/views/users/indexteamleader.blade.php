@@ -23,7 +23,24 @@
             </button>
         </div>
     @endif
-
+    <div class="card card-warning collapsed-card mt-2">
+    <div class="card-header">
+    <h3 class="card-title">
+    <i class="bi bi-megaphone-fill"></i>
+    Instructions
+</h3>
+        <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i>
+                  </button>
+                  <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+    </div>
+    <div class="card-body">
+    Halaman ini digunakan untuk mengelola pengguna berdasarkan jabatan atau role teamleader. Anda dapat mengaktifkan atau menonaktifkan akun mereka sesuai kebutuhan. Harap berhati-hati saat menghapus akun, karena tindakan ini akan menghapus seluruh data pengguna, termasuk data absensi dan jobdesk yang terkait.
+    </div>
+</div>
     <!-- Form Search & Filter -->
     <div class="row mb-3">
         <div class="col-md-6 mb-1">
@@ -55,7 +72,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Daftar Teamleader</h3>
+                    <h3 class="card-title"><i class="fas fa-user-tie mr-1" style="color: #31beb4;"></i>Daftar Teamleader</h3>
                 </div>
 
                 <div class="card-body table-responsive p-0">
@@ -63,6 +80,7 @@
                         <thead>
                             <tr>
                                 <th>Nama</th>
+                                <th>Username</th>
                                 <th>No HP</th>
                                 <th>Status</th>
                                 <th>Aksi</th>
@@ -72,6 +90,7 @@
                             @forelse($users as $user)
                                 <tr>
                                     <td>{{ $user->name }}</td>
+                                    <td>{{ $user->username }}</td>
                                     <td>{{ $user->no_hp }}</td>
                                     <td>
                                         <span class="badge {{ $user->status == 'aktif' ? 'badge-success' : 'badge-danger' }}">

@@ -4,7 +4,7 @@
 <div class="container mt-3">
 <div class="card card-primary card-outline mt-3 mb-3 ms-3 me-3 p-3"  style="border-color: #31beb4;">
         <div class="card-header">
-            <h3 class="card-title">
+            <h3 class="card-title"><i class="fas fa-clipboard-check mr-1" style="color: #31beb4;"></i>
                 Detail Perizinan {{ $absensi->user->name }}
             </h3>
         </div>

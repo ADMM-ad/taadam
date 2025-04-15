@@ -17,7 +17,7 @@
         <i class="fas fa-exclamation-triangle mr-2"></i>  <!-- Ikon untuk error -->
         <ul class="mb-0">
             @foreach($errors->all() as $error)
-                <li>{{ $error }}</li>
+                {{ $error }}
             @endforeach
         </ul>
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -40,7 +40,7 @@
                 </div>
     </div>
     <div class="card-body">
-        The body of the card
+    Halaman ini digunakan untuk mengelola daftar anggota tim. Anda dapat melihat serta menambahkan anggota ke dalam tim yang Anda pilih.
     </div>
 </div>
 
@@ -69,7 +69,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Daftar Team</h3>
+                    <h3 class="card-title"><i class="fas fa-sitemap mr-1" style="color: #31beb4;"></i>Daftar Team</h3>
                 </div>
 
                 <div class="card-body table-responsive p-0">

@@ -26,10 +26,24 @@ class JobdeskController extends Controller
         $request->validate([
             'team_id' => 'required|exists:team,id',
             'nama_pekerjaan' => 'required|string|max:255',
-            'deskripsi' => 'required|string',
+            'deskripsi' => 'required|string|max:255',
             'tenggat_waktu' => 'required|date',
             'user_ids' => 'required|array',
             'user_ids.*' => 'exists:users,id'
+        ], [
+            'team_id.required' => 'Tim harus dipilih.',
+            'team_id.exists' => 'Tim yang dipilih tidak valid.',
+            'nama_pekerjaan.required' => 'Nama pekerjaan harus diisi.',
+            'nama_pekerjaan.string' => 'Nama pekerjaan harus berupa teks.',
+            'nama_pekerjaan.max' => 'Nama pekerjaan maksimal 255 karakter.',
+            'deskripsi.required' => 'Deskripsi pekerjaan harus diisi.',
+            'deskripsi.string' => 'Deskripsi pekerjaan harus berupa teks.',
+            'deskripsi.max' => 'Nama pekerjaan maksimal 255 karakter.',
+            'tenggat_waktu.required' => 'Tenggat waktu harus diisi.',
+            'tenggat_waktu.date' => 'Tenggat waktu harus berupa format tanggal yang valid.',
+            'user_ids.required' => 'Anggota tim harus dipilih.',
+            'user_ids.array' => 'Anggota tim harus berupa array.',
+            'user_ids.*.exists' => 'Anggota tim yang dipilih tidak valid.',
         ]);
 
         // Simpan data ke tabel jobdesk
@@ -106,6 +120,19 @@ public function storeindividu(Request $request)
         'nama_pekerjaan' => 'required|string|max:255',
         'deskripsi' => 'required|string',
         'tenggat_waktu' => 'required|date',
+    ], [
+        'user_id.required' => 'Pengguna wajib dipilih.',
+        'user_id.exists'   => 'Pengguna yang dipilih tidak ditemukan dalam sistem.',
+        
+        'nama_pekerjaan.required' => 'Nama pekerjaan wajib diisi.',
+        'nama_pekerjaan.string'   => 'Nama pekerjaan harus berupa teks.',
+        'nama_pekerjaan.max'      => 'Nama pekerjaan tidak boleh lebih dari 255 karakter.',
+    
+        'deskripsi.required' => 'Deskripsi pekerjaan wajib diisi.',
+        'deskripsi.string'   => 'Deskripsi harus berupa teks.',
+    
+        'tenggat_waktu.required' => 'Tenggat waktu wajib diisi.',
+        'tenggat_waktu.date'     => 'Tenggat waktu harus berupa tanggal yang valid.',
     ]);
 
     // Cari ID dari tim dengan nama 'Individu'

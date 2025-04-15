@@ -1,25 +1,14 @@
 @extends('masterlayout')
 
 @section('content')
-<div class="container mt-2">
-    
-
-@if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show d-flex align-items-center" role="alert">
-        <i class="fas fa-check-circle mr-2"></i>  <!-- Ikon untuk sukses -->
-        {{ session('success') }}
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-@endif
+<div class="container mt-3">
 
 @if($errors->any())
     <div class="alert alert-danger alert-dismissible fade show d-flex align-items-center" role="alert">
-        <i class="fas fa-exclamation-triangle mr-2"></i>  <!-- Ikon untuk error -->
+        <i class="fas fa-exclamation-triangle"></i>  <!-- Ikon untuk error -->
         <ul class="mb-0">
             @foreach($errors->all() as $error)
-                <li>{{ $error }}</li>
+                {{ $error }}
             @endforeach
         </ul>
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -42,14 +31,14 @@
                 </div>
     </div>
     <div class="card-body">
-        The body of the card
+    Halaman ini digunakan untuk menambahkan jobdesk individu. Jobdesk individu adalah tugas atau pekerjaan yang tidak terkait dengan jobdesk dalam team.
     </div>
 </div>
 
 
 <div class="card card-primary  mt-2" >
                 <div class="card-header" style="background-color: #31beb4; border-color: #31beb4;">
-                    <h3 class="card-title">Tambah Jobdesk Individu</h3>
+                    <h3 class="card-title"> <i class="fas fa fa-plus-circle mr-1"></i>Tambah Jobdesk Individu</h3>
                 </div>
                 <div class="card-body">
     <form action="{{ route('jobdesk.storeindividu') }}" method="POST">
@@ -57,7 +46,7 @@
 
  <!-- Pilih User -->
  <div class="mb-3">
-            <label for="user_id" class="form-label">Pilih User</label>
+            <label for="user_id" class="form-label"><i class="fas fa-user mr-1" style="color: #31beb4;"></i>Pilih Pengguna yang Mengerjakan</label>
             <select name="user_id" class="form-control" required>
                 <option value="">-- Pilih User --</option>
                 @foreach($users as $user)
@@ -67,19 +56,19 @@
         </div>
         <!-- Pilih Nama Pekerjaan -->
         <div class="mb-3">
-            <label for="nama_pekerjaan" class="form-label">Nama Pekerjaan</label>
-            <input type="text" name="nama_pekerjaan" class="form-control" required>
+            <label for="nama_pekerjaan" class="form-label"><i class="fas fa-clipboard-list mr-1" style="color: #31beb4;"></i>Nama Pekerjaan</label>
+            <input type="text" name="nama_pekerjaan" class="form-control" placeholder="Masukan nama perkerjaan." required>
         </div>
 
         <!-- Pilih Deskripsi -->
         <div class="mb-3">
-            <label for="deskripsi" class="form-label">Deskripsi</label>
-            <textarea name="deskripsi" class="form-control" required></textarea>
+            <label for="deskripsi" class="form-label"><i class="fas fa-comment-dots mr-1" style="color: #31beb4;"></i>Deskripsi</label>
+            <textarea name="deskripsi" class="form-control" placeholder="Masukan deskripsi atau penjelasan perkerjaan." required></textarea>
         </div>
 
         <!-- Pilih Tenggat Waktu -->
         <div class="mb-3">
-            <label for="tenggat_waktu" class="form-label">Tenggat Waktu</label>
+            <label for="tenggat_waktu" class="form-label"><i class="fas fa-calendar-alt mr-1" style="color: #31beb4;"></i>Tenggat Waktu</label>
             <input type="date" name="tenggat_waktu" class="form-control" required>
         </div>
 

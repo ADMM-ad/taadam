@@ -1,25 +1,8 @@
 @extends('masterlayout')
 
 @section('content')
-<div class="container">
-<div class="card card-warning collapsed-card mt-2">
-    <div class="card-header">
-    <h3 class="card-title">
-    <i class="bi bi-megaphone-fill"></i>
-    Instructions
-</h3>
-        <div class="card-tools">
-                  <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i>
-                  </button>
-                  <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
-                    <i class="fas fa-times"></i>
-                  </button>
-                </div>
-    </div>
-    <div class="card-body">
-        The body of the card
-    </div>
-</div>
+<div class="container mt-3">
+
     <div class="row">
         @foreach($users as $user)
             <div class="col-md-4 mb-2">

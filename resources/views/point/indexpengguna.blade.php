@@ -17,7 +17,7 @@
                 </div>
     </div>
     <div class="card-body">
-        The body of the card
+    Halaman ini digunakan untuk menampilkan point Key Performance Indicator (KPI) Anda yang telah dihitung berdasarkan bobot dari empat aspek penilaian bulanan, yaitu kehadiran, penyelesaian jobdesk, hasil kerja atau jumlah views, dan sikap atau attitude, sehingga memberikan gambaran menyeluruh terhadap kinerja Anda.
     </div>
 </div>    
     <div class="row">
@@ -42,7 +42,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Laporan Point Kinerja</h3>
+                    <h3 class="card-title"><i class="fas fa-star mr-1" style="color: #31beb4;"></i>Laporan Point Kinerja Saya</h3>
                 </div>
 
                 <div class="card-body table-responsive p-0">

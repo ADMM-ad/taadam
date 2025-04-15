@@ -48,13 +48,13 @@
         }
 
         .btn-primary {
-            background-color: #fb8149;
-            border-color: #fb8149;
+            background-color: #31beb4;
+            border-color: #31beb4;
         }
 
         .btn-primary:hover {
-            background-color: #e96c3c;
-            border-color: #e96c3c;
+            background-color: #28a7a3;
+            border-color: #28a7a3;
         }
 
         @media (min-width: 768px) {
@@ -71,25 +71,7 @@
 <body>
 
 <div class="container">
-@if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show d-flex align-items-center" role="alert">
-        <i class="bi bi-check-circle-fill me-2"></i> 
-        {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-@endif
 
-@if($errors->any())
-    <div class="alert alert-danger alert-dismissible fade show d-flex align-items-center" role="alert">
-        <i class="bi bi-exclamation-triangle-fill me-2"></i> 
-        <ul class="mb-0">
-            @foreach($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-@endif
 
 
     <div class="row justify-content-center">
@@ -97,19 +79,18 @@
             <div class="card">
                 <div class="row g-0 flex-column flex-md-row">
                     <!-- Logo (Atas di HP, Kiri di Desktop) -->
-                    <div class="col-12 col-md-4 logo-container">
-                        <img src="{{ asset('gambar/logo.png') }}" alt="Logo" class="logo">
+                    <div class="col-12 col-md-4 logo-container" style="background-color:#ffffff">
+                        <img src="{{ asset('gambar/logo2.png') }}" alt="Logo" class="logo" >
                     </div>
 
                     <!-- Form Login -->
                     <div class="col-12 col-md-8">
-                        <div class="card-body">
-                            <h4 class="text-center text-dark mb-3">Login</h4>
+                        <div class="card-body" style="background-color:#ffffff">
                             <form method="POST" action="{{ route('login') }}">
                                 @csrf
 
                                 <div class="mb-3">
-                                    <label for="username" class="text-dark">Username</label>
+                                    <label for="username" class="text-dark"><i class="bi bi-person-fill" style="color: #31beb4; margin-right: 5px;"></i>Username</label>
                                     <input id="username" type="text" class="form-control @error('username') is-invalid @enderror" 
                                            name="username" value="{{ old('username') }}" 
                                            placeholder="Masukkan Username Anda" required autofocus>
@@ -121,7 +102,7 @@
                                 </div>
 
                                 <div class="mb-3">
-    <label for="password" class="text-dark">Password</label>
+    <label for="password" class="text-dark"><i class="bi bi-lock-fill" style="color: #31beb4; margin-right: 5px;"></i>Password</label>
     <div class="input-group">
         <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" 
                name="password" placeholder="Masukkan Password Anda" required>
@@ -135,14 +116,23 @@
     </span>
     @enderror
 </div>
+<div class="mb-3 d-flex justify-content-between align-items-center">
+    <!-- Remember Me -->
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
+        <label class="form-check-label text-dark" for="remember">
+            Ingat Saya
+        </label>
+    </div>
 
+    <!-- Lupa Password -->
+    <div>
+        <a href="{{ route('forgot.password') }}" class="text-decoration-none text-dark">
+            Lupa Password?
+        </a>
+    </div>
+</div>
 
-                                <!-- Lupa Password -->
-                                <div class="mb-3 text-end">
-                                    <a href="{{ route('forgot.password') }}" class="text-decoration-none text-primary">
-                                        Lupa Password?
-                                    </a>
-                                </div>
 
                                 <button type="submit" class="btn btn-primary btn-block w-100">
                                     Login
@@ -176,4 +166,6 @@
 </script>
 
 </body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 </html>

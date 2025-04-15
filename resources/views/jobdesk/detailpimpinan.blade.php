@@ -4,28 +4,28 @@
 <div class="container mt-2">
 <div class="card card-primary card-outline mt-3 mb-3 ms-3 me-3 p-3"  style="border-color: #31beb4;">
         <div class="card-header">
-            <h3 class="card-title">
+            <h3 class="card-title"><i class="fas fa-clipboard-check mr-1" style="color: #31beb4;"></i>
                 Detail Jobdesk
             </h3>
         </div>
         <div class="card-body">
         <div class="row mb-3">
-                <div class="col-md-4 font-weight-bold ">Nama Team : </div>
+                <div class="col-md-4 font-weight-bold "><i class="fas fa-users mr-1" style="color: #31beb4;"></i>Nama Team : </div>
                 <div class="col-md-8">{{ $jobdesk->team ? $jobdesk->team->nama_team : 'Individu' }}</div>
             </div>
 
             <div class="row mb-3">
-                <div class="col-md-4 font-weight-bold ">Nama Pekerjaan : </div>
+                <div class="col-md-4 font-weight-bold "><i class="fas fa-clipboard-list mr-1" style="color: #31beb4;"></i>Nama Pekerjaan : </div>
                 <div class="col-md-8">{{ $jobdesk->nama_pekerjaan }}</div>
             </div>
 
             <div class="row mb-3">
-                <div class="col-md-4 font-weight-bold ">Deskripsi : </div>
+                <div class="col-md-4 font-weight-bold "><i class="fas fa-comment-dots mr-1" style="color: #31beb4;"></i>Deskripsi : </div>
                 <div class="col-md-8">{{ $jobdesk->deskripsi }}</div>
             </div>
 
             <div class="row mb-3">
-                <div class="col-md-4 font-weight-bold ">Tenggat Waktu : </div>
+                <div class="col-md-4 font-weight-bold "><i class="fas fa-calendar-alt mr-1" style="color: #31beb4;"></i>Tenggat Waktu : </div>
                 <div class="col-md-8">{{ $jobdesk->tenggat_waktu }}</div>
             </div>
 
@@ -43,7 +43,7 @@
             </div>
 
             <div class="row mb-3">
-                <div class="col-md-4 font-weight-bold ">Status : </div>
+                <div class="col-md-4 font-weight-bold "><i class="fas fa-hourglass-half mr-1" style="color: #31beb4;"></i>Status : </div>
                 <div class="col-md-8">
                     <span class="badge {{ $jobdesk->status == 'ditugaskan' ? 'badge-danger' : 'badge-success' }}">
                         {{ ucfirst($jobdesk->status) }}
@@ -53,9 +53,16 @@
         </div>
 
 </div>
-<a href="{{ Auth::user()->role == 'pimpinan' ? route('jobdesk.indexpimpinan') : route('jobdesk.indexteamleader') }}" class="btn btn-secondary">
+<a href="
+    {{ 
+        Auth::user()->role == 'pimpinan' ? route('jobdesk.indexpimpinan') :
+        (Auth::user()->role == 'teamleader' ? route('jobdesk.indexteamleader') :
+        route('jobdesk.indexpengguna')) 
+    }}" 
+    class="btn btn-secondary">
     Kembali
 </a>
+
 
 </div>
 

@@ -40,14 +40,14 @@
                 </div>
     </div>
     <div class="card-body">
-        The body of the card
+    Halaman ini digunakan untuk mengelola permintaan perizinan dari karyawan. Anda dapat meninjau setiap permintaan yang masuk, menerima permintaan dengan menekan tombol centang berwarna hijau, atau menolak permintaan dengan tombol silang berwarna merah. Untuk melihat detail permintaan perizinan, silakan klik tombol berwarna biru.
     </div>
 </div>
     <div class="row">
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Permintaan Perizinan</h3>
+                    <h3 class="card-title"><i class="fas fa-clipboard-check mr-1" style="color: #31beb4;"></i>Permintaan Perizinan</h3>
                 </div>
 
                 <div class="card-body table-responsive p-0">
@@ -103,12 +103,13 @@
                             @endforeach
                         </tbody>
                     </table>
-                    <div class="d-flex justify-content-end mt-3">
-                    {{ $perizinan->links('pagination::bootstrap-4') }} <!-- Ini untuk menampilkan navigasi paginasi -->
-                    </div>
+                   
                 </div> <!-- Penutupan card-body -->
             </div> <!-- Penutupan card -->
         </div> <!-- Penutupan col-12 -->
     </div> <!-- Penutupan row -->
+    <div class="d-flex justify-content-end mt-3">
+                    {{ $perizinan->links('pagination::bootstrap-4') }} <!-- Ini untuk menampilkan navigasi paginasi -->
+                    </div>
 </div> <!-- Penutupan container -->
 @endsection

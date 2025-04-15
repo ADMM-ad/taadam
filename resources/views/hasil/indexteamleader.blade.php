@@ -86,7 +86,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Daftar Hasil</h3>
+                    <h3 class="card-title"><i class="fas fa-chart-line mr-1" style="color: #31beb4;"></i>Daftar Hasil</h3>
                 </div>
 
                 <div class="card-body table-responsive p-0">

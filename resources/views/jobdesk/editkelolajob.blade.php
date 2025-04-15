@@ -1,7 +1,7 @@
 @extends('masterlayout')
 
 @section('content')
-<div class="container mt-2">
+<div class="container mt-3">
     @if(session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             {{ session('success') }}
@@ -26,13 +26,13 @@
 
     <div class="card card-primary mt-2">
         <div class="card-header" style="background-color: #31beb4; border-color: #31beb4;">
-            <h3 class="card-title">Kelola Pengguna Jobdesk</h3>
+            <h3 class="card-title"><i class="fas fa-user mr-1"></i>Kelola Jobdesk</h3>
         </div>
         <div class="card-body">
             <div class="row"> 
                 <!-- Kolom kiri: Daftar pengguna yang sudah ditambahkan -->
                 <div class="col-md-6 col-12 mb-3">
-                    <h5>Pengguna Jobdesk</h5>
+                    <h5>Pengguna yang Terlibat</h5>
                     <div id="user-list">
                     @foreach($jobdesk->users ?? collect([]) as $user)
                             <div class="d-flex align-items-center justify-content-between  rounded mb-2">

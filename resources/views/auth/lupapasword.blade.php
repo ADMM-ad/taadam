@@ -7,77 +7,50 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
 </head>
-<body class="bg-light">
+<style>
+    .btn-primary {
+        background-color: #31beb4;
+        border-color: #31beb4;
+    }
+
+    .btn-primary:hover {
+        background-color: #28a7a3;
+        border-color: #28a7a3;
+    }
+</style>
+<body style="background-color: #30BEB5;">
 
 <div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
     <div class="card p-4 shadow-lg" style="width: 100%; max-width: 400px;">
-        <h4 class="text-center">Lupa Password</h4>
+        
+    <div class="alert-area"></div>
 
-        <!-- Form untuk cek username -->
-        <form id="checkUsernameForm" method="POST" action="{{ route('check.username') }}">
+        <!-- Form untuk verifikasi username dan email -->
+        <form id="verifyAccountForm" method="POST" action="{{ route('forgot.verify') }}">
             @csrf
             <div class="mb-3">
-                <label for="username" class="form-label">Masukkan Username Anda</label>
-                <input type="text" class="form-control" id="username" name="username" required>
+                <label for="username" class="form-label"><i class="bi bi-person-fill" style="color:#31beb4; margin-right: 5px;"></i>Username</label>
+                <input type="text" class="form-control" id="username" name="username" placeholder="Masukan username anda." required>
             </div>
-            <button type="submit" class="btn btn-primary w-100">Cek Username</button>
+            <div class="mb-3">
+                <label for="email" class="form-label"><i class="bi bi-envelope-fill" style="color:#31beb4; margin-right: 5px;"></i>Email Pemulihan</label>
+                <input type="email" class="form-control" id="email" name="email" placeholder="Masukan email pemulihan anda." required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Kirim Link Verifikasi</button>
+            <a href="{{ route('login') }}" class="btn btn-secondary w-100 mt-1">Kembali</a>
         </form>
 
-        <!-- Form untuk reset password (disembunyikan awalnya) -->
-        <form id="resetPasswordForm" method="POST" action="{{ route('update.password') }}" style="display: none;">
-            @csrf
-            <input type="hidden" id="resetUsername" name="username">
-
-            <!-- Input Password Baru -->
-            <div class="mb-3">
-                <label for="password" class="form-label">Password Baru</label>
-                <div class="input-group">
-                    <input type="password" class="form-control" id="password" name="password" required>
-                    <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('password', 'togglePasswordIcon1')">
-                        <i id="togglePasswordIcon1" class="bi bi-eye-slash"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Input Konfirmasi Password -->
-            <div class="mb-3">
-                <label for="password_confirmation" class="form-label">Konfirmasi Password</label>
-                <div class="input-group">
-                    <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" required>
-                    <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('password_confirmation', 'togglePasswordIcon2')">
-                        <i id="togglePasswordIcon2" class="bi bi-eye-slash"></i>
-                    </button>
-                </div>
-            </div>
-
-            <button type="submit" class="btn btn-success w-100">Reset Password</button>
-        </form>
     </div>
 </div>
 
 <script>
-    function togglePassword(inputId, iconId) {
-        let input = document.getElementById(inputId);
-        let icon = document.getElementById(iconId);
-
-        if (input.type === "password") {
-            input.type = "text";
-            icon.classList.remove("bi-eye-slash");
-            icon.classList.add("bi-eye");
-        } else {
-            input.type = "password";
-            icon.classList.remove("bi-eye");
-            icon.classList.add("bi-eye-slash");
-        }
-    }
-
-    document.getElementById('checkUsernameForm').addEventListener('submit', function(event) {
+    document.getElementById('verifyAccountForm').addEventListener('submit', function(event) {
         event.preventDefault();
 
         let username = document.getElementById('username').value;
         let formData = new FormData(this);
 
-        fetch("{{ route('check.username') }}", {
+        fetch("{{ route('forgot.verify') }}", {
             method: "POST",
             body: formData,
             headers: {
@@ -86,17 +59,32 @@
         })
         .then(response => response.json())
         .then(data => {
+            let alertArea = document.querySelector('.alert-area');
+            let icon = data.success
+                ? '<i class="bi bi-check-circle-fill me-2" style="font-size: 1.3rem;"></i>'
+                : '<i class="bi bi-exclamation-triangle-fill me-2" style="font-size: 1.3rem;"></i>';
+
+            let alertClass = data.success ? 'alert-success' : 'alert-danger';
+
+            alertArea.innerHTML = `
+                <div class="alert ${alertClass} alert-dismissible fade show d-flex align-items-center" role="alert">
+                    ${icon}
+                    <div>${data.message}</div>
+                    <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `;
+
             if (data.success) {
-                document.getElementById('resetPasswordForm').style.display = 'block';
-                document.getElementById('resetUsername').value = username;
-                document.getElementById('checkUsernameForm').style.display = 'none';
-            } else {
-                alert("Username tidak ditemukan!");
+                document.getElementById('verifyAccountForm').reset();
             }
         })
-        .catch(error => console.error('Error:', error));
+        .catch(error => {
+            console.error('Error:', error);
+        });
     });
 </script>
 
 </body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 </html>

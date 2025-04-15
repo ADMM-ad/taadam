@@ -8,9 +8,27 @@ use Carbon\Carbon;
 use App\Models\Absensi;
 use App\Models\User;
 use App\Models\DetailTeam;
-
+use Illuminate\Support\Facades\DB;
 class AbsensiController extends Controller
 {
+
+    public function absensiku()
+    {
+        $user = Auth::user();
+    
+        $tanggalHariIni = Carbon::today();
+        $tanggalLimaHari = $tanggalHariIni->copy()->subDays(6);
+    
+        $absensi = Absensi::where('user_id', $user->id)
+                    ->where('status', 'disetujui')
+                    ->where('kehadiran', '!=', 'tanpa_keterangan')
+                    ->whereBetween('tanggal', [$tanggalLimaHari, $tanggalHariIni])
+                    ->orderByDesc('tanggal')
+                    ->get();
+    
+        return view('absensi.absensi', compact('absensi'));
+    }
+
     public function datang(Request $request)
     {
         $currentDate = Carbon::now()->toDateString();
@@ -337,12 +355,13 @@ public function destroyperizinan($id)
                     'sakit' => 'yellow',
                     'izin'  => 'orange',
                     'datang' => 'blue',
+                    'tanpa_keterangan' => 'black',
                     default => 'white', // Warna default jika tidak sesuai dengan yang ditentukan
                 };
                 
                         
                 $events[] = [
-                    'title' => ucfirst($item->kehadiran),
+                    'title' => $item->kehadiran === 'tanpa_keterangan' ? 'Tidak Absen' : ucfirst($item->kehadiran),
                     'start' => $item->tanggal,
                     'color' => $color
                 ];
@@ -436,11 +455,12 @@ return view('absensi.indexpimpinan', compact('users'));
                 'sakit' => 'yellow',
                 'izin'  => 'orange',
                 'datang' => 'blue',
+                'tanpa_keterangan' => 'black',
                 default => 'white',
             };
 
             $events[] = [
-                'title' => ucfirst($item->kehadiran),
+                'title' => $item->kehadiran === 'tanpa_keterangan' ? 'Tidak Absen' : ucfirst($item->kehadiran),
                 'start' => $item->tanggal,
                 'color' => $color
             ];
@@ -497,7 +517,7 @@ public function update(Request $request)
     $request->validate([
         'user_id' => 'required|exists:users,id',
         'tanggal' => 'required|date',
-        'kehadiran' => 'required|in:hadir,sakit,izin,datang',
+        'kehadiran' => 'required|in:hadir,sakit,izin,datang,tanpa_keterangan',
     ]);
 
     $userId = $request->input('user_id');
@@ -536,6 +556,57 @@ public function update(Request $request)
             ->with('success', 'Data absensi berhasil diperbarui.');
     }
 
+
+}
+
+public function menghitungterlambat(Request $request)
+{
+    $user = auth()->user();
+    // Ambil input "date" dalam format YYYY-MM, jika tidak ada gunakan tanggal sekarang
+    $dateInput = $request->input('date') ?? now()->format('Y-m');
+
+    // Pisahkan jadi tahun dan bulan
+    [$tahun, $bulan] = explode('-', $dateInput);
+
+    $query = User::where('role', '!=', 'pimpinan')
+        ->where('status', 'aktif')
+        ->when($user->role == 'teamleader', function ($q) use ($user) {
+            $teamIds = DB::table('detail_team')
+                ->where('user_id', $user->id)
+                ->pluck('team_id');
+            $userIds = DB::table('detail_team')
+                ->whereIn('team_id', $teamIds)
+                ->pluck('user_id');
+            $q->whereIn('id', $userIds);
+        })
+        ->with(['absensi' => function ($q) use ($bulan, $tahun) {
+            $q->whereMonth('tanggal', $bulan)
+              ->whereYear('tanggal', $tahun)
+              ->whereNotNull('waktu_terlambat');
+        }]);
+
+    $users = $query->get();
+
+    // Hitung total keterlambatan dalam detik lalu urutkan
+    $result = $users->map(function ($user) {
+        $totalDetik = $user->absensi->reduce(function ($carry, $absen) {
+            $timeParts = explode(':', $absen->waktu_terlambat);
+            $detik = ((int)$timeParts[0] * 3600) + ((int)$timeParts[1] * 60) + (int)$timeParts[2];
+            return $carry + $detik;
+        }, 0);
+
+        $jam = floor($totalDetik / 3600);
+        $menit = floor(($totalDetik % 3600) / 60);
+        $detik = $totalDetik % 60;
+
+        return [
+            'name' => $user->name,
+            'total_keterlambatan' => sprintf('%02d:%02d:%02d', $jam, $menit, $detik),
+            'total_detik' => $totalDetik,
+        ];
+    })->sortByDesc('total_detik')->values();
+
+    return view('absensi.laporanketerlambatan', compact('result', 'bulan', 'tahun'));
 
 }
 

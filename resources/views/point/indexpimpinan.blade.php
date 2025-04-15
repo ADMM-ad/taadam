@@ -1,7 +1,7 @@
 @extends('masterlayout')
 
 @section('content')
-<div class="container mt-2">
+<div class="container mt-3">
 @if(session('success'))
     <div class="alert alert-success alert-dismissible fade show d-flex align-items-center" role="alert">
         <i class="fas fa-check-circle mr-2"></i>  <!-- Ikon untuk sukses -->
@@ -40,7 +40,7 @@
                 </div>
     </div>
     <div class="card-body">
-        The body of the card
+    Halaman ini digunakan untuk mengelola dan menampilkan point Key Performance Indicator (KPI) karyawan yang telah dihitung berdasarkan bobot dari empat aspek penilaian bulanan, yaitu kehadiran, penyelesaian jobdesk, hasil kerja atau jumlah views, dan sikap atau attitude, sehingga memberikan gambaran menyeluruh terhadap kinerja karyawan.
     </div>
 </div>
 <!-- Form Filter -->
@@ -48,7 +48,6 @@
     <div class="row">
         <!-- Filter Nama Pengguna -->
         <div class="col-md-5 mt-2">
-            <label for="user_id">Filter Nama Pengguna</label>
             <select name="user_id" class="form-control">
                 <option value="">Semua Pengguna</option>
                 @foreach($users as $user)
@@ -61,7 +60,7 @@
 
         <!-- Filter Bulan -->
         <div class="col-md-5 mt-2">
-            <label for="date">Filter Bulan (YYYY-MM)</label>
+            
             <input type="month" name="date" class="form-control" value="{{ request('date') }}">
         </div>
 
@@ -77,7 +76,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Laporan Point Kinerja</h3>
+                    <h3 class="card-title"><i class="fas fa-star mr-1" style="color: #31beb4;"></i>Laporan Point Kinerja</h3>
                 </div>
 
                 <div class="card-body table-responsive p-0">
