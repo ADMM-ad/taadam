@@ -26,7 +26,7 @@
     </div>
 @endif
     <div class="card card-warning collapsed-card mt-2">
-    <div class="card-header">
+    <div class="card-header" style="background-color: #31beb4;">
     <h3 class="card-title">
     <i class="bi bi-megaphone-fill"></i>
     Instructions
@@ -39,8 +39,8 @@
                   </button>
                 </div>
     </div>
-    <div class="card-body">
-    Halaman ini digunakan untuk mengelola daftar anggota tim. Anda dapat melihat serta menambahkan anggota ke dalam tim yang Anda pilih.
+    <div class="card-body" style="background-color: #ffffff;">
+    Halaman ini digunakan untuk mengelola daftar anggota team. Anda dapat melihat serta menambahkan anggota ke dalam team yang Anda pilih.
     </div>
 </div>
 
@@ -49,7 +49,7 @@
         <div class="col-md-12 mb-1">
             <form method="GET" action="{{ route('anggotateam.index') }}">
                 <div class="input-group">
-                    <input type="text" name="search" class="form-control" placeholder="Cari Nama Team..." value="{{ request('search') }}">
+                    <input type="text" name="search" class="form-control" placeholder="Silahkan mencari nama team." value="{{ request('search') }}">
                     <div class="input-group-append">
                         <button type="submit" class="btn btn-primary" style="background-color: #26948E; border-color: #26948E;">
                             <i class="fas fa-search"></i>

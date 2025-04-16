@@ -1,7 +1,7 @@
 @extends('masterlayout')
 
 @section('content')
-    <div class="container mt-2">
+    <div class="container mt-3">
 
     @if(session('success'))
     <div class="alert alert-success alert-dismissible fade show d-flex align-items-center" role="alert">
@@ -26,13 +26,34 @@
         </button>
     </div>
 @endif
-
+<div class="card card-warning collapsed-card mt-2">
+    <div class="card-header" style="background-color: #31beb4;">
+    <h3 class="card-title">
+    <i class="bi bi-megaphone-fill"></i>
+    Instructions
+</h3>
+        <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i>
+                  </button>
+                  <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+    </div>
+    <div class="card-body" style="background-color: #ffffff;">
+    Halaman ini digunakan untuk melakukan absensi kehadiran. Terdapat dua jenis absensi yang perlu dilakukan, yaitu absen datang dan absen pulang. Absen datang dapat dilakukan antara pukul 07.45 hingga 08.15. Jika absen dilakukan setelah jam tersebut, sistem akan menghitung waktu terlambat. Sedangkan untuk absen pulang, absensi dapat dilakukan antara pukul 14.51 hingga 16.30. Absensi hanya dapat dilakukan jika menggunakan jaringan WiFi di kantor atau berada di lokasi kantor.
+    </div>
+</div>
 
         <div class="card card-primary  mt-2" >
                 <div class="card-header" style="background-color: #31beb4; border-color: #31beb4;">
                     <h3 class="card-title"><i class="fas fa-calendar-day mr-1"></i>Formulir Absensi</h3>
                 </div>
                 <div class="card-body">
+                <div >
+    <label for="ip_address" class="form-label">IP Address Anda</label>
+    <input type="text" class="form-control" id="ip_address" value="{{ $userIp }}" disabled>
+</div>
         <div >
             <label for="latitude" class="form-label">Latitude</label>
             <input type="text" class="form-control" id="latitude" disabled>

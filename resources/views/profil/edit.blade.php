@@ -1,9 +1,9 @@
 @extends('masterlayout')
 
 @section('content')
-<div class="container">
+<div class="container mt-3">
 <div class="card card-warning collapsed-card mt-2">
-    <div class="card-header">
+    <div class="card-header" style="background-color: #31beb4;">
     <h3 class="card-title">
     <i class="bi bi-megaphone-fill"></i>
     Instructions
@@ -16,11 +16,15 @@
                   </button>
                 </div>
     </div>
-    <div class="card-body">
-    Nama tidak boleh lebih dari 50 karakter<br>
-    Username harus berbeda dengan pengguna yang lain dan tidak boleh lebih dari 50 karakter<br>
-    Nomor HP tidak boleh lebih dari 15 karakter<br>
-    Password minimal terdiri dari 8 karakter
+    <div class="card-body" style="background-color: #ffffff;">
+Halaman ini digunakan untuk mengedit akun Anda,
+Pastikan data yang Anda masukkan benar dan sesuai.<br><br>
+Ketentuan pengisian:<br>
+- Nama tidak boleh melebihi 50 karakter<br>
+- Username harus unik (tidak boleh sama dengan pengguna lain) dan maksimal 50 karakter<br>
+- Nomor HP tidak boleh melebihi 15 karakter<br>
+- Alamat email pemulihan digunakan untuk membantu pemulihan akun apabila Anda lupa kata sandi di kemudian hari, sehingga pastikan email anda aktif.<br>
+- Password minimal terdiri dari 8 karakter
     </div>
 </div>
 
@@ -87,10 +91,10 @@
 
             <div class="card-footer" style="background-color: #ffffff">
                 <button type="submit" class="btn btn-success">
-                    <i class="fas fa-save"></i> Simpan
+                    Simpan
                 </button>
                 <a href="{{ route('profil.index') }}" class="btn btn-secondary">
-                    <i class="fas fa-times"></i> Batal
+                     Kembali
                 </a>
             </div>
             </form>

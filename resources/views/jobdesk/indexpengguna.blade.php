@@ -64,13 +64,14 @@
             @endforeach
         </tbody>
     </table>
+    
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
     <div class="d-flex justify-content-end mt-3">
     {{ $jobdesks->links('pagination::bootstrap-4') }} 
                     </div>
-    </div>
-    </div>
-    </div>
-    </div>
-    </div>
 </div>
 @endsection

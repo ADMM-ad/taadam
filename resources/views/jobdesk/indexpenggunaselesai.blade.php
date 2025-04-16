@@ -100,13 +100,14 @@
         </tbody>
     </table>
 
+   
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
     <div class="d-flex justify-content-end mt-3">
     {{ $jobdesks->withQueryString()->links('pagination::bootstrap-4') }} <!-- Ini untuk menampilkan navigasi paginasi -->
                     </div>
-    </div>
-    </div>
-    </div>
-    </div>
-    </div>
 </div>
 @endsection

@@ -74,6 +74,8 @@ Route::middleware(['auth',RoleMiddleware::class . ':pimpinan',])->group(function
     Route::get('/userteamleader', [UserController::class, 'indexTeamleader'])->name('users.indexteamleader');
     Route::delete('/userteamleader/{id}', [UserController::class, 'destroytl'])->name('users.destroytl');
     Route::patch('teamleader/{id}/status', [UserController::class, 'changeStatustl'])->name('users.changeStatustl');
+    Route::put('/users/{id}/promote', [UserController::class, 'promoteToTeamLeader'])->name('users.promote');
+    Route::put('/users/{id}/demote', [UserController::class, 'demoteToKaryawan'])->name('users.demote');
     //kelola team
     Route::get('/team', [TeamController::class, 'index'])->name('team.index');
     Route::get('/team/create', [TeamController::class, 'create'])->name('team.create');

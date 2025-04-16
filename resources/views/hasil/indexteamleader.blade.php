@@ -1,7 +1,7 @@
 @extends('masterlayout')
 
 @section('content')
-<div class="container mt-2">
+<div class="container mt-3">
     
 @if(session('success'))
     <div class="alert alert-success alert-dismissible fade show d-flex align-items-center" role="alert">
@@ -27,7 +27,7 @@
     </div>
 @endif
     <div class="card card-warning collapsed-card mt-2">
-    <div class="card-header">
+    <div class="card-header" style="background-color: #31beb4;">
     <h3 class="card-title">
     <i class="bi bi-megaphone-fill"></i>
     Instructions
@@ -40,8 +40,8 @@
                   </button>
                 </div>
     </div>
-    <div class="card-body">
-        The body of the card
+    <div class="card-body" style="background-color: #ffffff;">
+    Halaman ini digunakan untuk mengelola hasil yang didapatkan oleh team dan berupa views.
     </div>
 </div>
 
@@ -49,8 +49,8 @@
     <form method="GET" action="{{ route('hasil.teamleader') }}" class="mb-2">
         <div class="row">
             <!-- Filter Tahun -->
-            <div class="col-md-5">
-                <label for="tahun">Filter Tahun</label>
+            <div class="col-md-5 mt-2">
+                
                 <select name="tahun" class="form-control">
                     <option value="">Semua Tahun</option>
                     @foreach($tahunOptions as $tahun)
@@ -60,8 +60,8 @@
             </div>
 
             <!-- Filter Nama Team -->
-            <div class="col-md-5">
-                <label for="nama_team">Filter Nama Team</label>
+            <div class="col-md-5 mt-2">
+                
                 <select name="nama_team" class="form-control">
                     <option value="">Semua Team</option>
                     @foreach($teamOptions as $team)

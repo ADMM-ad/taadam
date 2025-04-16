@@ -1,9 +1,9 @@
 @extends('masterlayout')
 
 @section('content')
-<div class="container mt-2">
+<div class="container mt-3">
 <div class="card card-warning collapsed-card mt-2">
-    <div class="card-header">
+    <div class="card-header" style="background-color: #31beb4;">
     <h3 class="card-title">
     <i class="bi bi-megaphone-fill"></i>
     Instructions
@@ -16,27 +16,31 @@
                   </button>
                 </div>
     </div>
-    <div class="card-body">
+    <div class="card-body" style="background-color: #ffffff;">
     Halaman ini digunakan untuk menampilkan point Key Performance Indicator (KPI) Anda yang telah dihitung berdasarkan bobot dari empat aspek penilaian bulanan, yaitu kehadiran, penyelesaian jobdesk, hasil kerja atau jumlah views, dan sikap atau attitude, sehingga memberikan gambaran menyeluruh terhadap kinerja Anda.
     </div>
 </div>    
-    <div class="row">
-        <div class="col-md-6">
-            <form method="GET" action="{{ route('point.indexpengguna') }}">
-                <div class="input-group">
-                    <select name="tahun" class="form-control" onchange="this.form.submit()">
-                        <option value="">Semua Tahun</option>
-                        @foreach($availableYears as $year)
-                            <option value="{{ $year }}" {{ $tahun == $year ? 'selected' : '' }}>{{ $year }}</option>
-                        @endforeach
-                    </select>
-                    <div class="input-group-append">
-                        <button class="btn btn-primary" type="submit">Filter</button>
-                    </div>
-                </div>
-            </form>
+<div class="row">
+    <form method="GET" action="{{ route('point.indexpengguna') }}" class="d-flex">
+        <div class="col-md-10 col-10 ">
+            <select name="tahun" id="tahun" class="form-control">
+                <option value="">Tampilkan Semua Tahun</option>
+                @foreach($availableYears as $year)
+                    <option value="{{ $year }}" {{ $tahun == $year ? 'selected' : '' }}>{{ $year }}</option>
+                @endforeach
+            </select>
         </div>
-    </div>
+        <div class="col-md-4 col-4   align-items-end">
+            <button class="btn btn-primary w-100" type="submit">Filter</button>
+        </div>
+    </form>
+</div>
+
+
+
+
+
+
 
     <div class="row mt-2">
         <div class="col-12">

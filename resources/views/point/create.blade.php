@@ -78,7 +78,7 @@
 </div>
 @endif
 <div class="card card-warning collapsed-card mt-2">
-    <div class="card-header">
+    <div class="card-header" style="background-color: #31beb4;">
     <h3 class="card-title">
     <i class="bi bi-megaphone-fill"></i>
     Instructions
@@ -91,17 +91,17 @@
                   </button>
                 </div>
     </div>
-    <div class="card-body">
-    Halaman ini digunakan untuk mengelola dan menilai kinerja karyawan berdasarkan indikator serta bobot penilaian yang telah ditetapkan.<br>
+    <div class="card-body" style="background-color: #ffffff;">
+    Halaman ini digunakan untuk menilai kinerja karyawan berdasarkan indikator serta bobot penilaian yang telah ditetapkan.<br><br>
 Penilaian dilakukan setiap bulan dan mencakup empat aspek utama, yaitu:<br>
 - Kehadiran sebesar 25%<br>
 - Penyelesaian jobdesk sebesar 30%<br>
 - Hasil kerja atau jumlah views sebesar 25%<br>
 - Attitude sebesar 20%<br><br>
 
-Setiap indikator akan dikonversi ke dalam poin Key Performance Indicator (KPI) sesuai bobot masing-masing.<br>
-Hasil perhitungan ini akan ditampilkan secara terperinci di halaman Laporan Poin,
-sehingga Anda dapat memantau pencapaian kinerja karyawan secara lebih objektif dan terukur.
+Setiap indikator akan dikonversi ke dalam point Key Performance Indicator (KPI) sesuai bobot masing-masing.
+Hasil perhitungan ini akan ditampilkan secara terperinci di halaman Laporan Point
+
 
     </div>
 </div>

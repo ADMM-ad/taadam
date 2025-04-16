@@ -17,7 +17,7 @@
     </div>
 @endif
         <div class="card card-warning collapsed-card mt-2">
-    <div class="card-header">
+    <div class="card-header" style="background-color: #31beb4;">
     <h3 class="card-title">
     <i class="bi bi-megaphone-fill"></i>
     Instructions
@@ -30,7 +30,7 @@
                   </button>
                 </div>
     </div>
-    <div class="card-body">
+    <div class="card-body" style="background-color: #ffffff ;">
     Halaman ini digunakan untuk menambahkan jobdesk individu. Jobdesk individu adalah tugas atau pekerjaan yang tidak terkait dengan jobdesk dalam team.
     </div>
 </div>
@@ -48,7 +48,7 @@
  <div class="mb-3">
             <label for="user_id" class="form-label"><i class="fas fa-user mr-1" style="color: #31beb4;"></i>Pilih Pengguna yang Mengerjakan</label>
             <select name="user_id" class="form-control" required>
-                <option value="">-- Pilih User --</option>
+                <option value="">Silahkan memilih pengguna.</option>
                 @foreach($users as $user)
                     <option value="{{ $user->id }}">{{ $user->name }}</option>
                 @endforeach
@@ -69,7 +69,7 @@
         <!-- Pilih Tenggat Waktu -->
         <div class="mb-3">
             <label for="tenggat_waktu" class="form-label"><i class="fas fa-calendar-alt mr-1" style="color: #31beb4;"></i>Tenggat Waktu</label>
-            <input type="date" name="tenggat_waktu" class="form-control" required>
+            <input type="date" name="tenggat_waktu" class="form-control" value="YYYY-MM-DD" required >
         </div>
 
         <button type="submit" class="btn btn-success">Simpan</button>

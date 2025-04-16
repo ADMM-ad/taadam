@@ -27,7 +27,7 @@
     </div>
 @endif
     <div class="card card-warning collapsed-card mt-2">
-    <div class="card-header">
+    <div class="card-header" style="background-color: #31beb4;">
     <h3 class="card-title">
     <i class="bi bi-megaphone-fill"></i>
     Instructions
@@ -40,7 +40,7 @@
                   </button>
                 </div>
     </div>
-    <div class="card-body">
+    <div class="card-body" style="background-color: #ffffff;">
     Halaman ini digunakan untuk mengelola hasil yang didapatkan oleh team dan berupa views.
     </div>
 </div>

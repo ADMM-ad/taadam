@@ -12,6 +12,17 @@
     </div>
 @endif
 
+@if(session('error'))
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <i class="fas fa-exclamation-triangle mr-2"></i>  <!-- Ikon untuk error -->
+        {{ session('error') }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+@endif
+
+
 @if($errors->any())
     <div class="alert alert-danger alert-dismissible fade show d-flex align-items-center" role="alert">
         <i class="fas fa-exclamation-triangle mr-2"></i>  <!-- Ikon untuk error -->
@@ -27,7 +38,7 @@
 @endif
 
 <div class="card card-warning collapsed-card mt-2">
-    <div class="card-header">
+    <div class="card-header" style="background-color: #31beb4;">
     <h3 class="card-title">
     <i class="bi bi-megaphone-fill"></i>
     Instructions
@@ -40,7 +51,7 @@
                   </button>
                 </div>
     </div>
-    <div class="card-body">
+    <div class="card-body" style="background-color: #ffffff">
     Halaman ini digunakan untuk mengajukan permohonan perizinan. Pastikan Anda memilih alasan yang sesuai untuk pengajuan perizinan Anda. Pengisian alasan wajib dilakukan, sementara pengunggahan bukti yang dapat berupa file PDF, JPG, atau PNG dengan ukuran maksimal 1MB, serta pengisian pesan, bersifat opsional dan hanya sebagai pendukung pengajuan perizinan.
     </div>
 </div>

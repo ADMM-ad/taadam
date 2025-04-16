@@ -168,7 +168,7 @@ public function storeindividu(Request $request)
      {
          $jobdesks = Jobdesk::whereHas('detailJobdesk', function ($query) {
              $query->where('user_id', Auth::id());
-         })->where('status', 'ditugaskan')->paginate(2);
+         })->where('status', 'ditugaskan')->paginate(10);
  
          return view('jobdesk.indexpengguna', compact('jobdesks'));
      }
@@ -284,7 +284,7 @@ public function indexteamleader(Request $request)
             return $query->whereMonth('tenggat_waktu', $bulan)->whereYear('tenggat_waktu', $tahun);
         })
         ->orderBy('tenggat_waktu', 'asc')
-        ->paginate(2);
+        ->paginate(10);
 
     $teams = Team::whereIn('id', $teamIds)->get();
 
@@ -312,7 +312,7 @@ public function indexpimpinan(Request $request)
         $query->where('status', $request->status);
     }
 
-    $jobdesks = $query->paginate(2);
+    $jobdesks = $query->paginate(10);
     $teams = Team::all(); // Ambil semua tim untuk dropdown filter
 
     return view('jobdesk.indexpimpinan', compact('jobdesks', 'teams'));

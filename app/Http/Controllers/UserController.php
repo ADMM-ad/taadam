@@ -26,7 +26,7 @@ class UserController extends Controller
         }
     
         // Ambil data dengan pagination (10 per halaman)
-        $users = $users->paginate(2);
+        $users = $users->paginate(10);
     
         return view('users.indexkaryawan', compact('users', 'search', 'status'));
     }
@@ -53,7 +53,7 @@ class UserController extends Controller
         }
     
         // Ambil data dengan pagination (10 per halaman)
-        $users = $users->paginate(2);
+        $users = $users->paginate(10);
     
         return view('users.indexteamleader', compact('users', 'search', 'status'));
     }
@@ -97,6 +97,27 @@ public function changeStatustl($id)
     $user->save();
 
     return redirect()->route('users.indexteamleader')->with('success', 'Status teamleader berhasil diperbarui.');
+}
+
+
+public function promoteToTeamLeader($id)
+{
+    $user = User::findOrFail($id);
+
+    $user->role = 'teamleader';
+    $user->save();
+
+    return redirect()->route('users.indexkaryawan')->with('success', 'User berhasil dipromosikan menjadi Team Leader.');
+}
+
+public function demoteToKaryawan($id)
+{
+    $user = User::findOrFail($id);
+
+    $user->role = 'karyawan';
+    $user->save();
+
+    return redirect()->route('users.indexteamleader')->with('success', 'User berhasil diturunkan menjadi Karyawan.');
 }
 
 }

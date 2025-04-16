@@ -27,7 +27,7 @@
 @endif
 
         <div class="card card-warning collapsed-card mt-2">
-    <div class="card-header">
+    <div class="card-header" style="background-color: #31beb4;">
     <h3 class="card-title">
     <i class="bi bi-megaphone-fill"></i>
     Instructions
@@ -40,7 +40,7 @@
                   </button>
                 </div>
     </div>
-    <div class="card-body">
+    <div class="card-body" style="background-color: #ffffff;">
     Halaman ini digunakan untuk mengelola dan memantau seluruh jobdesk yang telah dibuat, baik individu maupun team.
 Anda dapat melihat status pekerjaan, tenggat waktu, serta hasil jobdesk jika tersedia atau berupa link
 dan gunakan tombol detail untuk melihat informasi lengkap, termasuk deskripsi pekerjaan dan pengguna yang terlibat dalam jobdesk tersebut.
@@ -53,7 +53,7 @@ dan gunakan tombol detail untuk melihat informasi lengkap, termasuk deskripsi pe
     <div class="col-md-12">
         <form method="GET" action="{{ route('jobdesk.indexpimpinan') }}">
             <div class="input-group mb-2">
-                <input type="text" name="search" class="form-control" placeholder="Cari Nama Pekerjaan..." value="{{ request('search') }}">
+                <input type="text" name="search" class="form-control" placeholder="Silahkan mencari pekerjaan." value="{{ request('search') }}">
                 <div class="input-group-append">
                     <button type="submit" class="btn btn-primary" style="background-color: #26948E; border-color: #26948E;">
                         <i class="fas fa-search"></i>

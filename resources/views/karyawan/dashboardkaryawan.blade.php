@@ -77,7 +77,7 @@
                     <div class="col-sm-5 mb-1">
                         <input type="month" name="bulan" id="filterBulan" class="form-control" value="{{ request('bulan') }}">
                     </div>
-                    <div class="col-sm-5 mb-1">
+                    <div class="col-sm-5 mb-2">
                         <select name="team_id" id="filterTim" class="form-control">
                             @foreach($allowedTeams as $team)
                                 <option value="{{ $team->id }}" {{ request('team_id') == $team->id ? 'selected' : '' }}>
@@ -86,7 +86,7 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-sm-2 mb-1 d-flex align-items-end">
+                    <div class="col-sm-2 mb-2 d-flex align-items-end">
                         <button type="submit" class="btn w-100" style="background-color: #31beb4;">Tampilkan</button>
                     </div>
                 </form>
@@ -121,10 +121,10 @@
 
                 {{-- Filter Form --}}
                 <form method="GET" action="{{ route('dashboardkaryawan') }}" class="row g-2 mb-4">
-    <div class="col-sm-5 mb-1 ">
+    <div class="col-sm-5 mb-2 ">
         <input type="month" name="bulan_kinerja" class="form-control" value="{{ request('bulan_kinerja') }}">
     </div>
-    <div class=" col-sm-2 mb-1">
+    <div class=" col-sm-2 mb-2">
         <button type="submit" class="btn w-100" style="background-color: #31beb4;">Tampilkan</button>
     </div>
 </form>
@@ -141,7 +141,7 @@
                             <div class="knob-label">Jobdesk</div>
                         </div>
                         <div class="col-6 col-md-3 text-center">
-                            <input type="text" class="knob" value="{{ ($pointKpi->point_hasil / 6.25) * 25 }}" data-width="90" data-height="90" data-fgColor="#FFFF00" data-readonly="true">
+                            <input type="text" class="knob" value="{{ ($pointKpi->point_hasil / 6.25) * 25 }}" data-width="90" data-height="90" data-fgColor="#B8860B" data-readonly="true">
                             <div class="knob-label">Hasil</div>
                         </div>
                         <div class="col-6 col-md-3 text-center">

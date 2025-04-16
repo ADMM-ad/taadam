@@ -1,9 +1,7 @@
 @extends('masterlayout')
 
 @section('content')
-<div class="container mt-2">
-    
-
+<div class="container mt-3">
 @if(session('success'))
     <div class="alert alert-success alert-dismissible fade show d-flex align-items-center" role="alert">
         <i class="fas fa-check-circle mr-2"></i>  <!-- Ikon untuk sukses -->
@@ -28,7 +26,7 @@
     </div>
 @endif
 <div class="card card-warning collapsed-card mt-2">
-    <div class="card-header">
+    <div class="card-header" style="background-color: #31beb4;">
     <h3 class="card-title">
     <i class="bi bi-megaphone-fill"></i>
     Instructions
@@ -41,7 +39,7 @@
                   </button>
                 </div>
     </div>
-    <div class="card-body">
+    <div class="card-body" style="background-color: #ffffff;">
     Halaman ini digunakan untuk mengelola dan memantau seluruh jobdesk yang telah dibuat pada team Anda, baik individu maupun team.
 Anda dapat melihat status pekerjaan, tenggat waktu, serta hasil jobdesk jika tersedia atau berupa link
 dan gunakan tombol detail untuk melihat informasi lengkap, termasuk deskripsi pekerjaan dan pengguna yang terlibat dalam jobdesk tersebut.

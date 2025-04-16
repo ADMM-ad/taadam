@@ -12,13 +12,13 @@ use Illuminate\Support\Facades\DB;
 class AbsensiController extends Controller
 {
 
-    public function absensiku()
+    public function absensiku(Request $request)
     {
         $user = Auth::user();
     
         $tanggalHariIni = Carbon::today();
         $tanggalLimaHari = $tanggalHariIni->copy()->subDays(6);
-    
+        $userIp = $request->header('X-Forwarded-For');
         $absensi = Absensi::where('user_id', $user->id)
                     ->where('status', 'disetujui')
                     ->where('kehadiran', '!=', 'tanpa_keterangan')
@@ -26,43 +26,56 @@ class AbsensiController extends Controller
                     ->orderByDesc('tanggal')
                     ->get();
     
-        return view('absensi.absensi', compact('absensi'));
+        return view('absensi.absensi', compact('absensi','userIp'));
     }
 
+    public function isIpAllowed($ip)
+    {
+        // Rentang IP yang diizinkan
+        $allowedRangeStart = ip2long('103.47.133.0');
+        $allowedRangeEnd = ip2long('103.47.133.255');
+        $userIpLong = ip2long($ip);
+    
+        // Cek apakah IP pengguna berada dalam rentang yang diizinkan
+        return $userIpLong >= $allowedRangeStart && $userIpLong <= $allowedRangeEnd;
+    }
+    
     public function datang(Request $request)
     {
         $currentDate = Carbon::now()->toDateString();
         $currentTime = Carbon::now();
-        $startTime = Carbon::createFromTime(7, 50); // 07:50
-        $endTime = Carbon::createFromTime(8, 15); // 08:15
-        $lateStart = Carbon::createFromTime(8, 16); // 08:16
-        $lateEnd = Carbon::createFromTime(14, 50); // 14:50
+        $startTime = Carbon::createFromTime(7, 45);
+        $endTime = Carbon::createFromTime(8, 15);
+        $lateStart = Carbon::createFromTime(8, 16);
+        $lateEnd = Carbon::createFromTime(14, 50);
     
-        // Lokasi target
-        $targetLatitude = -7.8267259;
-        $targetLongitude = 112.0245211;
-        $radius = 20; // Dalam meter
+        $targetLatitude = -7.831642;
+        $targetLongitude = 111.979837;
+        $radius = 20;
     
-        // Lokasi pengguna
         $userLatitude = $request->input('latitude');
         $userLongitude = $request->input('longitude');
+        $userIp = $request->header('X-Forwarded-For') ?: $request->ip();
     
-        if (!$userLatitude || !$userLongitude) {
-            return redirect()->back()->withErrors(['error' => 'Koordinat lokasi tidak ditemukan. Pastikan GPS aktif.']);
+        // Periksa apakah IP pengguna berada dalam rentang yang diizinkan
+        $isIpValid = $this->isIpAllowed($userIp);
+        $isLocationValid = false;
+    
+        if ($userLatitude && $userLongitude) {
+            $distance = $this->calculateDistance($targetLatitude, $targetLongitude, $userLatitude, $userLongitude);
+            $isLocationValid = $distance <= $radius;
+        }
+       
+        // Jika salah satu kondisi IP atau lokasi valid
+        if (!($isIpValid || $isLocationValid)) {
+            return redirect()->back()->withErrors(['error' => 'Anda harus berada di lokasi absen atau menggunakan IP yang diizinkan.']);
         }
     
-        $distance = $this->calculateDistance($targetLatitude, $targetLongitude, $userLatitude, $userLongitude);
-        if ($distance > $radius) {
-            return redirect()->back()->withErrors(['error' => 'Anda harus berada di lokasi absen untuk melakukan absensi.']);
-        }
-    
-        // Cek jika absensi sudah ada
         $existingAbsensi = Absensi::where('user_id', Auth::id())->where('tanggal', $currentDate)->first();
         if ($existingAbsensi) {
             return redirect()->back()->withErrors(['error' => 'Anda sudah melakukan absensi datang hari ini.']);
         }
     
-        // Tentukan keterangan dan status berdasarkan waktu
         $lateness = null;
         if ($currentTime->between($startTime, $endTime)) {
             $kehadiran = 'datang';
@@ -75,7 +88,6 @@ class AbsensiController extends Controller
             return redirect()->back()->withErrors(['error' => 'Waktu absensi datang tidak valid.']);
         }
     
-        // Simpan data absensi
         Absensi::create([
             'user_id' => Auth::id(),
             'tanggal' => $currentDate,
@@ -92,25 +104,29 @@ class AbsensiController extends Controller
     {
         $currentDate = Carbon::now()->toDateString();
         $currentTime = Carbon::now();
-        $lateStart = Carbon::createFromTime(14, 51); // 14:51
-        $lateEnd = Carbon::createFromTime(16, 30); // 16:30
+        $lateStart = Carbon::createFromTime(14, 51);
+        $lateEnd = Carbon::createFromTime(16, 30);
     
-        // Lokasi target
-        $targetLatitude = -7.8267259;
-        $targetLongitude = 112.0245211;
-        $radius = 20; // Dalam meter
+        $targetLatitude = -7.831642;
+        $targetLongitude = 111.979837;
+        $radius = 20;
     
-        // Lokasi pengguna
         $userLatitude = $request->input('latitude');
         $userLongitude = $request->input('longitude');
+        $userIp = $request->header('X-Forwarded-For') ?: $request->ip();
     
-        if (!$userLatitude || !$userLongitude) {
-            return redirect()->back()->withErrors(['error' => 'Koordinat lokasi tidak ditemukan. Pastikan GPS aktif.']);
+        // Periksa apakah IP pengguna berada dalam rentang yang diizinkan
+        $isIpValid = $this->isIpAllowed($userIp);
+        $isLocationValid = false;
+    
+        if ($userLatitude && $userLongitude) {
+            $distance = $this->calculateDistance($targetLatitude, $targetLongitude, $userLatitude, $userLongitude);
+            $isLocationValid = $distance <= $radius;
         }
     
-        $distance = $this->calculateDistance($targetLatitude, $targetLongitude, $userLatitude, $userLongitude);
-        if ($distance > $radius) {
-            return redirect()->back()->withErrors(['error' => 'Anda harus berada di lokasi absen untuk melakukan absensi.']);
+        // Jika salah satu kondisi IP atau lokasi valid
+        if (!($isIpValid || $isLocationValid)) {
+            return redirect()->back()->withErrors(['error' => 'Anda harus berada di lokasi absen atau menggunakan IP yang diizinkan.']);
         }
     
         $absensi = Absensi::where('user_id', Auth::id())->where('tanggal', $currentDate)->first();
@@ -130,6 +146,7 @@ class AbsensiController extends Controller
         return redirect()->back()->withErrors(['error' => 'Waktu absensi pulang tidak valid.']);
     }
     
+
     // Fungsi untuk menghitung jarak menggunakan formula Haversine
     private function calculateDistance($lat1, $lon1, $lat2, $lon2)
     {
@@ -154,6 +171,11 @@ class AbsensiController extends Controller
 
     public function storePerizinan(Request $request)
     {
+
+        if (Auth::user()->status !== 'aktif') {
+            return redirect()->back()->with('error', 'Hanya user dengan status aktif yang dapat mengajukan perizinan.');
+        }
+
         $validatedData = $request->validate([
             'kehadiran' => 'required|in:sakit,izin,datang,hadir',
             'bukti' => 'file|mimes:pdf,jpg,png|max:1024',
@@ -240,7 +262,7 @@ class AbsensiController extends Controller
             })
             ->orderBy('tanggal', 'asc')
             ->with('user')
-            ->paginate(2);
+            ->paginate(10);
     
         return view('absensi.requestperizinan', compact('perizinan'));
     }
@@ -272,7 +294,7 @@ class AbsensiController extends Controller
             ->whereIn('user_id', $userIds)
             ->with('user')
             ->orderBy('tanggal', 'asc')
-            ->paginate(2);
+            ->paginate(10);
     
         return view('absensi.requestteam', compact('perizinan'));
     }

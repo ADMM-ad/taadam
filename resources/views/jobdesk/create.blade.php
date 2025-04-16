@@ -19,7 +19,7 @@
 @endif
 
         <div class="card card-warning collapsed-card mt-3">
-    <div class="card-header">
+    <div class="card-header" style="background-color: #31beb4;">
     <h3 class="card-title">
     <i class="bi bi-megaphone-fill"></i>
     Instructions
@@ -32,7 +32,7 @@
                   </button>
                 </div>
     </div>
-    <div class="card-body">
+    <div class="card-body" style="background-color: #ffffff;">
     Halaman ini digunakan untuk menambahkan jobdesk ke dalam team. Anda dapat menentukan jobdesk yang akan dikerjakan oleh anggota team, baik secara individu maupun kelompok.
 
 Untuk memulai, pastikan Anda memilih team terlebih dahulu agar dapat menampilkan daftar anggota yang akan melaksanakan tugas tersebut. Jika anggota yang Anda inginkan tidak muncul dalam daftar, itu berarti pengguna tersebut belum tergabung dalam team yang dipilih.

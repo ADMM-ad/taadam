@@ -3,7 +3,7 @@
 @section('title', 'Edit Absensi')
 
 @section('content')
-<div class="container mt-2">
+<div class="container mt-3">
     @if(session('success'))
     <div class="alert alert-success alert-dismissible fade show d-flex align-items-center" role="alert">
         <i class="fas fa-check-circle mr-2"></i>  <!-- Ikon untuk sukses -->
@@ -58,7 +58,7 @@
             </select>
         </div>
 
-        <button type="submit" class="btn btn-primary">Simpan</button>
+        <button type="submit" class="btn btn-success">Simpan</button>
         <a href="{{ Auth::user()->role === 'pimpinan' ? route('absensi.indexpimpinan') : (Auth::user()->role === 'teamleader' ? route('absensi.indexteamleader') : '#') }}" class="btn btn-secondary">Kembali</a>
     </form>
     </div>

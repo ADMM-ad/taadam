@@ -26,7 +26,7 @@
     </div>
 @endif
     <div class="card card-warning collapsed-card mt-2">
-    <div class="card-header">
+    <div class="card-header" style="background-color: #31beb4;">
     <h3 class="card-title">
     <i class="bi bi-megaphone-fill"></i>
     Instructions
@@ -39,7 +39,7 @@
                   </button>
                 </div>
     </div>
-    <div class="card-body">
+    <div class="card-body" style="background-color: #ffffff;">
     Halaman ini digunakan untuk mengelola permintaan perizinan dari karyawan. Anda dapat meninjau setiap permintaan yang masuk, menerima permintaan dengan menekan tombol centang berwarna hijau, atau menolak permintaan dengan tombol silang berwarna merah. Untuk melihat detail permintaan perizinan, silakan klik tombol berwarna biru.
     </div>
 </div>

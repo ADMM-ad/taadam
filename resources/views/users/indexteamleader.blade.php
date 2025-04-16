@@ -2,29 +2,31 @@
 
 @section('content')
 <div class="container mt-3">
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ session('success') }}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-    @endif
+@if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show d-flex align-items-center" role="alert">
+        <i class="fas fa-check-circle mr-2"></i>  <!-- Ikon untuk sukses -->
+        {{ session('success') }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+@endif
 
-    @if($errors->any())
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <ul>
-                @foreach($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-    @endif
+@if($errors->any())
+    <div class="alert alert-danger alert-dismissible fade show d-flex align-items-center" role="alert">
+        <i class="fas fa-exclamation-triangle mr-2"></i>  <!-- Ikon untuk error -->
+        <ul class="mb-0">
+            @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+@endif
     <div class="card card-warning collapsed-card mt-2">
-    <div class="card-header">
+    <div class="card-header" style="background-color: #31beb4;">
     <h3 class="card-title">
     <i class="bi bi-megaphone-fill"></i>
     Instructions
@@ -37,35 +39,37 @@
                   </button>
                 </div>
     </div>
-    <div class="card-body">
-    Halaman ini digunakan untuk mengelola pengguna berdasarkan jabatan atau role teamleader. Anda dapat mengaktifkan atau menonaktifkan akun mereka sesuai kebutuhan. Harap berhati-hati saat menghapus akun, karena tindakan ini akan menghapus seluruh data pengguna, termasuk data absensi dan jobdesk yang terkait.
+    <div class="card-body" style="background-color: #ffffff;">
+    Halaman ini digunakan untuk mengelola pengguna berdasarkan jabatan atau role teamleader. Anda dapat mengaktifkan atau menonaktifkan akun mereka sesuai kebutuhan dan dapat menurunkan jabatan atau role. Harap berhati-hati saat menghapus akun, karena tindakan ini akan menghapus seluruh data pengguna, termasuk data absensi dan jobdesk yang terkait.
     </div>
 </div>
-    <!-- Form Search & Filter -->
-    <div class="row mb-3">
-        <div class="col-md-6 mb-1">
-            <form method="GET" action="{{ route('users.indexteamleader') }}">
-                <div class="input-group">
-                    <input type="text" name="search" class="form-control" placeholder="Cari Nama..." value="{{ request('search') }}">
-                    <div class="input-group-append">
-                        <button type="submit" class="btn btn-primary" style="background-color: #26948E; border-color: #26948E;"><i class="fas fa-search"></i></button>
-                    </div>
+<div class="row">
+    <!-- Filter Search -->
+    <div class="col-md-6 mb-2">
+        <form method="GET" action="{{ route('users.indexteamleader') }}">
+            <div class="input-group">
+                <input type="text" name="search" class="form-control" placeholder="Silahkan cari nama teamleader." value="{{ request('search') }}">
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-primary" style="background-color: #26948E; border-color: #26948E;">
+                        <i class="fas fa-search"></i>
+                    </button>
                 </div>
-            </form>
-        </div>
-
-        <div class="col-md-6">
-            <form method="GET" action="{{ route('users.indexteamleader') }}">
-                <div class="input-group">
-                    <select name="status" class="form-control" onchange="this.form.submit()">
-                        <option value="">Semua Status</option>
-                        <option value="aktif" {{ request('status') == 'aktif' ? 'selected' : '' }}>Aktif</option>
-                        <option value="tidakaktif" {{ request('status') == 'tidakaktif' ? 'selected' : '' }}>Tidak Aktif</option>
-                    </select>
-                </div>
-            </form>
-        </div>
+            </div>
+        </form>
     </div>
+
+    <!-- Filter Status -->
+    <div class="col-md-6 mb-2">
+        <form method="GET" action="{{ route('users.indexteamleader') }}">
+            <select name="status" class="form-control" onchange="this.form.submit()">
+                <option value="">Semua Status</option>
+                <option value="aktif" {{ request('status') == 'aktif' ? 'selected' : '' }}>Aktif</option>
+                <option value="tidakaktif" {{ request('status') == 'tidakaktif' ? 'selected' : '' }}>Tidak Aktif</option>
+            </select>
+        </form>
+    </div>
+</div>
+
 
     <!-- Card Daftar Teamleader -->
     <div class="row">
@@ -100,16 +104,24 @@
                                     <td>
                                     @if($user->status == 'aktif')
                                             <button type="button" class="btn btn-warning btn-sm" onclick="confirmStatusChange('{{ route('users.changeStatustl', $user->id) }}')">
-                                                Nonaktifkan
+                                                Deactivate
                                             </button>
                                         @else
                                             <button type="button" class="btn btn-success btn-sm" onclick="confirmStatusChange('{{ route('users.changeStatustl', $user->id) }}')">
-                                                Aktifkan
+                                                Activate
                                             </button>
                                         @endif
                                         <button type="button" class="btn btn-danger btn-sm" onclick="confirmDelete('{{ route('users.destroytl', $user->id) }}')">
                                             Hapus
                                         </button>
+                                        <button 
+    type="button" 
+    class="btn btn-primary btn-sm" 
+    onclick="confirmDemote(this)" 
+    data-url="{{ route('users.demote', $user->id) }}">
+    Demote
+</button>
+
                                     </td>
                                 </tr>
                             @empty
@@ -180,6 +192,33 @@
     </div>
 </div>
 
+
+<!-- Modal Konfirmasi Demote -->
+<div class="modal fade" id="demoteModal" tabindex="-1" role="dialog" aria-labelledby="demoteModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <form id="demoteForm" method="POST">
+      @csrf
+      @method('PUT')
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="demoteModalLabel">Konfirmasi Penurunan</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Apakah Anda yakin ingin menurunkan user ini menjadi <strong>Karyawan</strong>?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Tidak</button>
+          <button type="submit" class="btn btn-primary">Ya, Turunkan</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+
 <script>
     function confirmDelete(action) {
         var form = document.getElementById('deleteForm');
@@ -191,6 +230,11 @@
         var form = document.getElementById('statusChangeForm');
         form.action = action;
         $('#confirmStatusChangeModal').modal('show');
+    }
+    function confirmDemote(button) {
+        const form = document.getElementById('demoteForm');
+        form.action = button.getAttribute('data-url');
+        $('#demoteModal').modal('show');
     }
 </script>
 

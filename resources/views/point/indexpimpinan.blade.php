@@ -26,7 +26,7 @@
     </div>
 @endif
 <div class="card card-warning collapsed-card mt-2">
-    <div class="card-header">
+    <div class="card-header" style="background-color: #31beb4;" >
     <h3 class="card-title">
     <i class="bi bi-megaphone-fill"></i>
     Instructions
@@ -39,8 +39,8 @@
                   </button>
                 </div>
     </div>
-    <div class="card-body">
-    Halaman ini digunakan untuk mengelola dan menampilkan point Key Performance Indicator (KPI) karyawan yang telah dihitung berdasarkan bobot dari empat aspek penilaian bulanan, yaitu kehadiran, penyelesaian jobdesk, hasil kerja atau jumlah views, dan sikap atau attitude, sehingga memberikan gambaran menyeluruh terhadap kinerja karyawan.
+    <div class="card-body" style="background-color: #ffffff;">
+    Halaman ini digunakan untuk mengelola dan menampilkan point Key Performance Indicator (KPI) karyawan yang telah dihitung berdasarkan bobot dari empat aspek penilaian bulanan, yaitu kehadiran, penyelesaian jobdesk, hasil kerja atau jumlah views, dan sikap atau attitude.
     </div>
 </div>
 <!-- Form Filter -->

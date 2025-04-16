@@ -26,12 +26,12 @@
     </div>
 @endif
     <div class="card card-warning collapsed-card mt-2">
-    <div class="card-header">
+    <div class="card-header" style="background-color: #31beb4;">
     <h3 class="card-title">
     <i class="bi bi-megaphone-fill"></i>
     Instructions
 </h3>
-        <div class="card-tools">
+        <div class="card-tools" >
                   <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i>
                   </button>
                   <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
@@ -39,8 +39,8 @@
                   </button>
                 </div>
     </div>
-    <div class="card-body">
-    Halaman ini digunakan untuk mengelola tim yang ada. Harap berhati-hati saat menghapus data team, karena tindakan penghapusan akan menghilangkan seluruh data yang terkait dengan tim yang dipilih.
+    <div class="card-body" style="background-color: #ffffff;">
+    Halaman ini digunakan untuk mengelola team yang ada. Harap berhati-hati saat menghapus data team, karena tindakan penghapusan akan menghilangkan seluruh data yang terkait dengan team yang dipilih.
     </div>
 </div>
     <!-- Form Search -->
@@ -48,7 +48,7 @@
         <div class="col-md-12 mb-1">
             <form method="GET" action="{{ route('team.index') }}">
                 <div class="input-group">
-                    <input type="text" name="search" class="form-control" placeholder="Cari Nama Team..." value="{{ request('search') }}">
+                    <input type="text" name="search" class="form-control" placeholder="Silahkan mencari nama team." value="{{ request('search') }}">
                     <div class="input-group-append">
                         <button type="submit" class="btn btn-primary" style="background-color: #26948E; border-color: #26948E;">
                             <i class="fas fa-search"></i>

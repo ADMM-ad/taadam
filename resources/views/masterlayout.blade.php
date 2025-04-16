@@ -3,10 +3,10 @@
 
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ourweb</title>
-  <!-- Google Font: Source Sans Pro -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+<!-- Google Font: Source Sans Pro -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome -->
   <link rel="stylesheet" href="{{ asset('template/plugins/fontawesome-free/css/all.min.css') }}">
   <!-- Ionicons -->
@@ -28,7 +28,10 @@
   <!-- Summernote -->
   <link rel="stylesheet" href="{{ asset('template/plugins/summernote/summernote-bs4.min.css') }}">
   <!-- Kelender-->
-  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">  
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+
 
 </head>
 
@@ -43,7 +46,7 @@
     right: 0;
     height: 60px;
     padding: 0 1rem;
-    background-color: #26948E !important;
+    background-color: #249c8e !important;
     z-index: 1040;
     display: flex;
     align-items: center;
@@ -78,7 +81,7 @@
     background-color: white;
 }
   .main-sidebar {
-    background-color: #30BEB5 !important;
+    background-color: #31BEB4 !important;
     margin-top: 56px;
   }
 
@@ -180,7 +183,22 @@
         color: #ff0000 !important;
         font-weight: bold;
     }
+/* Menyamakan tinggi dan font input Select2 dengan input form lain */
 
+.choices__inner {
+    min-height: 38px; /* default-nya sekitar 44px, kamu bisa ubah ke 30-35px */
+    padding: 4px 8px;
+   
+  }
+
+  .choices__list--single {
+    padding: 0; /* mengurangi tinggi */
+  }
+
+  .choices__input {
+    
+    padding: 4px 6px;
+  }
 
 /* Sembunyikan nama user di tampilan kecil (<820px) */
 @media (max-width: 819px) {
@@ -598,16 +616,32 @@
     </div>
   </div>
 
-  <script src="{{ asset('template/plugins/jquery/jquery.min.js') }}"></script>
+
+  
+<!-- Scripts -->
+<script src="{{ asset('template/plugins/jquery/jquery.min.js') }}"></script>
   <script src="{{ asset('template/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
   <script src="{{ asset('template/dist/js/adminlte.min.js') }}"></script>
   <script src="{{ asset('template/plugins/chart.js/Chart.min.js') }}"></script>
   <script src="{{ asset('template/plugins/jquery-knob/jquery.knob.min.js') }}"></script>
-  
+
 
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
-  
 
+  <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+  <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const selects = document.querySelectorAll('select');
+    selects.forEach(select => {
+      new Choices(select, {
+        searchEnabled: true,  // Menonaktifkan fitur pencarian
+        itemSelectText: '',    // Menghilangkan teks "select"
+      });
+    });
+  });
+</script>
+
+ 
   @stack('scriptsdua')
 
   @yield('scripts')

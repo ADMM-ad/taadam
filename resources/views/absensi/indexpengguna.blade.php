@@ -5,7 +5,7 @@
 @section('content')
 <div class="container mt-3">
 <div class="card card-warning collapsed-card mt-2">
-    <div class="card-header">
+    <div class="card-header" style="background-color: #31beb4;">
     <h3 class="card-title">
     <i class="bi bi-megaphone-fill"></i>
     Instructions
@@ -18,18 +18,18 @@
                   </button>
                 </div>
     </div>
-    <div class="card-body">
+    <div class="card-body" style="background-color: #ffffff;">
     Halaman ini digunakan untuk mengelola dan menampilkan laporan absensi anda.<br><br>
 
 Warna pada kalender memiliki arti sebagai berikut:<br><br>
 
-<span style="color: green; font-weight: bold;">Hijau</span>: Karyawan dinyatakan hadir, yaitu telah melakukan absen datang dan absen pulang.<br>
-<span style="color: blue; font-weight: bold;">Biru</span>: Karyawan hanya melakukan absen datang, namun belum melakukan absen pulang.<br>
-<span style="color: orange; font-weight: bold;">Oranye</span>: Karyawan mengajukan izin dan telah disetujui.<br>
-<span style="color: yellow; font-weight: bold;">Kuning</span>: Karyawan mengajukan sakit dan telah disetujui.<br>
-<span style="color: gray; font-weight: bold;">Abu-abu</span>: Permintaan izin masih dalam proses, belum disetujui ataupun ditolak.<br>
-<span style="color: red; font-weight: bold;">Merah</span>: Permintaan izin telah ditolak.<br>
-<span style="color: black; font-weight: bold;">Hitam</span>: Tidak terdapat aktivitas absensi pada hari tersebut, bisa disebabkan oleh hari libur atau karyawan tidak masuk tanpa keterangan.
+<span style="color: green; font-weight: bold;">-Hijau</span>: Karyawan dinyatakan hadir, yaitu telah melakukan absen datang dan absen pulang.<br>
+<span style="color: blue; font-weight: bold;">-Biru</span>: Karyawan hanya melakukan absen datang, namun belum melakukan absen pulang.<br>
+<span style="color: orange; font-weight: bold;">-Oranye</span>: Karyawan mengajukan izin dan telah disetujui.<br>
+<span style="color: yellow; font-weight: bold;">-Kuning</span>: Karyawan mengajukan sakit dan telah disetujui.<br>
+<span style="color: gray; font-weight: bold;">-Abu-abu</span>: Permintaan izin masih dalam proses, belum disetujui ataupun ditolak.<br>
+<span style="color: red; font-weight: bold;">-Merah</span>: Permintaan izin telah ditolak.<br>
+<span style="color: black; font-weight: bold;">-Hitam</span>: Tidak terdapat aktivitas absensi pada hari tersebut, bisa disebabkan oleh hari libur atau karyawan tidak masuk tanpa keterangan.
     </div>
 </div>
 <div class="card card-primary card-outline mt-3 mb-3 ms-3 me-3 p-3"  style="border-color: #31beb4;">

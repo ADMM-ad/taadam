@@ -28,7 +28,7 @@
 @endif
 
     <div class="card card-warning collapsed-card mt-2">
-    <div class="card-header">
+    <div class="card-header" style="background-color: #31beb4;">
     <h3 class="card-title">
     <i class="bi bi-megaphone-fill"></i>
     Instructions
@@ -41,12 +41,14 @@
                   </button>
                 </div>
     </div>
-    <div class="card-body">
-    Nama tidak boleh lebih dari 50 karakter.<br>
-    Username wajib diisi dan username tidak boleh lebih dari 50 karakter.<br>
-    Username harus berbeda dengan username pengguna yang lain.<br>
-    Password wajib diisi dan minimal harus terdiri dari 8 karakter.<br>
-    Role pengguna baru harus dipilih salah satu dari: karyawan, teamleader, atau pimpinan.
+    <div class="card-body" style="background-color: #ffffff;">
+    Halaman ini digunakan untuk menambahkan akun pengguna dengan ketentuan sebagai berikut:<br>
+- Nama tidak boleh lebih dari 50 karakter.<br>
+- Username wajib diisi dan tidak boleh lebih dari 50 karakter.<br>
+- Username harus berbeda dengan username pengguna lain.<br>
+- Password wajib diisi dan minimal harus terdiri dari 8 karakter.<br>
+- Role pengguna baru harus dipilih salah satu dari: karyawan, teamleader, atau pimpinan.
+
     </div>
 </div>
       
@@ -118,4 +120,6 @@
         </div>
     </div>
 </div>
+
+
 @endsection

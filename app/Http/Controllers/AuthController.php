@@ -42,7 +42,7 @@ class AuthController extends Controller
             $user = Auth::user();
     
             if ($user->status == 'tidakaktif') {
-                return redirect()->route('profil.edit')->with('message', 'Silahkan mengubah Username dan Password untuk mengaktifkan akun');
+                return redirect()->route('profil.edit')->with('message', 'Silahkan mengisi data dan mengubah Username dan Password untuk mengaktifkan akun');
             }
     
             // Redirect berdasarkan role
