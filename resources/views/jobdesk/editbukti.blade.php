@@ -13,7 +13,7 @@
                 
                 <div class="mb-3">
                     <label for="hasil" class="form-label"><i class="fas fa-folder-open mr-1" style="color: #31beb4;"></i>Hasil Pekerjaan</label>
-                    <textarea class="form-control" id="hasil" name="hasil" rows="3" placeholder="Masukan bukti pekerjaan anda berupa link" required>{{ $jobdesk->hasil }}</textarea>
+                    <textarea class="form-control" id="hasil" name="hasil" rows="3" placeholder="Masukan bukti pekerjaan anda berupa link">{{ $jobdesk->hasil }}</textarea>
                 </div>
 
                 <div class="mb-3">

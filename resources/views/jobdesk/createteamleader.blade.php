@@ -67,19 +67,19 @@ Untuk memulai, pastikan Anda memilih team terlebih dahulu agar dapat menampilkan
         <!-- Pilih Nama Pekerjaan -->
         <div class="mb-3">
             <label for="nama_pekerjaan" class="form-label"><i class="fas fa-clipboard-list mr-1" style="color: #31beb4;"></i>Nama Pekerjaan</label>
-            <input type="text" name="nama_pekerjaan" class="form-control" required>
+            <input type="text" name="nama_pekerjaan" class="form-control" placeholder="Masukan nama perkerjaan." required>
         </div>
 
         <!-- Pilih Deskripsi -->
         <div class="mb-3">
             <label for="deskripsi" class="form-label"><i class="fas fa-comment-dots mr-1" style="color: #31beb4;"></i>Deskripsi</label>
-            <textarea name="deskripsi" class="form-control" required></textarea>
+            <textarea name="deskripsi" class="form-control" placeholder="Masukan deskripsi atau penjelasan perkerjaan."></textarea>
         </div>
 
         <!-- Pilih Tenggat Waktu -->
         <div class="mb-3">
             <label for="tenggat_waktu" class="form-label"><i class="fas fa-calendar-alt mr-1" style="color: #31beb4;"></i>Tenggat Waktu</label>
-            <input type="date" name="tenggat_waktu" class="form-control" required>
+            <input type="date" name="tenggat_waktu" class="form-control">
         </div>
 
         <!-- Pilih User yang Mengerjakan -->

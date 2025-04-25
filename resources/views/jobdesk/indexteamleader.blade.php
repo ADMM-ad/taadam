@@ -79,6 +79,7 @@ dan gunakan tombol detail untuk melihat informasi lengkap, termasuk deskripsi pe
                 </div>
 
                 <div class="col-md-4 mt-2">
+                <label for="bulan" class="form-label d-md-none">Filter berdasarkan bulan.</label>
                     <input type="month" name="bulan" class="form-control" value="{{ request('bulan') }}">
                 </div>
 
@@ -131,8 +132,7 @@ dan gunakan tombol detail untuk melihat informasi lengkap, termasuk deskripsi pe
                     <td>
                     @if(Str::startsWith($jobdesk->hasil, ['http://', 'https://']))
         <a href="{{ $jobdesk->hasil }}" target="_blank" class="btn btn-sm btn-success">Lihat</a>
-    @else
-        {{ $jobdesk->hasil }}
+   
     @endif
     <a href="{{ route('jobdesk.detailpimpinan', $jobdesk->id) }}" class="btn btn-info btn-sm">Detail</a>
     <a href="{{ route('jobdesk.editpimpinan', $jobdesk->id) }}" class="btn btn-warning btn-sm">Edit</a>

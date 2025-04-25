@@ -54,20 +54,25 @@
 
                 <!-- Kolom kanan: Form tambah pengguna -->
                 <div class="col-md-6 col-12">
-                    <h5>Tambah Pengguna</h5>
-                    <form action="{{ route('jobdesk.addUser', $jobdesk->id) }}" method="POST">
-                        @csrf
-                        <div class="d-flex flex-column flex-md-row">
-                            <select name="user_id" class="form-control me-md-2 mb-2 mb-md-0">
-                                @foreach($teamUsers as $user)
-                                    <option value="{{ $user->id }}">{{ $user->name }}</option>
-                                @endforeach
-                            </select>
-                            <button type="submit" class="btn btn-success ml-1">Tambah</button>
-                        </div>
-                    </form>
+                    
+                        <h5 class="mb-3">Tambah Pengguna</h5>
+                        <form action="{{ route('jobdesk.addUser', $jobdesk->id) }}" method="POST">
+                            @csrf
+                            <div class="form-group">
+                                
+                                <select name="user_id" id="userSelect" class="form-control mb-3">
+                                    @foreach($teamUsers as $user)
+                                        <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-success">
+                                 Tambah
+                            </button>
+                        </form>
+                    </div>
                 </div>
-            </div>
+            
         </div>
     </div>
 

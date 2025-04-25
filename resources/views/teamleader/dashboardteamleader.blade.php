@@ -185,7 +185,6 @@
                     </div>
                     <div class="col-sm-5 mb-2">
                         <select name="team_id" id="filterTim" class="form-control">
-                            
                             @foreach($allowedTeams as $team)
                                 <option value="{{ $team->id }}" {{ request('team_id') == $team->id ? 'selected' : '' }}>
                                     {{ $team->nama_team }}
@@ -198,10 +197,16 @@
                     </div>
                 </form>
 
-                <!-- Grafik Pie -->
+                <!-- Grafik Pie - Hanya tampilkan jika ada request -->
+                @if(request()->has('bulan') || request()->has('team_id'))
                 <div class="flex-grow-1">
                     <canvas id="donutChart" style="min-height: 250px; height: 250px; max-height: 100%; max-width: 100%;"></canvas>
                 </div>
+                @else
+                <div class="text-center">
+                    <p>Silahkan pilih bulan dan team terlebih dahulu.</p>
+                </div>
+                @endif
             </div>
         </div>
     </div>
@@ -268,7 +273,7 @@
                     </div>
                 @else
                     <div class="text-center">
-                        <p>Silakan pilih nama dan bulan terlebih dahulu.</p>
+                        <p>Silahkan pilih nama dan bulan terlebih dahulu.</p>
                     </div>
                 @endif
 
@@ -284,6 +289,7 @@
 </div>
 
 @push('scriptsdua')
+@if(request()->has('bulan') || request()->has('team_id'))
 <script>
     const donutChart = document.getElementById('donutChart').getContext('2d');
 
@@ -307,6 +313,7 @@
         }
     });
 </script>
+@endif
 <script>
     $(function () {
         $(".knob").knob();

@@ -11,12 +11,24 @@ use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\JobdeskController;
 use App\Http\Controllers\HasilController;
 use App\Http\Controllers\PointController;
+use App\Http\Controllers\JaringanController;
 use App\Http\Middleware\RoleMiddleware;
 
 Route::get('/', function () {
-    return view('welcome');
+    if (Auth::check()) {
+        $user = Auth::user();
+        
+        if ($user->role == 'pimpinan') {
+            return redirect()->route('dashboardpimpinan');
+        } elseif ($user->role == 'teamleader') {
+            return redirect()->route('dashboardteamleader');
+        } elseif ($user->role == 'karyawan') {
+            return redirect()->route('dashboardkaryawan');
+        }
+    }
+    
+    return redirect()->route('login');
 });
-
 
 
 
@@ -107,7 +119,8 @@ Route::middleware(['auth',RoleMiddleware::class . ':pimpinan',])->group(function
     //point
     Route::get('/point', [PointController::class, 'index'])->name('point.index');
     Route::get('/laporanpoint', [PointController::class, 'indexPimpinan'])->name('point.indexpimpinan');    
-
+//settingjaringan
+Route::resource('jaringan', JaringanController::class);
 });
 
 

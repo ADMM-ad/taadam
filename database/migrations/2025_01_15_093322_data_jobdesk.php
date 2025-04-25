@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('team_id')->constrained('team')->onDelete('cascade');
             $table->string('nama_pekerjaan');
-            $table->text('deskripsi');
+            $table->text('deskripsi')->nullable();
             $table->date('tenggat_waktu');
             $table->date('waktu_selesai')->nullable();
             $table->enum('status', ['ditugaskan', 'selesai']);

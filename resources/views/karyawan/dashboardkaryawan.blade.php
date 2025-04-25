@@ -91,14 +91,20 @@
                     </div>
                 </form>
 
-                <!-- Grafik Pie -->
+                <!-- Grafik Pie - Hanya tampilkan jika ada request -->
+                @if(request()->has('bulan') || request()->has('team_id'))
                 <div class="flex-grow-1">
                     <canvas id="donutChart" style="min-height: 250px; height: 250px; max-height: 100%; max-width: 100%;"></canvas>
                 </div>
+                @else
+                <div class="text-center">
+                    <p>Silakan pilih bulan dan team terlebih dahulu.</p>
+                </div>
+                @endif
             </div>
         </div>
     </div>
-</div>   
+</div>
 
 
 <div class="row mt-2">
@@ -166,6 +172,7 @@
 
 
 @push('scriptsdua')
+@if(request()->has('bulan') || request()->has('team_id'))
 <script>
     const donutChart = document.getElementById('donutChart').getContext('2d');
 
@@ -189,6 +196,7 @@
         }
     });
 </script>
+@endif
 <script>
     $(function () {
         $(".knob").knob();

@@ -31,11 +31,17 @@ class DashboardController extends Controller
         ->get();
 
 
+       // Inisialisasi variabel dengan nilai default
+    $jobdeskDitugaskan = 0;
+    $jobdeskSelesai = 0;
+    
+    // Data Team untuk dropdown (selalu diambil)
+    $semuaTeam = Team::all();
+
+    // Hanya proses data jika ada request filter
+    if ($request->has('bulan') || $request->has('team_id')) {
         $tanggalFilter = $request->bulan ? Carbon::parse($request->bulan) : null;
         $teamIdFilter = $request->team_id;
-    
-        // Data Team untuk dropdown
-        $semuaTeam = Team::all();
     
         // Filter data jobdesk berdasarkan bulan dan tim
         $jobdeskQuery = Jobdesk::query();
@@ -51,7 +57,7 @@ class DashboardController extends Controller
     
         $jobdeskDitugaskan = (clone $jobdeskQuery)->where('status', 'ditugaskan')->count();
         $jobdeskSelesai = (clone $jobdeskQuery)->where('status', 'selesai')->count();
-
+    }
 
 
         $selectedUserId = $request->input('user_id');
@@ -94,72 +100,64 @@ class DashboardController extends Controller
 
 public function teamleader(Request $request)
 {
-    $user = auth()->user(); // Ambil user yang sedang login
-    $teamId = \DB::table('detail_team')->where('user_id', $user->id)->value('team_id');
-
+    $user = auth()->user();
+    // Ambil semua team_id yang dimiliki user
+    $teamIds = \DB::table('detail_team')->where('user_id', $user->id)->pluck('team_id')->toArray();
 
     $tanggalHariIni = Carbon::now()->toDateString();
     $absensiHariIni = Absensi::where('user_id', $user->id)
-    ->where('tanggal', $tanggalHariIni)
-    ->where('status', 'disetujui')
-    ->first();
+        ->where('tanggal', $tanggalHariIni)
+        ->where('status', 'disetujui')
+        ->first();
 
+    // Hitung total waktu_terlambat bulan ini
+    $now = Carbon::now();
+    $terlambatBulanIni = Absensi::where('user_id', $user->id)
+        ->whereMonth('tanggal', $now->month)
+        ->whereYear('tanggal', $now->year)
+        ->whereNotNull('waktu_terlambat')
+        ->pluck('waktu_terlambat');
 
-// Hitung total waktu_terlambat bulan ini
-$now = Carbon::now();
-
-$terlambatBulanIni = Absensi::where('user_id', $user->id)
-    ->whereMonth('tanggal', $now->month)
-    ->whereYear('tanggal', $now->year)
-    ->whereNotNull('waktu_terlambat')
-    ->pluck('waktu_terlambat');
-
-$totalDetikTerlambat = 0;
-
-foreach ($terlambatBulanIni as $time) {
-    if ($time) {
-        $carbonTime = Carbon::createFromFormat('H:i:s', $time);
-        $detik = ($carbonTime->hour * 3600) + ($carbonTime->minute * 60) + $carbonTime->second;
-        $totalDetikTerlambat += $detik;
+    $totalDetikTerlambat = 0;
+    foreach ($terlambatBulanIni as $time) {
+        if ($time) {
+            $carbonTime = Carbon::createFromFormat('H:i:s', $time);
+            $detik = ($carbonTime->hour * 3600) + ($carbonTime->minute * 60) + $carbonTime->second;
+            $totalDetikTerlambat += $detik;
+        }
     }
-}
+    $totalWaktuTerlambatBulanIni = sprintf('%02d:%02d:%02d', 
+        floor($totalDetikTerlambat / 3600), 
+        floor(($totalDetikTerlambat % 3600) / 60), 
+        $totalDetikTerlambat % 60);
 
-$jam = floor($totalDetikTerlambat / 3600);
-$menit = floor(($totalDetikTerlambat % 3600) / 60);
-$detik = $totalDetikTerlambat % 60;
-
-$totalWaktuTerlambatBulanIni = sprintf('%02d:%02d:%02d', $jam, $menit,$detik);
-
-
-
-
-    // 2. Jumlah Teamleader & Karyawan aktif dalam team yang sama
+    // Jumlah Teamleader & Karyawan aktif dalam team yang sama
     $jumlahTeamleaderAktif = User::where('status', 'aktif')
         ->where('role', 'teamleader')
-        ->whereIn('id', function($query) use ($teamId) {
+        ->whereIn('id', function($query) use ($teamIds) {
             $query->select('user_id')
                   ->from('detail_team')
-                  ->where('team_id', $teamId);
+                  ->whereIn('team_id', $teamIds); // Ubah ke whereIn
         })
         ->count();
 
     $jumlahKaryawanAktif = User::where('status', 'aktif')
         ->where('role', 'karyawan')
-        ->whereIn('id', function($query) use ($teamId) {
+        ->whereIn('id', function($query) use ($teamIds) {
             $query->select('user_id')
                   ->from('detail_team')
-                  ->where('team_id', $teamId);
+                  ->whereIn('team_id', $teamIds); // Ubah ke whereIn
         })
         ->count();
 
-    // 3. Absensi hari ini (status disetujui & diproses) hanya untuk role 'karyawan' di tim yang sama
+    // Absensi hari ini (status disetujui & diproses)
     $absensiDisetujuiHariIni = Absensi::with('user')
         ->whereDate('tanggal', Carbon::today())
         ->where('status', 'disetujui')
-        ->whereHas('user', function ($query) use ($teamId) {
+        ->whereHas('user', function ($query) use ($teamIds) {
             $query->where('role', 'karyawan')
-                  ->whereIn('id', function($sub) use ($teamId) {
-                      $sub->select('user_id')->from('detail_team')->where('team_id', $teamId);
+                  ->whereIn('id', function($sub) use ($teamIds) {
+                      $sub->select('user_id')->from('detail_team')->whereIn('team_id', $teamIds);
                   });
         })
         ->get();
@@ -167,39 +165,78 @@ $totalWaktuTerlambatBulanIni = sprintf('%02d:%02d:%02d', $jam, $menit,$detik);
     $absensiDiprosesHariIni = Absensi::with('user')
         ->whereDate('tanggal', Carbon::today())
         ->where('status', 'diproses')
-        ->whereHas('user', function ($query) use ($teamId) {
+        ->whereHas('user', function ($query) use ($teamIds) {
             $query->where('role', 'karyawan')
-                  ->whereIn('id', function($sub) use ($teamId) {
-                      $sub->select('user_id')->from('detail_team')->where('team_id', $teamId);
+                  ->whereIn('id', function($sub) use ($teamIds) {
+                      $sub->select('user_id')->from('detail_team')->whereIn('team_id', $teamIds);
                   });
         })
         ->get();
 
-        $tanggalFilter = $request->bulan ? Carbon::parse($request->bulan) : null;
-        $teamIdFilter = $request->team_id ?? $teamId; // default ke team user login
-        
-        // Pastikan hanya bisa pilih tim sendiri
-        $allowedTeams = Team::where('id', $teamId)->get(); // bisa jadi array atau collection
-        
-        $jobdeskQuery = Jobdesk::query()->where('team_id', $teamIdFilter);
-        
-        if ($tanggalFilter) {
-            $jobdeskQuery->whereMonth('tenggat_waktu', $tanggalFilter->month)
-                         ->whereYear('tenggat_waktu', $tanggalFilter->year);
-        }
-        
-        $jobdeskDitugaskan = (clone $jobdeskQuery)->where('status', 'ditugaskan')->count();
-        $jobdeskSelesai = (clone $jobdeskQuery)->where('status', 'selesai')->count();
-        
+   // Jobdesk
+$jobdeskDitugaskan = 0;
+$jobdeskSelesai = 0;
+$allowedTeams = collect();
 
-    // 5. KPI: hanya user di team yang sama
+if ($request->has('bulan') || $request->has('team_id')) {
+    $tanggalFilter = $request->bulan ? Carbon::parse($request->bulan) : null;
+    $teamIdFilter = $request->team_id;
+    
+    // Ambil daftar team yang diizinkan (team user + Individu)
+    $allowedTeams = Team::whereIn('id', function ($query) use ($user) {
+            $query->select('team_id')
+                  ->from('detail_team')
+                  ->where('user_id', $user->id);
+        })->orWhere('nama_team', 'Individu')->get();
+    
+    // Query jobdesk
+    $jobdeskQuery = Jobdesk::query();
+    
+    // Filter berdasarkan team yang dipilih
+    if ($teamIdFilter) {
+        // Jika memilih team Individu
+        if ($teamIdFilter == Team::where('nama_team', 'Individu')->first()->id) {
+            $jobdeskQuery->where('team_id', $teamIdFilter)
+                         ->whereHas('detailJobdesk', function ($query) use ($user) {
+                             $query->where('user_id', $user->id);
+                         });
+        } 
+        // Jika memilih team selain Individu
+        else {
+            $jobdeskQuery->where('team_id', $teamIdFilter);
+        }
+    }
+    // Jika tidak memilih team (tampilkan semua team user)
+    else {
+        $jobdeskQuery->whereIn('team_id', $teamIds);
+    }
+    
+    // Filter bulan jika dipilih
+    if ($tanggalFilter) {
+        $jobdeskQuery->whereMonth('tenggat_waktu', $tanggalFilter->month)
+                     ->whereYear('tenggat_waktu', $tanggalFilter->year);
+    }
+    
+    // Hitung jobdesk ditugaskan dan selesai
+    $jobdeskDitugaskan = (clone $jobdeskQuery)->where('status', 'ditugaskan')->count();
+    $jobdeskSelesai = (clone $jobdeskQuery)->where('status', 'selesai')->count();
+} else {
+    // Jika tidak ada filter, ambil daftar tim yang diizinkan
+    $allowedTeams = Team::whereIn('id', function ($query) use ($user) {
+        $query->select('team_id')
+              ->from('detail_team')
+              ->where('user_id', $user->id);
+    })->orWhere('nama_team', 'Individu')->get();
+}
+        
+    // KPI
     $selectedUserId = $request->input('user_id');
     $selectedMonth = $request->input('bulan_kinerja');
 
     $users = User::whereIn('role', ['teamleader', 'karyawan'])
         ->where('status', 'aktif')
-        ->whereIn('id', function($query) use ($teamId) {
-            $query->select('user_id')->from('detail_team')->where('team_id', $teamId);
+        ->whereIn('id', function($query) use ($teamIds) {
+            $query->select('user_id')->from('detail_team')->whereIn('team_id', $teamIds);
         })
         ->get();
 
@@ -282,6 +319,10 @@ $totalWaktuTerlambatBulanIni = sprintf('%02d:%02d:%02d', $jam, $menit,$detik);
 
 
 //3 job me
+// Inisialisasi variabel dengan nilai default
+$jobdeskDitugaskan = 0;
+$jobdeskSelesai = 0;
+
 // Ambil semua team yang user ikuti + team "Individu"
 $allowedTeams = Team::whereIn('id', function ($query) use ($user) {
     $query->select('team_id')
@@ -289,25 +330,28 @@ $allowedTeams = Team::whereIn('id', function ($query) use ($user) {
           ->where('user_id', $user->id);
 })->orWhere('nama_team', 'Individu')->get();
 
-// Ambil filter bulan dan team dari request
-$tanggalFilter = $request->bulan ? Carbon::parse($request->bulan) : null;
-$teamIdFilter = $request->team_id ?? ($allowedTeams->first()->id ?? null);
+// Hanya proses data jika ada request filter
+if ($request->has('bulan') || $request->has('team_id')) {
+    // Ambil filter bulan dan team dari request
+    $tanggalFilter = $request->bulan ? Carbon::parse($request->bulan) : null;
+    $teamIdFilter = $request->team_id ?? ($allowedTeams->first()->id ?? null);
 
-// Query jobdesk berdasarkan user login dan team_id
-$jobdeskQuery = Jobdesk::query()
-    ->whereHas('detailJobdesk', function ($query) use ($user) {
-        $query->where('user_id', $user->id);
-    })
-    ->where('team_id', $teamIdFilter);
+    // Query jobdesk berdasarkan user login dan team_id
+    $jobdeskQuery = Jobdesk::query()
+        ->whereHas('detailJobdesk', function ($query) use ($user) {
+            $query->where('user_id', $user->id);
+        })
+        ->where('team_id', $teamIdFilter);
 
-if ($tanggalFilter) {
-    $jobdeskQuery->whereMonth('tenggat_waktu', $tanggalFilter->month)
-                 ->whereYear('tenggat_waktu', $tanggalFilter->year);
+    if ($tanggalFilter) {
+        $jobdeskQuery->whereMonth('tenggat_waktu', $tanggalFilter->month)
+                     ->whereYear('tenggat_waktu', $tanggalFilter->year);
+    }
+
+    // Hitung jobdesk ditugaskan dan selesai
+    $jobdeskDitugaskan = (clone $jobdeskQuery)->where('status', 'ditugaskan')->count();
+    $jobdeskSelesai = (clone $jobdeskQuery)->where('status', 'selesai')->count();
 }
-
-// Hitung jobdesk ditugaskan dan selesai
-$jobdeskDitugaskan = (clone $jobdeskQuery)->where('status', 'ditugaskan')->count();
-$jobdeskSelesai = (clone $jobdeskQuery)->where('status', 'selesai')->count();
 
 
 //point

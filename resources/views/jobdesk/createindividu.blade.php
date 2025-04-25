@@ -63,7 +63,7 @@
         <!-- Pilih Deskripsi -->
         <div class="mb-3">
             <label for="deskripsi" class="form-label"><i class="fas fa-comment-dots mr-1" style="color: #31beb4;"></i>Deskripsi</label>
-            <textarea name="deskripsi" class="form-control" placeholder="Masukan deskripsi atau penjelasan perkerjaan." required></textarea>
+            <textarea name="deskripsi" class="form-control" placeholder="Masukan deskripsi atau penjelasan perkerjaan."></textarea>
         </div>
 
         <!-- Pilih Tenggat Waktu -->

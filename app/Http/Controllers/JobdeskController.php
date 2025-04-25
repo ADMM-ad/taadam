@@ -26,7 +26,7 @@ class JobdeskController extends Controller
         $request->validate([
             'team_id' => 'required|exists:team,id',
             'nama_pekerjaan' => 'required|string|max:255',
-            'deskripsi' => 'required|string|max:255',
+            'deskripsi' => 'nullable|string|max:255',
             'tenggat_waktu' => 'required|date',
             'user_ids' => 'required|array',
             'user_ids.*' => 'exists:users,id'
@@ -36,7 +36,6 @@ class JobdeskController extends Controller
             'nama_pekerjaan.required' => 'Nama pekerjaan harus diisi.',
             'nama_pekerjaan.string' => 'Nama pekerjaan harus berupa teks.',
             'nama_pekerjaan.max' => 'Nama pekerjaan maksimal 255 karakter.',
-            'deskripsi.required' => 'Deskripsi pekerjaan harus diisi.',
             'deskripsi.string' => 'Deskripsi pekerjaan harus berupa teks.',
             'deskripsi.max' => 'Nama pekerjaan maksimal 255 karakter.',
             'tenggat_waktu.required' => 'Tenggat waktu harus diisi.',
@@ -118,7 +117,7 @@ public function storeindividu(Request $request)
     $request->validate([
         'user_id' => 'required|exists:users,id',
         'nama_pekerjaan' => 'required|string|max:255',
-        'deskripsi' => 'required|string',
+        'deskripsi' => 'nullable|string',
         'tenggat_waktu' => 'required|date',
     ], [
         'user_id.required' => 'Pengguna wajib dipilih.',
@@ -128,7 +127,7 @@ public function storeindividu(Request $request)
         'nama_pekerjaan.string'   => 'Nama pekerjaan harus berupa teks.',
         'nama_pekerjaan.max'      => 'Nama pekerjaan tidak boleh lebih dari 255 karakter.',
     
-        'deskripsi.required' => 'Deskripsi pekerjaan wajib diisi.',
+        
         'deskripsi.string'   => 'Deskripsi harus berupa teks.',
     
         'tenggat_waktu.required' => 'Tenggat waktu wajib diisi.',
@@ -168,7 +167,7 @@ public function storeindividu(Request $request)
      {
          $jobdesks = Jobdesk::whereHas('detailJobdesk', function ($query) {
              $query->where('user_id', Auth::id());
-         })->where('status', 'ditugaskan')->paginate(10);
+         })->where('status', 'ditugaskan') ->orderBy('tenggat_waktu', 'asc')->paginate(10);
  
          return view('jobdesk.indexpengguna', compact('jobdesks'));
      }
@@ -178,7 +177,7 @@ public function storeindividu(Request $request)
      {
          $query = Jobdesk::whereHas('detailJobdesk', function ($q) {
              $q->where('user_id', Auth::id());
-         })->where('status', 'selesai');
+         })->where('status', 'selesai') ->orderBy('tenggat_waktu', 'asc');
      
          // Filter nama pekerjaan
          if ($request->filled('nama_pekerjaan')) {
@@ -218,9 +217,7 @@ public function storeindividu(Request $request)
     // Menyimpan hasil pekerjaan dan memperbarui status serta waktu selesai
     public function updatepengguna(Request $request, $id)
     {
-        $request->validate([
-            'hasil' => 'required|string',
-        ]);
+       
 
         $jobdesk = Jobdesk::whereHas('detailJobdesk', function ($query) {
             $query->where('user_id', Auth::id());
@@ -249,7 +246,7 @@ public function storeindividu(Request $request)
 public function updatebukti(Request $request, $id)
 {
     $request->validate([
-        'hasil' => 'required|string',
+        
         'status' => 'required|in:ditugaskan,selesai',
     ]);
 
@@ -295,8 +292,8 @@ public function indexteamleader(Request $request)
 //ini untuk laporan pimpinan
 public function indexpimpinan(Request $request)
 {
-    $query = Jobdesk::with('team');
-
+    $query = Jobdesk::with('team')
+        ->orderBy('tenggat_waktu', 'asc');
     // Filter berdasarkan nama pekerjaan
     if ($request->filled('search')) {
         $query->where('nama_pekerjaan', 'like', '%' . $request->search . '%');
@@ -359,7 +356,6 @@ public function updatepimpinan(Request $request, $id)
 
     $request->validate([
         'nama_pekerjaan' => 'required',
-        'deskripsi' => 'required',
         'tenggat_waktu' => 'required|date',
         'status' => 'required|in:ditugaskan,selesai',
     ]);

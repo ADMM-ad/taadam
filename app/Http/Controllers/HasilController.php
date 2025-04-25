@@ -68,7 +68,7 @@ class HasilController extends Controller
         $teamOptions = Team::whereIn('id', $teamIds)->select('nama_team')->get();
     
         // Ambil data jobdesk hasil
-        $jobdeskHasils = $query->orderBy('bulan', 'asc')->paginate(2);
+        $jobdeskHasils = $query->orderBy('bulan', 'asc')->paginate(10);
     
         return view('hasil.indexteamleader', compact('jobdeskHasils', 'tahunOptions', 'teamOptions'));
     }

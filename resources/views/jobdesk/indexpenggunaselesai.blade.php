@@ -39,6 +39,7 @@
             </div>
     <div class="row">
     <div class="col-md-10 mt-2">
+    <label for="bulan" class="form-label d-md-none">Filter berdasarkan bulan.</label>
     <input type="month" name="tanggal_filter" class="form-control" value="{{ request('tanggal_filter') }}">
 </div>
 

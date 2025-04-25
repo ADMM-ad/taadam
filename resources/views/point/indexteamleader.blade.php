@@ -57,6 +57,7 @@
                 </select>
             </div>
             <div class="col-md-5 mt-2">
+            <label for="bulan" class="form-label d-md-none">Filter berdasarkan bulan.</label>
                 <input type="month" name="date" class="form-control" value="{{ request('date') }}">
             </div>
              <!-- Tombol Submit dan Reset -->

@@ -11,7 +11,8 @@
         <div class="card-body">
         <div class="row mb-3">
                 <div class="col-md-4 font-weight-bold "><i class="fas fa-users mr-1" style="color: #31beb4;"></i>Nama Team : </div>
-                <div class="col-md-8">{{ $jobdesk->team ? $jobdesk->team->nama_team : 'Individu' }}</div>
+                <div class="col-md-8">{{ $jobdesk->team->nama_team }}</div>
+
             </div>
 
             <div class="row mb-3">
@@ -42,6 +43,17 @@
                 </div>
             </div>
 
+
+            <div class="row mb-3">
+                <div class="col-md-4 font-weight-bold "><i class="fas fa-folder-open mr-1" style="color: #31beb4;"></i>Hasil : </div>
+                <div class="col-md-8">{{ $jobdesk->hasil }}</div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-4 font-weight-bold "><i class="fas fa-regular fa-clock mr-1" style="color: #31beb4;"></i>Selesai Pada : </div>
+                <div class="col-md-8">{{ $jobdesk->waktu_selesai }}</div>
+            </div>
+
             <div class="row mb-3">
                 <div class="col-md-4 font-weight-bold "><i class="fas fa-hourglass-half mr-1" style="color: #31beb4;"></i>Status : </div>
                 <div class="col-md-8">
@@ -53,15 +65,10 @@
         </div>
 
 </div>
-<a href="
-    {{ 
-        Auth::user()->role == 'pimpinan' ? route('jobdesk.indexpimpinan') :
-        (Auth::user()->role == 'teamleader' ? route('jobdesk.indexteamleader') :
-        route('jobdesk.indexpengguna')) 
-    }}" 
-    class="btn btn-secondary">
+<a href="{{ url()->previous() }}" class="btn btn-secondary">
     Kembali
 </a>
+
 
 
 </div>

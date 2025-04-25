@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use App\Models\Absensi;
 use App\Models\User;
 use App\Models\DetailTeam;
+use App\Models\Jaringan;
 use Illuminate\Support\Facades\DB;
 class AbsensiController extends Controller
 {
@@ -30,27 +31,40 @@ class AbsensiController extends Controller
     }
 
     public function isIpAllowed($ip)
-    {
-        // Rentang IP yang diizinkan
-        $allowedRangeStart = ip2long('103.47.133.0');
-        $allowedRangeEnd = ip2long('103.47.133.255');
-        $userIpLong = ip2long($ip);
-    
-        // Cek apakah IP pengguna berada dalam rentang yang diizinkan
-        return $userIpLong >= $allowedRangeStart && $userIpLong <= $allowedRangeEnd;
+{
+    $userIpLong = ip2long($ip);
+
+    // Ambil semua jaringan dari database
+    $jaringanList = Jaringan::all();
+
+    foreach ($jaringanList as $jaringan) {
+        $start = ip2long($jaringan->allowedRangeStart);
+        $end = ip2long($jaringan->allowedRangeEnd);
+
+        if ($userIpLong >= $start && $userIpLong <= $end) {
+            return true;
+        }
     }
+
+    return false;
+}
     
     public function datang(Request $request)
     {
+
+        if (Auth::user()->status !== 'aktif') {
+            return redirect()->back()->withErrors(['error' => 'Akun Anda tidak aktif. Tidak dapat melakukan absensi.']);
+        }
+
         $currentDate = Carbon::now()->toDateString();
         $currentTime = Carbon::now();
-        $startTime = Carbon::createFromTime(7, 45);
+        $startTime = Carbon::createFromTime(6, 45);
         $endTime = Carbon::createFromTime(8, 15);
         $lateStart = Carbon::createFromTime(8, 16);
         $lateEnd = Carbon::createFromTime(14, 50);
     
-        $targetLatitude = -7.831642;
-        $targetLongitude = 111.979837;
+        $targetLatitude = -7.831696316371527;  
+        $targetLongitude = 111.97982194939203;
         $radius = 20;
     
         $userLatitude = $request->input('latitude');
@@ -102,13 +116,18 @@ class AbsensiController extends Controller
     
     public function pulang(Request $request)
     {
+
+        if (Auth::user()->status !== 'aktif') {
+            return redirect()->back()->withErrors(['error' => 'Akun Anda tidak aktif. Tidak dapat melakukan absensi pulang.']);
+        }
+
         $currentDate = Carbon::now()->toDateString();
         $currentTime = Carbon::now();
         $lateStart = Carbon::createFromTime(14, 51);
         $lateEnd = Carbon::createFromTime(16, 30);
     
-        $targetLatitude = -7.831642;
-        $targetLongitude = 111.979837;
+        $targetLatitude = -7.831696316371527;
+        $targetLongitude = 111.97982194939203;
         $radius = 20;
     
         $userLatitude = $request->input('latitude');

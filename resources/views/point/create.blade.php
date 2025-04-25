@@ -113,7 +113,7 @@ Hasil perhitungan ini akan ditampilkan secara terperinci di halaman Laporan Poin
         <input type="hidden" name="user_id" value="{{ $user->id }}">
 
         <div class="mb-3">
-            <label for="bulan" class="form-label">Pilih Bulan</label>
+        <label for="bulan" class="form-label d-md-none">Silahkan memilih bulan.</label>
             <input type="month" id="bulan" name="bulan" class="form-control" required>
         </div>
 
